@@ -31,17 +31,31 @@ jobs:
       - name: Install mdbook-epub
         run: cargo install mdbook-epub --locked
 
-      - name: Build book (HTML + EPUB)
+      - name: Build EPUB (best-effort, saved aside)
         run: |
           export PATH="$HOME/.cargo/bin:$PATH"
-          mdbook build
+          mkdir -p /tmp/epub-out
+          mdbook-epub --standalone . || echo "EPUB 生成跳过/失败"
+          find . -name "*.epub" -exec cp {} /tmp/epub-out/ \; || true
+          ls -la /tmp/epub-out/ || true
 
-      - name: Rename EPUB (URL-friendly)
+      - name: Build HTML site
         run: |
-          if [ -f "book/epub/DeepSeek Harness 应用开发实践.epub" ]; then
-            mv "book/epub/DeepSeek Harness 应用开发实践.epub" book/epub/deepseek-harness-in-practice.epub
+          mdbook build
+          echo "--- book/ 内容（前 20 项）---"
+          ls -la book/ | head -20
+          test -f book/index.html && echo "✅ index.html 存在" || (echo "❌ index.html 缺失" && exit 1)
+
+      - name: Combine EPUB into site
+        run: |
+          mkdir -p book/epub
+          if ls /tmp/epub-out/*.epub >/dev/null 2>&1; then
+            cp /tmp/epub-out/*.epub book/epub/deepseek-harness-in-practice.epub
+            echo "✅ EPUB 已合并"
+          else
+            echo "⚠️ 无 EPUB，跳过"
           fi
-          ls -la book/epub/
+          ls -la book/epub/ || true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
