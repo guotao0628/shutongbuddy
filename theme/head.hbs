@@ -1,13 +1,12 @@
 <style>
-/* ============ ShuTongBuddy 在线书样式定制 ============ */
+/* ==================== ShuTongBuddy 在线书样式与交互 ==================== */
 
-/* 全局布局 */
+/* ---------- 全局布局 ---------- */
 :root {
-    --content-max-width: 860px;   /* 内容宽度（默认 750px） */
-    --code-font-size: 0.85em;     /* 代码字号 */
+    --content-max-width: 860px;
+    --code-font-size: 0.85em;
 }
 
-/* 正文：15px + 1.7 行高 + 中文字体栈 */
 html, body {
     font-size: 15px;
     line-height: 1.7;
@@ -15,28 +14,239 @@ html, body {
                  "Microsoft YaHei", "Noto Sans SC", "Segoe UI", sans-serif;
 }
 
-/* 标题字号 */
 h1 { font-size: 1.7em; }
-h2 { font-size: 1.35em; }
-h3 { font-size: 1.15em; }
+h2 { font-size: 1.35em; margin-top: 2em; }
+h3 { font-size: 1.15em; margin-top: 1.6em; }
+p { margin: 0.8em 0; }
 
-/* 代码字体 */
 code, pre {
     font-family: "Cascadia Code", Consolas, "Source Code Pro", Menlo, monospace;
 }
 
-/* 明主题（Light）：清华紫 #660874 */
+/* ---------- 明主题（清华紫 #660874） ---------- */
 .light {
-    --fg: #2f2f2f;                 /* 正文深灰 */
-    --links: #660874;              /* 链接清华紫 */
-    --sidebar-active: #660874;     /* 侧边栏选中项清华紫 */
+    --fg: #2f2f2f;
+    --links: #660874;
+    --sidebar-active: #660874;
     --sidebar-header-border-color: #660874;
+    --inline-code-color: #660874;
+    --table-header-bg: #f1e6f5;         /* 表头淡紫底 */
+    --table-alternate-bg: #faf6fc;      /* 表格斑马纹 */
+    --quote-bg: #faf5fc;                /* 引用块淡紫底 */
+    --quote-border: #c99bd4;            /* 引用块紫色边框 */
 }
 
-/* 暗主题（Coal/Navy/Ayu/Rust）：提亮的清华紫 */
+/* ---------- 暗主题（提亮清华紫） ---------- */
 .coal, .navy, .ayu, .rust {
-    --links: #b28ad1;
-    --sidebar-active: #b28ad1;
-    --sidebar-header-border-color: #b28ad1;
+    --links: #c39bd8;
+    --sidebar-active: #c39bd8;
+    --sidebar-header-border-color: #c39bd8;
+    --inline-code-color: #c39bd8;
+}
+
+/* ---------- 代码高亮（清华紫系） ---------- */
+.hljs-keyword, .hljs-selector-tag, .hljs-literal { color: #660874; font-weight: 500; }
+.hljs-string, .hljs-attr, .hljs-regexp { color: #1a7f37; }
+.hljs-comment, .hljs-quote { color: #8a8a8a; font-style: italic; }
+.hljs-number, .hljs-symbol { color: #b3541e; }
+.hljs-function, .hljs-title, .hljs-section { color: #205ea6; }
+.hljs-type, .hljs-class, .hljs-built_in { color: #660874; }
+.hljs-variable, .hljs-template-variable { color: #c7254e; }
+
+/* ---------- 代码块 ---------- */
+pre {
+    border-radius: 6px;
+    border: 1px solid rgba(102, 8, 116, 0.12);
+    overflow: auto;
+}
+pre code { line-height: 1.6; }
+/* 超长代码折叠 */
+pre.code-collapsed { max-height: 420px; position: relative; overflow: hidden; }
+pre.code-collapsed::after {
+    content: "";
+    position: absolute; left: 0; right: 0; bottom: 0; height: 60px;
+    background: linear-gradient(transparent, var(--bg, #fff));
+}
+.code-expand-btn {
+    display: block; margin: 8px auto; padding: 6px 18px;
+    font-size: 13px; border: 1px solid #660874; border-radius: 16px;
+    background: transparent; color: #660874; cursor: pointer;
+}
+.code-expand-btn:hover { background: #660874; color: #fff; }
+
+/* ---------- 复制按钮提示 ---------- */
+.copy-toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    padding: 8px 20px; border-radius: 20px; background: #660874; color: #fff;
+    font-size: 13px; z-index: 9999; opacity: 0; transition: opacity .3s; pointer-events: none;
+}
+.copy-toast.show { opacity: 1; }
+
+/* ---------- 表格 ---------- */
+table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; }
+table thead tr th { background: var(--table-header-bg); color: #660874; font-weight: 600; }
+table tbody tr:nth-child(even) { background: var(--table-alternate-bg); }
+table th, table td { padding: 6px 12px; border: 1px solid var(--table-border-color, #eee); }
+
+/* ---------- 引用块 / 提示块 ---------- */
+blockquote {
+    background: var(--quote-bg);
+    border-left: 4px solid var(--quote-border);
+    border-radius: 0 6px 6px 0;
+    padding: 10px 16px;
+    margin: 1em 0;
+}
+/* mdBook 提示块配色统一 */
+.markdown-alert-note { border-left-color: #660874; }
+.markdown-alert-tip { border-left-color: #1a7f37; }
+.markdown-alert-important { border-left-color: #8250df; }
+.markdown-alert-warning { border-left-color: #b3541e; }
+.markdown-alert-caution { border-left-color: #c7254e; }
+
+/* ---------- 图片 ---------- */
+.content img, main img { max-width: 100%; height: auto; display: block; margin: 1em auto; border-radius: 4px; }
+
+/* ---------- 本页目录 ---------- */
+.page-toc {
+    background: var(--quote-bg, #faf5fc);
+    border: 1px solid var(--quote-border, #c99bd4);
+    border-radius: 8px;
+    padding: 12px 18px;
+    margin: 1em 0 1.5em;
+    font-size: 14px;
+}
+.page-toc .toc-title { font-weight: 600; color: #660874; margin-bottom: 6px; }
+.page-toc a { display: block; color: var(--links); text-decoration: none; padding: 2px 0; }
+.page-toc a.l3 { padding-left: 1.2em; font-size: 13px; }
+.page-toc a:hover { text-decoration: underline; }
+
+/* ---------- 阅读进度条 ---------- */
+.reading-progress {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0;
+    background: linear-gradient(90deg, #660874, #a67cba);
+    z-index: 9998; transition: width .1s ease;
+}
+
+/* ---------- 移动端响应式 ---------- */
+@media (max-width: 768px) {
+    html, body { font-size: 14.5px; }
+    :root { --content-max-width: 100%; --page-padding: 12px; }
+    h1 { font-size: 1.5em; }
+    h2 { font-size: 1.25em; }
+    pre { font-size: 0.82em; }
+    table { font-size: 0.85em; }
 }
 </style>
+
+<script>
+(function () {
+    function ready(fn) {
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
+        else fn();
+    }
+
+    ready(function () {
+        /* 1. 阅读进度条 */
+        var bar = document.createElement('div');
+        bar.className = 'reading-progress';
+        document.body.appendChild(bar);
+        window.addEventListener('scroll', function () {
+            var h = document.documentElement;
+            var scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight) * 100;
+            bar.style.width = (isNaN(scrolled) ? 0 : scrolled) + '%';
+        }, { passive: true });
+
+        /* 2. 阅读位置记忆（localStorage） */
+        var KEY = 'stb-scroll-' + location.pathname;
+        var saved = localStorage.getItem(KEY);
+        if (saved) window.scrollTo(0, parseInt(saved, 10));
+        var t;
+        window.addEventListener('scroll', function () {
+            clearTimeout(t);
+            t = setTimeout(function () {
+                localStorage.setItem(KEY, String(window.scrollY));
+            }, 200);
+        }, { passive: true });
+
+        /* 3. 代码复制提示 */
+        var toast = document.createElement('div');
+        toast.className = 'copy-toast';
+        toast.textContent = '已复制到剪贴板';
+        document.body.appendChild(toast);
+        document.addEventListener('click', function (e) {
+            var btn = e.target.closest && e.target.closest('button');
+            if (btn && /copy/i.test(btn.textContent || '')) {
+                toast.classList.add('show');
+                clearTimeout(toast._t);
+                toast._t = setTimeout(function () { toast.classList.remove('show'); }, 1500);
+            }
+        });
+
+        /* 4. 超长代码折叠 */
+        document.querySelectorAll('pre').forEach(function (pre) {
+            if (pre.scrollHeight > 500 && pre.clientHeight > 0) {
+                pre.classList.add('code-collapsed');
+                var btn = document.createElement('button');
+                btn.className = 'code-expand-btn';
+                btn.textContent = '展开全部代码';
+                pre.parentNode.insertBefore(btn, pre.nextSibling);
+                btn.addEventListener('click', function () {
+                    pre.classList.remove('code-collapsed');
+                    btn.remove();
+                });
+            }
+        });
+
+        /* 5. 本页目录（扫描 h2/h3，标题数 >= 3 才显示） */
+        var content = document.querySelector('main .content, main');
+        if (content) {
+            var heads = content.querySelectorAll('h2, h3');
+            if (heads.length >= 3) {
+                var toc = document.createElement('nav');
+                toc.className = 'page-toc';
+                var title = document.createElement('div');
+                title.className = 'toc-title';
+                title.textContent = '本页目录';
+                toc.appendChild(title);
+                heads.forEach(function (h) {
+                    if (!h.id) h.id = 'sec-' + Math.random().toString(36).slice(2, 8);
+                    var a = document.createElement('a');
+                    a.href = '#' + h.id;
+                    a.textContent = h.textContent;
+                    if (h.tagName === 'H3') a.className = 'l3';
+                    toc.appendChild(a);
+                });
+                var firstH = content.querySelector('h1, h2, h3, p');
+                if (firstH) content.insertBefore(toc, firstH);
+            }
+        }
+
+        /* 6. 评论区 giscus（需配置 repo-id / category-id 后启用） */
+        (function loadGiscus() {
+            var repoId = '';      // TODO: 在 giscus.app 获取后填入
+            var categoryId = '';  // TODO: 在 giscus.app 获取后填入
+            if (!repoId || !categoryId) return;
+            var container = document.createElement('div');
+            container.id = 'giscus-container';
+            container.style.marginTop = '2.5rem';
+            var main = document.querySelector('main');
+            if (!main) return;
+            main.appendChild(container);
+            var s = document.createElement('script');
+            s.src = 'https://giscus.app/client.js';
+            s.setAttribute('data-repo', 'guotao0628/shutongbuddy');
+            s.setAttribute('data-repo-id', repoId);
+            s.setAttribute('data-category', 'Announcements');
+            s.setAttribute('data-category-id', categoryId);
+            s.setAttribute('data-mapping', 'pathname');
+            s.setAttribute('data-reactions-enabled', '1');
+            s.setAttribute('data-input-position', 'bottom');
+            s.setAttribute('data-theme', 'preferred_color_scheme');
+            s.setAttribute('data-lang', 'zh-CN');
+            s.setAttribute('crossorigin', 'anonymous');
+            s.async = true;
+            container.appendChild(s);
+        })();
+    });
+})();
+</script>
