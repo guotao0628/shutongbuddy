@@ -1,0 +1,15 @@
+[book]
+title = "DeepSeek Harness 应用开发实践"
+authors = ["郭涛"]
+language = "zh"
+multilingual = false
+src = "docs/manual/markdown"
+
+[output.html]
+git-repository-url = "https://github.com/guotao0628/shutongbuddy"
+edit-url-template = "https://github.com/guotao0628/shutongbuddy/edit/main/{path}"
+site-url = "/shutongbuddy/"
+
+[output.html.fold]
+enable = true
+level = 1

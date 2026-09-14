@@ -1,0 +1,11 @@
+{
+  "name": "@shu-tong-buddy/plugin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ShuTongBuddy 备考助手插件包（题库 / 刷题 / 错题门禁）",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  }
+}

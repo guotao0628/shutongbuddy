@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment / secrets
+.env
+.env.*
+.credentials.yaml
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+Thumbs.db
+
+# Temp
+*.tmp
+
+# Python
+__pycache__/
+*.pyc
+
+# mdBook build output
+book/
+
+# Local build tools & environment (NOT for GitHub publishing)
+book_tools/
+
+# Publisher deliverables (generated from Markdown, NOT for GitHub publishing)
+release/
