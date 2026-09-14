@@ -1,5 +1,10 @@
 # 《DeepSeek Harness 应用开发实践》
 
+[![在线阅读](https://img.shields.io/badge/阅读-在线书-2ea44f?logo=mdbook)](https://guotao0628.github.io/shutongbuddy/)
+[![License: MIT](https://img.shields.io/badge/代码-MIT-yellow.svg)](LICENSE)
+[![文档: CC BY 4.0](https://img.shields.io/badge/文档-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
+[![English](https://img.shields.io/badge/README-English-blue.svg)](README.en.md)
+
 一本开源实践手册 + 配套代码仓库：基于 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)（命令行简称 `dsh`）学习如何开发智能体应用——插件架构、多模型接入、插件开发与多智能体协同。
 
 > 📖 **在线阅读**：https://guotao0628.github.io/shutongbuddy/（mdBook 构建，部署于 GitHub Pages）

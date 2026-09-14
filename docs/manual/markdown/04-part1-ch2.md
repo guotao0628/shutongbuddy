@@ -46,7 +46,7 @@ Harness 建立在 Cordis 之上。Cordis 的设计来自论文《A Programming P
 
 - 
 
-```
+```text
 Profile 中按序列出的每个 Bundle 的补丁
   → Profile 自己的 cordis.patch.yml
   → 主目录级别的 $DSH_HOME/cordis.patch.yml
@@ -89,7 +89,7 @@ Harness 扩展设计里最重要的概念是**能力接缝（Capability Seam）*
 
 完整事件序列如下（括号里是简要注释）：
 
-```
+```text
 turn/start
   认领下一步输入 + 一条排队消息
   装配提示词各节 + 工具模式；投影运行时上下文

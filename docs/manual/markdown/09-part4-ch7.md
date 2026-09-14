@@ -16,7 +16,7 @@
 
 ## 7.2 准备工作
 
-```
+```bash
 cd /path/to/course-materials   # 在资料库目录启动，便于圈定工作区
 npx @deepseek-ai/dsh web
 ```
@@ -29,7 +29,7 @@ npx @deepseek-ai/dsh web
 
 发送：
 
-```
+```text
 总结这个资料库的结构，找出主要的科目和章节，说明它们各自的覆盖范围，并指出入口文件（如课程大纲、目录）。
 ```
 
@@ -41,7 +41,7 @@ npx @deepseek-ai/dsh web
 
 如果它漏掉了某个重要科目目录，**直接在同一会话里追问纠偏**——会话日志忠实记录了它已经看过什么，追问不会让它重复劳动：
 
-```
+```text
 「概率论」目录下还有一个往年真题子目录你没有分析，补上。
 ```
 
@@ -49,7 +49,7 @@ npx @deepseek-ai/dsh web
 
 继续在同一会话发送：
 
-```
+```text
 基于你已掌握的情况，盘点以下问题：1) 哪些章节缺教材或缺笔记；2) 哪些知识点没有对应练习题；3) 哪些资料明显过期或与大纲不符。把三轮分析汇总成一份中文报告，写入 STUDY_REPORT.md，结构：总览 / 科目与章节 / 资料缺口与风险 / 复习建议。
 ```
 
@@ -64,7 +64,7 @@ npx @deepseek-ai/dsh web
 
 交互式跑顺之后，把它变成可重复的命令——`headless` Profile 就是干这个的：开一个全新持久会话，打印最终答案，然后退出。
 
-```
+```bash
 dsh --profile headless "阅读当前目录的备考资料库，生成中文体检报告写入 STUDY_REPORT.md，包含：结构总览、科目与章节、资料缺口与风险、复习建议。"
 ```
 
@@ -76,7 +76,7 @@ dsh --profile headless "阅读当前目录的备考资料库，生成中文体�
 
 在源码检出下创建 `scratch-plugin/src/material-stats.ts`：
 
-```
+```typescript
 import { readdir, stat } from 'node:fs/promises'
 import { join, extname } from 'node:path'
 import type { Context } from '@deepseek-ai/cordis'
@@ -139,7 +139,7 @@ export function apply(ctx: Context) {
 
 挂上去重跑体检：
 
-```
+```text
 # scratch-plugin/cordis.yml
 - insert:
     - id: material-stats
@@ -148,7 +148,7 @@ export function apply(ctx: Context) {
 
 然后在会话里说：
 
-```
+```text
 调用 material_stats 工具统计当前资料库，把结果并入 STUDY_REPORT.md 的「资料规模」一节。
 ```
 

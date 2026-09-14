@@ -1,0 +1,26 @@
+# 出版前核对清单
+
+## 一、待核对的技术细节（书中【待核】标记，共 2 处）
+
+### 1. `output.schema` 的 `additionalProperties` 写法
+- **位置**：第 7 章 7.6 节（`docs/manual/markdown/09-part4-ch7.md`）
+- **内容**：`material_stats` 工具的 `output.schema` 用了 `additionalProperties`，需对照所用 DeepSeek Harness 版本的 `ValueSchemaSpec` 确认是否接受；若不被接受，改为返回数组 `[{ type, files, bytes }]`。
+
+### 2. sdk Profile 下多提供商的会话级指定方式
+- **位置**：第 8 章 8.3 节（`docs/manual/markdown/10-part4-ch8.md`）
+- **内容**：sdk Profile 下多提供商（如 Kimi）的会话级模型指定方式，需对照所用 SDK 版本参考；备选方案是为 Kimi 单独起一个 dsh 实例，通过子智能体 ACP 委托（见 8.7 节）。
+
+## 二、需作者确认的出版信息
+
+| 事项 | 现状 | 需确认 |
+|------|------|--------|
+| 作者简介书目 | 沿用参考书《大模型 Agentic 智能体设计模式》《大模型设计模式》 | 替换为郭涛真实出版书目 |
+| 封面 | 脚本生成的简化封面（书名 + 郭涛 著 + 清华大学出版社） | 正式封面需清华社排版（含书号、CIP、定价、条形码、防伪标签） |
+| 版权页 | 简化版（版权所有 + 书名 + 作者 + 出版社） | 补书号、CIP、版次、印次 |
+
+## 三、建议出版前完成的校对
+
+- [ ] 全稿错别字与标点（尤其引号、破折号、中英文混排空格）
+- [ ] 术语统一复核（ShuTongBuddy / dsh / DeepSeek Harness / deepseek-v4-pro / flash）
+- [ ] 代码示例与 `plugins/`、`examples/` 目录的一致性
+- [ ] 所有外部链接（GitHub 仓库、官方文档站）有效性

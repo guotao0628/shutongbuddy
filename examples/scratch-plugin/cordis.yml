@@ -1,0 +1,3 @@
+- insert:
+    - id: material-stats
+      name: '/absolute/path/to/deepseek-harness/scratch-plugin/src/material-stats.ts'

@@ -17,7 +17,7 @@
 
 ## 8.2 总体架构
 
-```
+```text
 ┌──────────────────────────────────────────────────────┐
 │ 浏览器（ShuTongBuddy Studio Web 界面）                 │
 │  ├─ 左栏：备考阶段 / 会话列表                          │
@@ -43,7 +43,7 @@
 
 ## 8.3 环境搭建与多模型配置
 
-```
+```bash
 py -3.10 -m venv .venv
 .venv\Scripts\Activate.ps1
 python -m pip install deepseek-harness-sdk fastapi uvicorn
@@ -52,7 +52,7 @@ $env:DEEPSEEK_API_KEY = "sk-your-key-here"
 
 安装备考助手插件（第 5.8 节），让它在 sdk Profile 里持久就位：
 
-```
+```text
 $env:DSH_HOME = "C:\work\shutongbuddy-dsh-home"
 dsh --profile sdk --dump-default-config | Out-Null
 dsh plugin --profile sdk add file:C:/work/shu-tong-buddy
@@ -64,7 +64,7 @@ dsh plugin --profile sdk add file:C:/work/shu-tong-buddy
 
 对 SDK 的封装——懒启动、阶段化执行、线程内复用：
 
-```
+```python
 from pathlib import Path
 from deepseek_harness import DeepSeekHarness
 
@@ -109,7 +109,7 @@ class HarnessController:
 
 编排层把业务流程写成一目了然的数据与函数：
 
-```
+```text
 PIPELINE = [
     ("organize", "知识点梳理",  "通读 {course} 的教材与笔记，产出知识图谱 outline.json 与章节清单，写入工作区。"),
     ("drill",    "题库刷题",    "按 outline.json 的章节清单，逐章调用 practice 工具抽题组卷，判分结果写入 practice/。"),
@@ -133,7 +133,7 @@ def run_pipeline(course: str, controller: HarnessController, on_stage):
 
 后端用 FastAPI 起服务，后台线程跑流水线，SSE 把阶段事件推给前端：
 
-```
+```python
 import asyncio, json
 from fastapi import FastAPI
 from fastapi.responses import StreamingResponse, HTMLResponse
@@ -165,7 +165,7 @@ async def index():
 
 前端骨架——三栏 + 底部输入框，EventSource 订阅阶段事件：
 
-```
+```text
 <!-- index.html -->
 <div id="app">
   <aside id="stages"></aside>          <!-- 左栏：阶段/会话 -->

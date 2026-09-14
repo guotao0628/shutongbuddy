@@ -28,7 +28,7 @@ DeepSeek Harness（命令行简称 `dsh`）是 DeepSeek 官方开源的智能体
 
 
 
-```
+```bash
 node -v
 ```
 输出 v22.19.0 或更高即可。如果没有安装，请到 nodejs.org 下载 LTS 版本。
@@ -39,17 +39,17 @@ node -v
 
 确保网络畅通，执行：
 
-```
+```bash
 npx @deepseek-ai/dsh web
 ```
 npx 会自动下载并运行 dsh 命令。首次运行稍慢，稍候你会看到终端打印出访问地址，默认是：
 
-```
+```text
 http://127.0.0.1:3080
 ```
 本地启动时浏览器会自动打开该地址；如果你不想要这个行为，加 --no-open：
 
-```
+```bash
 npx @deepseek-ai/dsh web --no-open
 ```
 在 SSH 远程会话中，dsh 不会尝试打开浏览器（转发地址由你的 SSH 客户端或编辑器管理），只打印 URL，你在本地浏览器手动访问即可。
@@ -82,7 +82,7 @@ npx @deepseek-ai/dsh web --no-open
 
 现在，在输入框里发出你的第一个任务。可以用英文，也可以用中文：
 
-```
+```text
 总结这个仓库的结构，找出主要的包，并说明它们各自的职责。
 ```
 （官方指南给出的经典示例是："Summarize this repository and identify its main packages."）

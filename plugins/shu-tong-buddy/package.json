@@ -7,5 +7,13 @@
   "main": "src/index.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@deepseek-ai/cordis": "latest",
+    "@deepseek-ai/dsh-tools": "latest"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^22.0.0"
   }
 }

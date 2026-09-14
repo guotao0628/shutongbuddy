@@ -6,7 +6,7 @@
 
 先把备考的业务流程摆出来——这是一名大学生准备一门考试时的经典闭环：
 
-```
+```text
 知识点梳理 → 题库刷题 → AI 答疑 → 错题分析 → 复习计划 → 学习报告
 ```
 
@@ -27,7 +27,7 @@
 
 在 Harness 里，插件是一个导出 `apply` 函数的 TypeScript 模块。框架加载时调用 `apply` 并传入共享上下文 `ctx`，能力全部通过 `ctx` 注册：
 
-```
+```typescript
 import type { Context } from '@deepseek-ai/cordis'
 
 export const name = 'my-plugin'
@@ -39,7 +39,7 @@ export function apply(ctx: Context) {
 
 name 是插件标识；要消费别的服务（如工具表 tools、模型层 llm），用 inject 声明依赖，框架会等齐依赖再加载它：
 
-```
+```typescript
 export const name = 'my-tool-plugin'
 export const inject = ['tools']
 
@@ -51,13 +51,13 @@ export function apply(ctx: Context) {
 
 开发闭环三步走（假定你从源码方式运行，见 3.3 节）：
 
-```
+```bash
 mkdir -p scratch-plugin/src          # 1. 建插件目录
 ```
 
 写 scratch-plugin/cordis.yml 覆盖层（路径用绝对路径，先在仓库根 pwd）：
 
-```
+```yaml
 - insert:
     - id: hello
       name: '/absolute/path/to/deepseek-harness/scratch-plugin/src/my-plugin.ts'
@@ -67,7 +67,7 @@ mkdir -p scratch-plugin/src          # 1. 建插件目录
 
 **可逆效果**：通过 `ctx` 注册的一切（监听器、工具、定时器）随插件卸载自动清理；需要显式收尾的资源用 `ctx.effect()` 提供清理器：
 
-```
+```typescript
 export function apply(ctx: Context) {
   ctx.effect(() => {
     const timer = setInterval(() => console.log('heartbeat'), 5000)
@@ -82,7 +82,7 @@ web Profile 默认实时重载：改完插件代码，旧效果自动回退、�
 
 进入正题。规划插件包结构（一个包内多个模块，按职责拆分）：
 
-```
+```text
 shu-tong-buddy/
   src/
     question-bank.ts   # 题库工具
@@ -98,7 +98,7 @@ shu-tong-buddy/
 
 用 `defineTool` 实现一个多动作题库工具（`add` / `search` / `list` / `stats`）：
 
-```
+```typescript
 import type { Context } from '@deepseek-ai/cordis'
 import { defineTool } from '@deepseek-ai/dsh-tools'
 import { loadJSON, saveJSON, type Question } from './state'
@@ -166,7 +166,7 @@ export function apply(ctx: Context) {
 
 `practice` 的设计要点：**出题与判分由模型完成，工具负责确定性部分**——按条件抽题、返回题单、约定落盘路径：
 
-```
+```typescript
 import type { Context } from '@deepseek-ai/cordis'
 import { defineTool } from '@deepseek-ai/dsh-tools'
 import { loadJSON, type Question } from './state'
@@ -223,7 +223,7 @@ export function apply(ctx: Context) {
 
 错题管理的硬指标——**答错的题必须进错题本**——不该靠模型自觉，而该写成门禁。用 `tools/pre-execute` 瀑布拦截判分落盘的动作，发现答错的题就自动归档：
 
-```
+```typescript
 import type { Context } from '@deepseek-ai/cordis'
 import type { PreToolDecision } from '@deepseek-ai/dsh-tools'
 import { loadJSON, saveJSON, type Mistake } from './state'
@@ -295,7 +295,7 @@ export function apply(ctx: Context) {
 
 **持久安装**（给第 8 章的 ShuTongBuddy Studio 用）：
 
-```
+```bash
 export DSH_HOME=/absolute/path/to/app-dsh-home
 dsh plugin --profile sdk add file:/absolute/path/to/shu-tong-buddy
 ```

@@ -25,7 +25,7 @@ DeepSeek 路由的一个特色是**推理挡位（Reasoning Effort）**：其模
 
 - 
 
-```
+```yaml
 llm-deepseek:
   reasoningEffort: max
 ```
@@ -65,7 +65,7 @@ Kimi 走"内置提供商目录"通道，无需手写任何端点信息：
 
 手工录入的模型默认被视为纯文本——因为没有途径询问端点支持哪些模态。给自定义端点上的视觉模型开图像输入，只需一行：
 
-```
+```yaml
 llm-pi-ai:
   providers:
     my-gateway:
@@ -83,7 +83,7 @@ llm-pi-ai:
 
 手工录入的模型默认不声明推理挡位（Effort 菜单不出现，端点自行决定是否思考）。用 `reasoningEfforts` 声明，键是菜单里显示的挡位，值是发送到线上的 `reasoning_effort` 拼写：
 
-```
+```yaml
 models:
   - id: my-reasoner
     reasoningEfforts:
@@ -93,11 +93,22 @@ models:
 ```
 只有 off 允许留空——对多数端点，"不思考"就是参数缺省。但有一类模型默认思考、需要显式关闭，OpenAI 兼容网关后的 DeepSeek V4 就是典型。这时需要给模型加一个兼容开关 compat.thinkingFormat: deepseek：off 会发送 thinking: {type: disabled}，其余挡位发送 thinking: {type: enabled} 并附带挡位值：
 
-## models:  - id: deepseek-v4-pro    compat:      thinkingFormat: deepseek    reasoningEfforts:      off:      high: high      max: max（3）请求兼容：compat
+## （3）请求兼容：compat
+
+```yaml
+models:
+  - id: deepseek-v4-pro
+    compat:
+      thinkingFormat: deepseek
+    reasoningEfforts:
+      off:
+      high: high
+      max: max
+```
 
 网关的地址可达、密钥正确，仍可能拒绝每一个请求——因为它接受的请求形状与 OpenAI 本尊不同。最高发的两处：**推理模型的系统提示词**以 `role: "developer"` 发送（许多网关直接拒绝），以及**输出上限**以 `max_completion_tokens` 发送（只认 `max_tokens` 的服务会拒绝）。在路由上纠正：
 
-```
+```yaml
 llm-pi-ai:
   providers:
     my-gateway:

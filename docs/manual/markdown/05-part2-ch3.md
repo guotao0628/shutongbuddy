@@ -18,19 +18,19 @@
 
 - 
 
-```
+```bash
 npx @deepseek-ai/dsh web
 ```
 这是官方给出的标准入口：无需克隆仓库，npx 拉取发布包后直接启动 Web UI，默认地址 http://127.0.0.1:3080。常用变体：
 
-```
+```bash
 npx @deepseek-ai/dsh web --no-open   # 不自动打开浏览器
 ```
 适合：日常使用、快速体验、跟随本册绝大多数章节操作。
 
 ## 3.3 方式二：源码构建（推荐给要改代码的读者）
 
-```
+```bash
 git clone https://github.com/deepseek-ai/deepseek-harness.git
 cd deepseek-harness
 pnpm install
@@ -61,28 +61,33 @@ pnpm dsh web
 
 **创建自己的 Profile**——这是定制 Harness 的正道：
 
-```
+```bash
 dsh --profile mylab --from-default-profile web
 ```
 该命令以官方 web 为模板创建一个名为 mylab 的新 Profile 并启动它。此后你可以修改 $DSH_HOME/profiles/mylab/ 下的 package.json（声明外部插件依赖与 Bundle 顺序）和 cordis.patch.yml（你的补丁层），而不污染官方模板。
 
 **管理 Profile 的外部插件**：
 
-```
+```bash
 dsh plugin --profile mylab add some-dsh-plugin
 ```
 dsh plugin 会把参数原样转发给 pnpm，在该 Profile 的目录里执行——安装、移除、更新外部插件都走这条路。
 
 **检视而不启动**：
 
-## dsh --profile mylab --dump-config           # 查看实际组合的插件树dsh --profile mylab --dump-default-config   # 查看默认组合3.5 命令行语法的两条规则
+```bash
+dsh --profile mylab --dump-config           # 查看实际组合的插件树
+dsh --profile mylab --dump-default-config   # 查看默认组合
+```
+
+## 3.5 命令行语法的两条规则
 
 `dsh` 的参数解析有一个容易踩的坑，记住两条规则就不会错：
 
 1. 启动器只解析自己的旗标（--profile、--patch、--dump-config 等），第一个不认识的参数开始，全部交给被启动的应用；
 2. 同一个词，位置不同，含义不同：
 
-```
+```bash
 dsh --profile web --port 8080    # --port 属于 Web 应用
 dsh --profile web --help         # 显示 Web 应用的帮助
 dsh --help                       # 显示启动器自身的帮助
