@@ -29,6 +29,12 @@ jobs:
       - name: Build book
         run: mdbook build
 
+      - name: Install mdbook-epub
+        run: cargo install mdbook-epub --locked
+
+      - name: Build EPUB
+        run: mdbook-epub
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

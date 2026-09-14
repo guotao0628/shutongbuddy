@@ -1,3 +1,8 @@
+<meta name="description" content="《DeepSeek Harness 应用开发实践》——基于 DeepSeek Harness 的智能体应用开发实战手册，郭涛著，清华大学出版社。">
+<meta property="og:title" content="DeepSeek Harness 应用开发实践">
+<meta property="og:description" content="智能体应用开发实战手册：插件架构、多模型接入、插件开发与多智能体协同。">
+<meta property="og:type" content="book">
+<meta property="og:locale" content="zh_CN">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="favicon.svg">
@@ -296,6 +301,46 @@ main .content { padding-bottom: 3em; }
     display: flex; align-items: center; justify-content: center; cursor: zoom-out;
 }
 .zoom-overlay svg, .zoom-overlay img { max-width: 92vw; max-height: 92vh; background: #fff; border-radius: 8px; }
+
+/* ========== 第二批功能样式 ========== */
+/* 划重点高亮 */
+mark.stb-hl { background: #e3b9ef; color: #660874; cursor: pointer; border-radius: 2px; padding: 0 2px; }
+/* 笔记 */
+.stb-note { background: #fdf6d8; border-bottom: 2px dotted #b3541e; cursor: pointer; }
+.note-popup {
+    position: fixed; z-index: 10001; background: #fff; border: 1px solid #c99bd4;
+    border-radius: 8px; padding: 10px 14px; box-shadow: 0 4px 16px rgba(0,0,0,.15);
+    max-width: 320px; font-size: 14px;
+}
+.note-popup textarea { width: 100%; min-height: 60px; margin: 6px 0; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; }
+.note-popup button { background: #660874; color: #fff; border: none; border-radius: 4px; padding: 4px 12px; cursor: pointer; }
+/* 测验 */
+.quiz-btn { border: 1px solid #660874; background: transparent; color: #660874; border-radius: 12px; padding: 2px 10px; font-size: 12px; cursor: pointer; margin-left: 8px; }
+.quiz-btn.done { background: #660874; color: #fff; }
+/* 术语 tooltip */
+.glossary-term { border-bottom: 1px dashed #660874; cursor: help; }
+/* 代码块 GitHub 链接 */
+.code-gh-link {
+    position: absolute; top: 6px; right: 116px; padding: 1px 9px; border-radius: 10px;
+    background: #555; color: #fff; border: none; font-size: 11px; cursor: pointer;
+    opacity: 0.8; z-index: 1; font-family: Consolas, monospace; text-decoration: none;
+}
+.code-gh-link:hover { opacity: 1; }
+/* 参考文献 */
+.chapter-refs { margin-top: 2em; padding: 12px 16px; border-radius: 8px; background: var(--quote-bg, #faf5fc); font-size: 13px; }
+.chapter-refs .ref-title { font-weight: 600; color: #660874; margin-bottom: 6px; }
+.chapter-refs a { display: block; color: var(--links); text-decoration: none; padding: 2px 0; word-break: break-all; }
+/* 点赞 */
+.like-btn { border: 1px solid #660874; background: transparent; color: #660874; border-radius: 14px; padding: 3px 14px; cursor: pointer; font-size: 13px; }
+.like-btn.on { background: #660874; color: #fff; }
+/* 邮件订阅 */
+.subscribe-box { margin-top: 2em; padding: 12px 16px; border-radius: 8px; background: #faf5fc; border: 1px solid #c99bd4; font-size: 14px; }
+.subscribe-box a { color: #660874; font-weight: 600; }
+/* 无障碍：焦点 */
+a:focus-visible, button:focus-visible { outline: 2px solid #660874; outline-offset: 2px; }
+/* 打印按钮 */
+.print-btn { display: inline-block; padding: 6px 16px; border-radius: 16px; font-size: 13px; border: 1px solid #660874; color: #660874; text-decoration: none; cursor: pointer; background: transparent; }
+.print-btn:hover { background: #660874; color: #fff; }
 </style>
 
 
@@ -629,6 +674,215 @@ main .content { padding-bottom: 3em; }
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('service-worker.js').catch(function () {});
         }
+
+        /* 22. 图片懒加载 */
+        document.querySelectorAll('main img').forEach(function (img) { img.loading = 'lazy'; });
+
+        /* 23. 划重点 / 高亮（选中文字即高亮，存 localStorage） */
+        var HL_KEY = 'stb-hl-' + location.pathname;
+        function getHl() { try { return JSON.parse(localStorage.getItem(HL_KEY) || '[]'); } catch (e) { return []; } }
+        document.addEventListener('mouseup', function () {
+            var sel = window.getSelection();
+            if (!sel || sel.isCollapsed || !sel.toString().trim()) return;
+            var range = sel.getRangeAt(0);
+            if (!content || !content.contains(range.commonAncestorContainer)) return;
+            var text = sel.toString().trim();
+            if (text.length < 2 || text.length > 500) return;
+            try {
+                var mark = document.createElement('mark');
+                mark.className = 'stb-hl';
+                mark.title = '点击取消高亮';
+                range.surroundContents(mark);
+                var list = getHl(); list.push(text);
+                localStorage.setItem(HL_KEY, JSON.stringify(list.slice(0, 100)));
+                sel.removeAllRanges();
+            } catch (e) {}
+        });
+        document.addEventListener('click', function (e) {
+            if (e.target.classList && e.target.classList.contains('stb-hl')) {
+                var t = e.target.textContent;
+                e.target.replaceWith(document.createTextNode(t));
+                var list = getHl().filter(function (x) { return x !== t; });
+                localStorage.setItem(HL_KEY, JSON.stringify(list));
+            }
+        });
+        (function restoreHl() {
+            var list = getHl();
+            if (!list.length || !content) return;
+            var walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT);
+            var nodes = [];
+            while (walker.nextNode()) nodes.push(walker.currentNode);
+            nodes.forEach(function (node) {
+                var t = node.nodeValue;
+                var hit = list.find(function (x) { return t.indexOf(x) >= 0; });
+                if (!hit || node.parentElement.closest('pre, code, mark')) return;
+                var span = document.createElement('mark');
+                span.className = 'stb-hl';
+                span.title = '点击取消高亮';
+                node.nodeValue = '';
+                span.textContent = hit;
+                var rest = t.slice(t.indexOf(hit) + hit.length);
+                node.parentElement.insertBefore(span, node.nextSibling);
+                node.parentElement.insertBefore(document.createTextNode(rest), span.nextSibling);
+            });
+        })();
+
+        /* 24. 读书笔记（双击选中文字写笔记） */
+        document.addEventListener('dblclick', function (e) {
+            var sel = window.getSelection();
+            if (!sel || sel.isCollapsed || !sel.toString().trim()) return;
+            var text = sel.toString().trim();
+            if (text.length < 2 || text.length > 300) return;
+            var pop = document.createElement('div');
+            pop.className = 'note-popup';
+            pop.style.left = (e.clientX + 10) + 'px';
+            pop.style.top = (e.clientY + 10) + 'px';
+            pop.innerHTML = '<div>✍️ 笔记（针对：「' + text.slice(0, 30) + '」）</div>' +
+                '<textarea placeholder="写下你的笔记…"></textarea><br>' +
+                '<button>保存</button>';
+            document.body.appendChild(pop);
+            pop.querySelector('button').addEventListener('click', function () {
+                var note = pop.querySelector('textarea').value.trim();
+                if (note) {
+                    var notes = [];
+                    try { notes = JSON.parse(localStorage.getItem('stb-notes') || '[]'); } catch (e) {}
+                    notes.unshift({ path: location.pathname, quote: text.slice(0, 50), note: note, time: new Date().toLocaleString() });
+                    localStorage.setItem('stb-notes', JSON.stringify(notes.slice(0, 200)));
+                    toast.textContent = '笔记已保存';
+                    toast.classList.add('show');
+                    clearTimeout(toast._t);
+                    toast._t = setTimeout(function () { toast.classList.remove('show'); }, 1200);
+                }
+                pop.remove();
+            });
+            document.addEventListener('click', function close(ev) { if (!pop.contains(ev.target)) pop.remove(); }, { once: true });
+        });
+
+        /* 25. 章节小测验（练习题标记掌握） */
+        document.querySelectorAll('main ol li, main ul li').forEach(function (li) {
+            var txt = li.textContent.trim();
+            if (txt.length < 8 || li.querySelector('.quiz-btn')) return;
+            var btn = document.createElement('button');
+            btn.className = 'quiz-btn';
+            btn.textContent = '✓ 会了';
+            btn.addEventListener('click', function () {
+                btn.classList.toggle('done');
+                btn.textContent = btn.classList.contains('done') ? '✓ 已掌握' : '✓ 会了';
+            });
+            li.appendChild(btn);
+        });
+
+        /* 26. 学习时长统计 */
+        var TIME_KEY = 'stb-time-' + location.pathname;
+        var tStart = Date.now();
+        var tAcc = parseInt(localStorage.getItem(TIME_KEY) || '0', 10);
+        window.addEventListener('beforeunload', function () {
+            tAcc += Math.round((Date.now() - tStart) / 1000);
+            localStorage.setItem(TIME_KEY, String(tAcc));
+        });
+
+        /* 27. 术语表交互（英文术语加 tooltip） */
+        var GLOSSARY = {
+            'Profile': '一组命名好的插件树组合（web/headless/sdk/sdk-minimal/acp）',
+            'Seam': '能力接缝：一个可替换能力的三角色契约',
+            'PTC': '程序化工具调用（Programmatic Tool Calls）',
+            'Turn': '轮次：从零到多个 Step 构成',
+            'Step': '步骤：一次模型请求加上它触发的工具调用',
+            'Session': '会话：一次持续的人机协作',
+            'Microkernel': '微内核：没有特权核心的架构，一切皆插件',
+            'Cordis': 'DeepSeek Harness 的插件框架底座',
+            'Compaction': '上下文压缩'
+        };
+        (function glossary() {
+            if (!content) return;
+            var walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT);
+            var nodes = [];
+            while (walker.nextNode()) nodes.push(walker.currentNode);
+            nodes.forEach(function (node) {
+                if (node.parentElement.closest('pre, code, a, mark, .glossary-term')) return;
+                var t = node.nodeValue;
+                var any = false;
+                Object.keys(GLOSSARY).forEach(function (term) {
+                    var re = new RegExp('\\b' + term + '\\b', 'g');
+                    if (re.test(t)) any = true;
+                });
+                if (!any) return;
+                var frag = document.createDocumentFragment();
+                var last = 0;
+                var reAll = new RegExp('\\b(' + Object.keys(GLOSSARY).join('|') + ')\\b', 'g');
+                var m;
+                while ((m = reAll.exec(t)) !== null) {
+                    if (m.index > last) frag.appendChild(document.createTextNode(t.slice(last, m.index)));
+                    var span = document.createElement('span');
+                    span.className = 'glossary-term';
+                    span.textContent = m[0];
+                    span.title = GLOSSARY[m[0]];
+                    frag.appendChild(span);
+                    last = m.index + m[0].length;
+                }
+                if (last < t.length) frag.appendChild(document.createTextNode(t.slice(last)));
+                node.parentElement.replaceChild(frag, node);
+            });
+        })();
+
+        /* 28. 代码块 GitHub 链接 */
+        document.querySelectorAll('pre').forEach(function (pre) {
+            var gh = document.createElement('a');
+            gh.className = 'code-gh-link';
+            gh.textContent = 'GitHub';
+            gh.href = 'https://github.com/guotao0628/shutongbuddy/tree/main/plugins/shu-tong-buddy/src';
+            gh.target = '_blank';
+            gh.title = '在 GitHub 查看配套代码';
+            pre.appendChild(gh);
+        });
+
+        /* 29. 章末参考文献 */
+        var refs = [];
+        document.querySelectorAll('main a[href^="http"]').forEach(function (a) {
+            var href = a.getAttribute('href');
+            if (refs.indexOf(href) < 0) refs.push(href);
+        });
+        if (refs.length) {
+            var refBox = document.createElement('div');
+            refBox.className = 'chapter-refs';
+            var rt = document.createElement('div');
+            rt.className = 'ref-title'; rt.textContent = '本章参考链接';
+            refBox.appendChild(rt);
+            refs.forEach(function (href) {
+                var a = document.createElement('a');
+                a.href = href; a.textContent = href; a.target = '_blank';
+                refBox.appendChild(a);
+            });
+            if (c) c.appendChild(refBox);
+        }
+
+        /* 30. 单章打印 */
+        var printBtn = document.createElement('button');
+        printBtn.className = 'print-btn';
+        printBtn.textContent = '🖨 打印本章';
+        printBtn.addEventListener('click', function () { window.print(); });
+        if (toolbar) toolbar.appendChild(printBtn);
+
+        /* 31. 章节点赞 */
+        var LIKE_KEY = 'stb-like-' + location.pathname;
+        var likeBtn = document.createElement('button');
+        likeBtn.className = 'like-btn';
+        var liked = localStorage.getItem(LIKE_KEY) === '1';
+        likeBtn.textContent = liked ? '👍 已赞' : '👍 赞本章';
+        if (liked) likeBtn.classList.add('on');
+        likeBtn.addEventListener('click', function () {
+            liked = !liked;
+            localStorage.setItem(LIKE_KEY, liked ? '1' : '0');
+            likeBtn.textContent = liked ? '👍 已赞' : '👍 赞本章';
+            likeBtn.classList.toggle('on', liked);
+        });
+        if (toolbar) toolbar.appendChild(likeBtn);
+
+        /* 32. 邮件订阅 */
+        var subBox = document.createElement('div');
+        subBox.className = 'subscribe-box';
+        subBox.innerHTML = '📬 订阅更新：发送邮件至 <a href="mailto:guotao3s@163.com?subject=订阅《DeepSeek Harness 应用开发实践》更新">guotao3s@163.com</a>，主题注明「订阅更新」';
+        if (c) c.appendChild(subBox);
     });
 })();
 </script>
