@@ -27,14 +27,13 @@ jobs:
           sudo mv mdbook /usr/local/bin/
           mdbook --version
 
-      - name: Build book
-        run: mdbook build
-
       - name: Install mdbook-epub
         run: cargo install mdbook-epub --locked
 
-      - name: Build EPUB
-        run: mdbook-epub
+      - name: Build book (HTML + EPUB)
+        run: |
+          export PATH="$HOME/.cargo/bin:$PATH"
+          mdbook build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

@@ -12,3 +12,5 @@ site-url = "/shutongbuddy/"
 [output.html.fold]
 enable = true
 level = 1
+
+[output.epub]
