@@ -16,24 +16,25 @@
     --code-font-size: 0.85em;
     --tsinghua: #660874;
     --tsinghua-light: #b28ad1;
+    /* 正文字号只用变量控制，绝不动 html 的 rem 基准（mdBook 用 62.5% → 1rem=10px） */
+    --stb-font-size: 15px;
 }
 
-html, body {
-    font-size: 15px;
+body {
+    font-size: var(--stb-font-size) !important;
     line-height: 1.7;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial,
                  "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
 }
 
-/* 标题：宋体衬线 + 加粗 + 字距（书卷气） */
+/* 标题：宋体衬线 + 加粗 + 字距（字号交回 mdBook 的 rem 体系） */
 h1, h2, h3 {
     font-family: "Noto Serif SC", "Source Han Serif SC", "STSong", "SimSun", serif;
     font-weight: 700;
     letter-spacing: 0.02em;
 }
-h1 { font-size: 1.7em; margin-bottom: 0.8em; }
-h2 { font-size: 1.35em; margin-top: 2em; }
-h3 { font-size: 1.15em; margin-top: 1.6em; }
+h2 { margin-top: 2em; }
+h3 { margin-top: 1.6em; }
 p { margin: 0.8em 0; }
 
 /* 行内代码：淡紫底 + 圆角 */
@@ -213,10 +214,7 @@ main .content { padding-bottom: 3em; }
 
 /* ---------- 移动端 ---------- */
 @media (max-width: 768px) {
-    html, body { font-size: 14.5px; }
-    :root { --content-max-width: 100%; --page-padding: 12px; }
-    h1 { font-size: 1.5em; }
-    h2 { font-size: 1.25em; }
+    :root { --stb-font-size: 14.5px; --content-max-width: 100%; --page-padding: 12px; }
     pre { font-size: 0.82em; }
     table { font-size: 0.85em; }
 }
@@ -500,7 +498,11 @@ a:focus-visible, button:focus-visible { outline: 2px solid #660874; outline-offs
         document.body.appendChild(fontCtl);
         var FONT_KEY = 'stb-font-size';
         function getFont() { return parseInt(localStorage.getItem(FONT_KEY) || '15', 10); }
-        function applyFont() { document.documentElement.style.fontSize = getFont() + 'px'; }
+        function applyFont() {
+            var saved = localStorage.getItem(FONT_KEY);
+            if (saved) document.documentElement.style.setProperty('--stb-font-size', saved + 'px');
+            else document.documentElement.style.removeProperty('--stb-font-size');  // 未自定义时跟随 CSS（桌面15/移动14.5）
+        }
         applyFont();
         decBtn.addEventListener('click', function () { localStorage.setItem(FONT_KEY, String(Math.max(12, getFont() - 1))); applyFont(); });
         incBtn.addEventListener('click', function () { localStorage.setItem(FONT_KEY, String(Math.min(20, getFont() + 1))); applyFont(); });
