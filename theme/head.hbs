@@ -1,3 +1,7 @@
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="favicon.svg">
+<meta name="theme-color" content="#660874">
 <style>
 /* ==================== ShuTongBuddy 在线书样式与交互 ==================== */
 
@@ -228,7 +232,72 @@ main .content { padding-bottom: 3em; }
         font-weight: 600; color: #660874; margin-right: 12px; flex-shrink: 0;
     }
 }
+/* ========== 新增功能样式 ========== */
+/* 字号调节 */
+.font-ctl-btn {
+    border: 1px solid #660874; background: transparent; color: #660874;
+    border-radius: 14px; padding: 2px 10px; margin: 0 3px; cursor: pointer; font-size: 13px;
+}
+.font-ctl-btn:hover { background: #660874; color: #fff; }
+/* 返回顶部 */
+.back-to-top {
+    position: fixed; right: 20px; bottom: 24px; width: 40px; height: 40px;
+    border-radius: 50%; background: #660874; color: #fff; border: none;
+    font-size: 18px; cursor: pointer; opacity: 0; pointer-events: none;
+    transition: opacity .3s; z-index: 9997; box-shadow: 0 2px 8px rgba(102,8,116,.3);
+}
+.back-to-top.show { opacity: 1; pointer-events: auto; }
+/* 已读勾选 + 书签 */
+.chapter-check { margin-right: 6px; accent-color: #660874; }
+.bookmark-btn {
+    border: 1px solid #660874; background: transparent; color: #660874;
+    border-radius: 14px; padding: 3px 12px; cursor: pointer; font-size: 13px; margin-top: 8px;
+}
+.bookmark-btn.on { background: #660874; color: #fff; }
+/* 代码下载 */
+.code-download-btn {
+    position: absolute; top: 6px; right: 64px; padding: 1px 9px; border-radius: 10px;
+    background: #660874; color: #fff; border: none; font-size: 11px; cursor: pointer;
+    opacity: 0.85; z-index: 1; font-family: Consolas, monospace;
+}
+.code-download-btn:hover { opacity: 1; }
+/* 勘误 + 分享（页脚工具栏） */
+.page-toolbar { display: flex; gap: 10px; margin-top: 2.5em; flex-wrap: wrap; }
+.toolbar-btn {
+    display: inline-block; padding: 6px 16px; border-radius: 16px; font-size: 13px;
+    border: 1px solid #660874; color: #660874; text-decoration: none; cursor: pointer;
+    background: transparent;
+}
+.toolbar-btn:hover { background: #660874; color: #fff; }
+/* 练习题答案 */
+.exercise-answer {
+    display: none; margin-top: 6px; padding: 8px 14px; border-radius: 6px;
+    background: #faf5fc; border-left: 3px solid #660874; color: #555; font-size: 14px;
+}
+.exercise-answer.show { display: block; }
+/* 面包屑 */
+.breadcrumb { font-size: 13px; color: #888; margin-bottom: 1em; }
+.breadcrumb a { color: #660874; text-decoration: none; }
+/* 相关推荐 */
+.chapter-recommend {
+    margin-top: 2.5em; padding: 14px 18px; border-radius: 8px;
+    background: var(--quote-bg, #faf5fc); border: 1px solid var(--quote-border, #c99bd4);
+    font-size: 14px;
+}
+.chapter-recommend .rec-title { font-weight: 600; color: #660874; margin-bottom: 8px; }
+.chapter-recommend a { display: block; color: var(--links); text-decoration: none; padding: 3px 0; }
+.chapter-recommend a:hover { text-decoration: underline; }
+/* 学习进度 */
+.progress-label { font-size: 12px; color: #888; }
+/* 架构图缩放 */
+.svg-zoomable { cursor: zoom-in; }
+.zoom-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,.8); z-index: 10000;
+    display: flex; align-items: center; justify-content: center; cursor: zoom-out;
+}
+.zoom-overlay svg, .zoom-overlay img { max-width: 92vw; max-height: 92vh; background: #fff; border-radius: 8px; }
 </style>
+
 
 <script>
 (function () {
@@ -374,6 +443,192 @@ main .content { padding-bottom: 3em; }
             s.async = true;
             container.appendChild(s);
         })();
+
+        /* 10. 字号调节 A-/A+ */
+        var fontCtl = document.createElement('div');
+        fontCtl.style.cssText = 'position:fixed;right:20px;bottom:74px;z-index:9997;display:flex;flex-direction:column;gap:6px;';
+        var decBtn = document.createElement('button');
+        decBtn.className = 'font-ctl-btn'; decBtn.textContent = 'A-'; decBtn.title = '缩小字号';
+        var incBtn = document.createElement('button');
+        incBtn.className = 'font-ctl-btn'; incBtn.textContent = 'A+'; incBtn.title = '放大字号';
+        fontCtl.appendChild(decBtn); fontCtl.appendChild(incBtn);
+        document.body.appendChild(fontCtl);
+        var FONT_KEY = 'stb-font-size';
+        function getFont() { return parseInt(localStorage.getItem(FONT_KEY) || '15', 10); }
+        function applyFont() { document.documentElement.style.fontSize = getFont() + 'px'; }
+        applyFont();
+        decBtn.addEventListener('click', function () { localStorage.setItem(FONT_KEY, String(Math.max(12, getFont() - 1))); applyFont(); });
+        incBtn.addEventListener('click', function () { localStorage.setItem(FONT_KEY, String(Math.min(20, getFont() + 1))); applyFont(); });
+
+        /* 11. 返回顶部 */
+        var topBtn = document.createElement('button');
+        topBtn.className = 'back-to-top'; topBtn.textContent = '↑'; topBtn.title = '返回顶部';
+        document.body.appendChild(topBtn);
+        window.addEventListener('scroll', function () {
+            if (window.scrollY > 400) topBtn.classList.add('show'); else topBtn.classList.remove('show');
+        }, { passive: true });
+        topBtn.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+        /* 12. 已读勾选 + 学习进度 */
+        var READ_KEY = 'stb-read-chapters';
+        function getRead() { try { return JSON.parse(localStorage.getItem(READ_KEY) || '{}'); } catch (e) { return {}; } }
+        function setRead(ch, val) { var r = getRead(); if (val) r[ch] = 1; else delete r[ch]; localStorage.setItem(READ_KEY, JSON.stringify(r)); updateProgress(); }
+        var curChapter = location.pathname.split('/').pop() || 'index';
+        document.querySelectorAll('.sidebar a, nav a').forEach(function (a) {
+            var href = a.getAttribute('href') || '';
+            var ch = href.split('/').pop();
+            if (!ch || ch.indexOf('.html') < 0) return;
+            var cb = document.createElement('input');
+            cb.type = 'checkbox'; cb.className = 'chapter-check';
+            cb.checked = !!getRead()[ch];
+            cb.addEventListener('change', function () { setRead(ch, cb.checked); });
+            a.insertBefore(cb, a.firstChild);
+        });
+        var totalCh = 0, readCh = 0;
+        document.querySelectorAll('.sidebar .chapter-check, nav .chapter-check').forEach(function (cb) { totalCh++; if (cb.checked) readCh++; });
+        function updateProgress() {
+            var total = document.querySelectorAll('.sidebar .chapter-check, nav .chapter-check').length;
+            var done = 0;
+            document.querySelectorAll('.sidebar .chapter-check, nav .chapter-check').forEach(function (cb) { if (cb.checked) done++; });
+            var el = document.getElementById('stb-progress');
+            if (!el) { el = document.createElement('div'); el.id = 'stb-progress'; el.className = 'progress-label'; document.querySelector('.sidebar, nav') && document.querySelector('.sidebar, nav').appendChild(el); }
+            if (el) el.textContent = '已读 ' + done + ' / ' + total + ' 章';
+        }
+        updateProgress();
+
+        /* 13. 书签 */
+        var BK_KEY = 'stb-bookmarks';
+        function getBk() { try { return JSON.parse(localStorage.getItem(BK_KEY) || '[]'); } catch (e) { return []; } }
+        var bkBtn = document.createElement('button');
+        bkBtn.className = 'bookmark-btn';
+        var bkList = getBk();
+        var bkOn = bkList.some(function (b) { return b.path === location.pathname; });
+        bkBtn.textContent = bkOn ? '已收藏 ★' : '收藏本章 ☆';
+        if (bkOn) bkBtn.classList.add('on');
+        bkBtn.addEventListener('click', function () {
+            var list = getBk();
+            var i = list.findIndex(function (b) { return b.path === location.pathname; });
+            if (i >= 0) { list.splice(i, 1); bkBtn.textContent = '收藏本章 ☆'; bkBtn.classList.remove('on'); }
+            else {
+                list.unshift({ path: location.pathname, title: document.title.replace(/ - .*$/, '') });
+                bkBtn.textContent = '已收藏 ★'; bkBtn.classList.add('on');
+            }
+            localStorage.setItem(BK_KEY, JSON.stringify(list.slice(0, 20)));
+        });
+        var c = document.querySelector('main .content, main');
+        if (c) c.appendChild(bkBtn);
+
+        /* 14. 最近阅读 */
+        var REC_KEY = 'stb-recent';
+        function pushRecent() {
+            var list = [];
+            try { list = JSON.parse(localStorage.getItem(REC_KEY) || '[]'); } catch (e) {}
+            list = list.filter(function (x) { return x.path !== location.pathname; });
+            list.unshift({ path: location.pathname, title: document.title.replace(/ - .*$/, '') });
+            localStorage.setItem(REC_KEY, JSON.stringify(list.slice(0, 8)));
+        }
+        pushRecent();
+
+        /* 15. 面包屑（从侧边栏标题推断） */
+        var crumb = document.createElement('div');
+        crumb.className = 'breadcrumb';
+        var h1 = document.querySelector('main h1');
+        if (h1) {
+            crumb.innerHTML = '📖 <a href="index.html">目录</a> » ' + h1.textContent;
+            h1.parentNode.insertBefore(crumb, h1);
+        }
+
+        /* 16. 相关推荐（上一章/下一章链接） */
+        var navLinks = document.querySelectorAll('a[rel="prev"], a[rel="next"], .nav-chapters');
+        var rec = document.createElement('div');
+        rec.className = 'chapter-recommend';
+        var recTitle = document.createElement('div');
+        recTitle.className = 'rec-title'; recTitle.textContent = '继续阅读';
+        rec.appendChild(recTitle);
+        navLinks.forEach(function (a) {
+            var clone = document.createElement('a');
+            clone.href = a.getAttribute('href');
+            var label = /prev/i.test(a.getAttribute('rel') || '') ? '← 上一章：' : '→ 下一章：';
+            clone.textContent = label + (a.getAttribute('title') || '');
+            rec.appendChild(clone);
+        });
+        if (c && navLinks.length) c.appendChild(rec);
+
+        /* 17. 代码一键下载 */
+        document.querySelectorAll('pre').forEach(function (pre, idx) {
+            var code = pre.querySelector('code');
+            if (!code) return;
+            var m = (code.className || '').match(/language-([a-z0-9+#]+)/i);
+            var ext = m ? m[1].replace(/\+/g, 'p') : 'txt';
+            var btn = document.createElement('button');
+            btn.className = 'code-download-btn';
+            btn.textContent = '⬇';
+            btn.title = '下载代码';
+            btn.addEventListener('click', function () {
+                var blob = new Blob([code.textContent], { type: 'text/plain;charset=utf-8' });
+                var a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'code-' + (idx + 1) + '.' + ext;
+                a.click();
+                URL.revokeObjectURL(a.href);
+            });
+            pre.appendChild(btn);
+        });
+
+        /* 18. 架构图缩放 */
+        document.querySelectorAll('main svg').forEach(function (svg) {
+            svg.classList.add('svg-zoomable');
+            svg.addEventListener('click', function () {
+                var ov = document.createElement('div');
+                ov.className = 'zoom-overlay';
+                var clone = svg.cloneNode(true);
+                ov.appendChild(clone);
+                document.body.appendChild(ov);
+                ov.addEventListener('click', function () { ov.remove(); });
+            });
+        });
+
+        /* 19. 页脚工具栏：勘误 + 分享 */
+        var toolbar = document.createElement('div');
+        toolbar.className = 'page-toolbar';
+        var errata = document.createElement('a');
+        errata.className = 'toolbar-btn';
+        errata.textContent = '✍️ 提交勘误';
+        errata.href = 'https://github.com/guotao0628/shutongbuddy/issues/new?title=' + encodeURIComponent('勘误：' + document.title) + '&body=' + encodeURIComponent('章节：' + location.href + '\n\n问题描述：');
+        errata.target = '_blank';
+        var share = document.createElement('button');
+        share.className = 'toolbar-btn';
+        share.textContent = '🔗 分享本章';
+        share.addEventListener('click', function () {
+            navigator.clipboard && navigator.clipboard.writeText(location.href);
+            toast.textContent = '链接已复制，可分享';
+            toast.classList.add('show');
+            clearTimeout(toast._t);
+            toast._t = setTimeout(function () { toast.classList.remove('show'); }, 1500);
+        });
+        toolbar.appendChild(errata); toolbar.appendChild(share);
+        if (c) c.appendChild(toolbar);
+
+        /* 20. 练习题交互（隐藏参考答案） */
+        document.querySelectorAll('main p, main li').forEach(function (p) {
+            if (/参考答案[:：]/.test(p.textContent) && p.textContent.length < 300) {
+                p.classList.add('exercise-answer');
+                var showBtn = document.createElement('button');
+                showBtn.className = 'toolbar-btn';
+                showBtn.textContent = '显示答案';
+                showBtn.style.cssText = 'font-size:12px;padding:2px 10px;';
+                p.parentNode.insertBefore(showBtn, p);
+                showBtn.addEventListener('click', function () {
+                    p.classList.toggle('show');
+                    showBtn.textContent = p.classList.contains('show') ? '隐藏答案' : '显示答案';
+                });
+            }
+        });
+
+        /* 21. PWA 注册 */
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js').catch(function () {});
+        }
     });
 })();
 </script>
