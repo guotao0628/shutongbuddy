@@ -35,6 +35,13 @@ jobs:
           export PATH="$HOME/.cargo/bin:$PATH"
           mdbook build
 
+      - name: Rename EPUB (URL-friendly)
+        run: |
+          if [ -f "book/epub/DeepSeek Harness 应用开发实践.epub" ]; then
+            mv "book/epub/DeepSeek Harness 应用开发实践.epub" book/epub/deepseek-harness-in-practice.epub
+          fi
+          ls -la book/epub/
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
