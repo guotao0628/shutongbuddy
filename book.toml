@@ -2,7 +2,6 @@
 title = "DeepSeek Harness 应用开发实践"
 authors = ["郭涛"]
 language = "zh"
-multilingual = false
 src = "docs/manual/markdown"
 
 [output.html]
