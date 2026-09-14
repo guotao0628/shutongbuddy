@@ -6,12 +6,12 @@
 | --- | --- |
 | npx @deepseek-ai/dsh web | 启动 Web UI（默认 http://127.0.0.1:3080） |
 | npx @deepseek-ai/dsh web --no-open | 启动但不自动打开浏览器 |
-| dsh --profile <name> | 以指定 Profile 启动 |
-| dsh --profile headless "任务" | 一次性运行：新会话、打印答案、退出 |
-| dsh --profile <name> --from-default-profile web | 从官方模板创建自定义 Profile |
-| dsh --profile <name> --dump-config | 输出实际组合的插件树（不启动） |
-| dsh --profile <name> --dump-default-config | 输出默认组合的插件树 |
-| dsh plugin --profile <name> add <pkg> | 为 Profile 安装外部插件（转发 pnpm） |
+| `dsh --profile <name>` | 以指定 Profile 启动 |
+| `dsh --profile headless "任务"` | 一次性运行：新会话、打印答案、退出 |
+| `dsh --profile <name> --from-default-profile web` | 从官方模板创建自定义 Profile |
+| `dsh --profile <name> --dump-config` | 输出实际组合的插件树（不启动） |
+| `dsh --profile <name> --dump-default-config` | 输出默认组合的插件树 |
+| `dsh plugin --profile <name> add <pkg>` | 为 Profile 安装外部插件（转发 pnpm） |
 | pnpm dsh web --patch ./x/cordis.yml | 源码方式携带补丁覆盖层启动 |
 | pnpm install && pnpm run build | 源码检出后的安装与构建 |
 
@@ -23,7 +23,7 @@
 | settings.yaml | 全部设置（模型路由进阶字段在此编辑，热生效） |
 | .credentials.yaml | API 密钥本体（只写存储） |
 | cordis.patch.yml | 主目录级补丁层 |
-| profiles/<name>/ | Profile 目录（package.json + cordis.patch.yml） |
+| `profiles/<name>/` | Profile 目录（package.json + cordis.patch.yml） |
 
 
 ## 附录 C settings.yaml 高频字段速查
@@ -31,9 +31,9 @@
 | 字段 | 作用 |
 | --- | --- |
 | llm-deepseek.reasoningEffort | DeepSeek 路由默认推理挡位（off/low/high/max） |
-| llm-pi-ai.providers.<id>.api | 协议：openai-completions / openai-responses / anthropic-messages |
+| `llm-pi-ai.providers.<id>.api` | 协议：openai-completions / openai-responses / anthropic-messages |
 | ...models[].input | 模型模态，如 [text, image] |
-| ...providers.<id>.defaultInput | 路由级模态兜底（默认 [text]） |
+| `...providers.<id>.defaultInput` | 路由级模态兜底（默认 [text]） |
 | ...models[].reasoningEfforts | 手工模型的推理挡位声明 |
 | ...compat.supportsDeveloperRole | 网关兼容：拒绝 developer 角色时设 false |
 | ...compat.maxTokensField | 网关兼容：改为 max_tokens |

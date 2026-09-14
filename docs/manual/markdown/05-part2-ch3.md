@@ -107,7 +107,7 @@ dsh --profile headless "run the tests"   # 引号内是交给一次性会话的�
 | settings.yaml | 全部设置，包括模型路由的进阶字段（第 4 章的主角） |
 | .credentials.yaml | API 密钥本体（设置文件里只存引用） |
 | cordis.patch.yml | 主目录级别的补丁层，对所有 Profile 生效 |
-| profiles/<name>/ | 各 Profile 的目录：自己的 package.json 与 cordis.patch.yml |
+| `profiles/<name>/` | 各 Profile 的目录：自己的 package.json 与 cordis.patch.yml |
 
 
 浏览器与服务同机时，可以在 Settings 页头部点 **Open configuration file** 直接打开 `settings.yaml`；适配器会在下一次请求时重读它，**改配置不需要重启服务**。
