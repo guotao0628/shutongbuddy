@@ -35,3 +35,6 @@ book_tools/
 
 # Publisher deliverables (generated from Markdown, NOT for GitHub publishing)
 release/
+
+# 出版申报等私有材料（申报书/案例，NOT for GitHub publishing）
+work/

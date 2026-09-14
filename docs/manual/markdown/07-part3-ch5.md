@@ -1,5 +1,8 @@
 # 第 5 章 插件开发实战：ShuTongBuddy 备考助手插件
 
+
+> **本章目标**：掌握工具插件与钩子插件的完整写法，理解 defineTool 契约，能独立为备考助手扩展新插件。
+
 本章以一个贯穿始终的真实项目学习插件开发：**为大学生备考助手 ShuTongBuddy 开发一组 DeepSeek Harness 插件**。这个插件包将在第 8 章被 ShuTongBuddy Studio（Web 备考助手）直接调用。学完本章，你不仅掌握了插件开发的全部基本功，还得到了一个可以立刻投入使用的备考智能体后端。
 
 ## 5.1 从业务到插件：备考助手需要什么
@@ -16,12 +19,12 @@
 | --- | --- | --- |
 | 知识点梳理 | 读教材与笔记，产出知识图谱与章节清单 | 会话 + fs 工具 |
 | 题库刷题 | 按知识点抽题、判分、记录成绩 | 自定义工具 question_bank / practice |
-| AI 答疑 | 讲解错题、举一反三、扩展同类题 | 子智能体 + 模型 |
+| AI 答疑 | 讲解错题、举一反三、扩展同类题 | explain_mistake 工具 + 模型（并发时用子智能体） |
 | 错题分析 | 归类错因、定位薄弱知识点 | 钩子插件（错题门禁） |
 | 复习计划 | 按遗忘曲线排程，生成每日任务 | review 工具（确定性排程） |
 | 学习报告 | 汇总进度、导出周报 | 报告汇总工具 |
 
-可以看到：模型负责"讲解与出题"这类语言工作，插件负责"确定性保障"——题目不走样、判分不遗漏、错题必归档、计划可复现。这就是本章要写的三类插件：**工具插件 ×2、钩子插件 ×1，外加一套子智能体协同编排**。
+可以看到：模型负责"讲解与出题"这类语言工作，插件负责"确定性保障"——题目不走样、判分不遗漏、错题必归档、计划可复现。这就是本章要写的五个插件：**工具插件 ×4（题库、刷题、复习、答疑）+ 钩子插件 ×1（错题门禁），外加一套子智能体协同编排**——它们共同撑起备考助手的四件套功能（题库刷题、AI 答疑、复习计划、错题分析）。
 
 ## 5.2 热身：插件的最小形态
 
@@ -85,14 +88,64 @@ web Profile 默认实时重载：改完插件代码，旧效果自动回退、�
 ```text
 shu-tong-buddy/
   src/
-    question-bank.ts   # 题库工具
-    practice.ts        # 刷题组卷工具
-    mistake-gate.ts    # 错题门禁钩子
+    question-bank.ts   # 题库工具（5.4）
+    practice.ts        # 刷题组卷工具（5.5）
+    mistake-gate.ts    # 错题门禁钩子（5.6）
+    review.ts          # 复习计划工具（5.7）
+    tutor.ts           # 答疑工具（5.8）
     state.ts           # 类型与 JSON 持久化
     index.ts           # 插件包汇总入口
 ```
 
-备考数据的存储选型：直接用一个 JSON 文件放在工作区内（如 question-bank.json、mistakes.json）。理由：① 刷题中途换会话/换智能体时题库与错题不丢——它们是工作区事实，不属于任何单一对话；② 人类可以随时手工编辑；③ 第 8 章的 ShuTongBuddy Studio 前端可以直接读写同一个文件做题库与错题本面板。这正体现了 Harness 的设计哲学：持久事实落盘，模型上下文从事实投影。
+备考数据的存储选型：直接用一个 JSON 文件放在工作区内。理由：① 刷题中途换会话/换智能体时题库与错题不丢——它们是工作区事实，不属于任何单一对话；② 人类可以随时手工编辑；③ 第 8 章的 ShuTongBuddy Studio 前端可以直接读写同一个文件做题库与错题本面板。这正体现了 Harness 的设计哲学：持久事实落盘，模型上下文从事实投影。
+
+三个状态文件的结构先亮出来，后面每个插件都围绕它们读写：
+
+**question-bank.json**（题库）：
+
+```json
+[
+  {
+    "id": "math-001",
+    "subject": "高等数学",
+    "topic": "极限",
+    "question": "求极限 lim(x→0) sin(x)/x",
+    "answer": "1",
+    "difficulty": 1,
+    "tags": ["基础"]
+  }
+]
+```
+
+**mistakes.json**（错题本）：
+
+```json
+[
+  {
+    "questionId": "math-001",
+    "userAnswer": "0",
+    "correctAnswer": "1",
+    "topic": "极限",
+    "recordedAt": "2026-09-14T08:00:00.000Z",
+    "reviewCount": 0,
+    "mastered": false
+  }
+]
+```
+
+**outline.json**（知识图谱，第 8 章六阶段第一阶段的产出）：
+
+```json
+{
+  "course": "高等数学",
+  "chapters": [
+    { "id": "ch01", "title": "函数与极限", "topics": ["函数", "极限", "连续"] },
+    { "id": "ch02", "title": "导数", "topics": ["导数定义", "求导法则", "高阶导数"] }
+  ]
+}
+```
+
+三个文件都是"工作区事实"：换会话不丢、可手工编辑、第 8 章前端直接读写。
 
 ## 5.4 工具插件一：题库 question_bank
 
@@ -272,9 +325,125 @@ export function apply(ctx: Context) {
 }
 ```
 
-这是第 5.6 节权限门的同款机制用在错题场景：门禁不打断正常流程，而是把"错题必归档"这条确定性规则焊死在落盘路径上——无论模型记不记得整理错题，错题本都一定更新。审查阶段的其余项目（错因归类、薄弱知识点定位）建议放在 tools/result 观察点上做记录，或者用第 5.7 节的选择规则：tools/post-execute 附加"本次 N 道错题已入库"的模型可见上下文。
+这是第 5.6 节权限门的同款机制用在错题场景：门禁不打断正常流程，而是把"错题必归档"这条确定性规则焊死在落盘路径上——无论模型记不记得整理错题，错题本都一定更新。
 
-## 5.7 多智能体协同：备考任务的分工
+## 5.7 工具插件三：复习计划 review
+
+四件套的最后一环——**复习计划**——同样遵循"确定性归工具"的原则。遗忘曲线的排程是纯计算：错题的复习次数越多，下次复习的间隔越长。这个计算交给模型既慢又不准，交给工具则一目了然：
+
+```typescript
+import type { Context } from '@deepseek-ai/cordis'
+import { defineTool } from '@deepseek-ai/dsh-tools'
+import { loadJSON, type Mistake } from './state'
+
+export const name = 'stb-review'
+export const inject = ['tools']
+
+// 艾宾浩斯遗忘曲线复习间隔（天）
+const INTERVALS = [1, 2, 4, 7, 15]
+
+export function apply(ctx: Context) {
+  ctx.tools.register(defineTool({
+    name: 'review_plan',
+    description: '按遗忘曲线为错题生成复习计划：读取错题本，按下次复习日期排程，返回每日复习任务。',
+    parameters: {
+      workspace: { type: 'string', required: true, description: '工作区绝对路径' },
+      days: { type: 'number', description: '排程天数（默认 7）' },
+    },
+    output: {
+      schema: {
+        type: 'object',
+        properties: {
+          total: { type: 'number' },
+          schedule: { type: 'array' },
+        },
+      },
+      render: (_args, value) => [{
+        type: 'text',
+        text: `待复习错题 ${value.total} 道\n` + (value.schedule || []).map((s: any) =>
+          `  ${s.date}：${s.items.length} 道（${s.items.map((i: any) => i.questionId).join('、')}）`).join('\n'),
+      }],
+    },
+    async execute(args, _exec) {
+      const mistakes = await loadJSON<Mistake[]>(args.workspace, 'mistakes.json', [])
+      const pending = mistakes.filter(m => !m.mastered)
+      const today = new Date()
+      const schedule: any[] = []
+      for (const m of pending) {
+        // reviewCount 越大，间隔越长（遗忘曲线）
+        const interval = INTERVALS[Math.min(m.reviewCount, INTERVALS.length - 1)]
+        const due = new Date(today.getTime() + interval * 86_400_000)
+        const date = due.toISOString().slice(0, 10)
+        let slot = schedule.find(s => s.date === date)
+        if (!slot) { slot = { date, items: [] }; schedule.push(slot) }
+        slot.items.push({ questionId: m.questionId, topic: m.topic })
+      }
+      schedule.sort((a, b) => a.date.localeCompare(b.date))
+      return { total: pending.length, schedule }
+    },
+  }))
+}
+```
+
+对照契约检查：`execute` 只做纯计算——读错题本、过滤未掌握的、按 `reviewCount` 映射遗忘曲线间隔、按日期分桶；返回的 `schedule` 是确定性的排程结果，模型拿到后只需照单安排每日任务。复习的"内容"由模型定，"节奏"由工具定——这正是四件套里"复习计划"与前三者的分工。
+
+## 5.8 工具插件四：答疑 explain_mistake
+
+答疑是模型的主场——讲解错因、举一反三，本来就是语言模型最擅长的事。工具只需做一件事：**把错题本里的错题干净地取出来，交给模型**。`explain_mistake` 只读不改：
+
+```typescript
+import type { Context } from '@deepseek-ai/cordis'
+import { defineTool } from '@deepseek-ai/dsh-tools'
+import { loadJSON, type Mistake } from './state'
+
+export const name = 'stb-tutor'
+export const inject = ['tools']
+
+export function apply(ctx: Context) {
+  ctx.tools.register(defineTool({
+    name: 'explain_mistake',
+    description: '讲解错题：读取错题本中的一道错题，返回题干、用户答案与正确答案，供模型讲解错因并给出同类题。',
+    parameters: {
+      workspace: { type: 'string', required: true, description: '工作区绝对路径' },
+      questionId: { type: 'string', required: true, description: '错题 id' },
+    },
+    output: {
+      schema: {
+        type: 'object',
+        properties: {
+          questionId: { type: 'string' },
+          topic: { type: 'string' },
+          userAnswer: { type: 'string' },
+          correctAnswer: { type: 'string' },
+          reviewCount: { type: 'number' },
+        },
+      },
+      render: (_args, value) => [{
+        type: 'text',
+        text: `错题 ${value.questionId}（${value.topic}）：你的答案「${value.userAnswer}」，正确答案「${value.correctAnswer}」`,
+      }],
+    },
+    async execute(args, _exec) {
+      const mistakes = await loadJSON<Mistake[]>(args.workspace, 'mistakes.json', [])
+      const m = mistakes.find(x => x.questionId === args.questionId)
+      if (!m) return { error: `错题不存在：${args.questionId}` }
+      return {
+        questionId: m.questionId,
+        topic: m.topic,
+        userAnswer: m.userAnswer,
+        correctAnswer: m.correctAnswer,
+        reviewCount: m.reviewCount,
+      }
+    },
+  }))
+}
+```
+
+注意它的两个设计取舍：① **只读**——讲解不改错题本，`reviewCount` 的递增留给"复习打卡"动作，职责单一；② **返回值是规范 JSON 而非渲染文本**——这样 PTC 模式下（第 6.3 节）程序可以直接拿字段，渲染文本只是给人看的兜底。
+
+并发讲解多道错题时，才需要动子智能体——那属于 5.9 节的"多智能体协同"，用 `spawn-in-process` 为每题开一个分身，会话隔离、错题共享。
+
+## 5.9 多智能体协同：备考任务的分工
 
 备考六阶段 → 智能体分工与模型配置（第 8 章的 ShuTongBuddy Studio 就按这张表调度）：
 
@@ -289,7 +458,7 @@ export function apply(ctx: Context) {
 
 并发讲解多道错题时，每个子智能体持有自己的会话日志，错题约束却来自同一份 `mistakes.json`——**状态共享走文件，上下文隔离走会话**，这是多智能体协同不打架的关键设计。子智能体提供者的选择参考第 6.5 节：本地分身用 `spawn-in-process`，需要绑定不同模型（如答疑给 V4 Pro、刷题给 Flash）的环节用 `acp`/`dsh-sdk` 委托给另一个配置好的 dsh 实例。
 
-## 5.8 加载、调试与持久安装
+## 5.10 加载、调试与持久安装
 
 **开发期**：`pnpm dsh web --patch ./shu-tong-buddy/cordis.yml` 加实时重载；`--dump-config` 确认插件挂树；临时写一个挂 `session/event` 的插件观察全量事件流，是排查"工具没被调用"类问题的杀手锏。
 
@@ -307,9 +476,17 @@ dsh plugin 转发 pnpm 完成安装，并把导出 dsh.bundle 层的包登记进
 ## 本章小结
 
 - 插件 = 导出 apply(ctx) 的模块；inject 声明依赖；ctx.effect() 让注册可逆；
-- 备考助手的插件化拆解：讲解与出题归模型，确定性保障（题库、判分、错题归档）归插件；
+- 备考助手的插件化拆解：讲解与出题归模型，确定性保障（题库、判分、错题归档、复习排程）归插件；
 - question_bank / practice 展示了 defineTool 契约的实战用法：参数校验、规范 JSON、"描述即提示词"、按条件抽题以节约上下文；
+- review_plan 展示了"纯计算归工具"：遗忘曲线排程是确定性计算，交给工具不交给模型；
+- explain_mistake 展示了"只读工具"：答疑由模型完成，工具只负责把错题干净地取出来；
 - stb-mistake-gate 展示了钩子插件的实战用法：tools/pre-execute 拦截判分落盘，把"错题必归档"焊死在确定性路径上；
 - 多智能体协同的核心设计：状态共享走文件，上下文隔离走会话；
 
 持久安装走 `dsh plugin`，为第 8 章的 ShuTongBuddy Studio 铺平了道路。
+
+## 练习题
+
+1. 给 question_bank 的 search 动作增加一个 `difficulty` 过滤参数。
+2. 写一个钩子插件，在 tools/pre-execute 拦截 practice 的抽题，限制单次最多 20 题。
+3. 给 review_plan 增加"按 topic 分组"的输出，让每日任务按知识点归类。

@@ -125,5 +125,8 @@ npx @deepseek-ai/dsh web --no-open
 
 建立了八个核心概念的初步印象。
 
+## 练习题
 
-
+1. 启动 `dsh web`，在 Settings → Models 中配置一个 DeepSeek API Key，观察保存后模型路由是否立即生效。
+2. 选择一个工作区，下达任务"总结这个仓库的结构"，观察规划、工具调用、审批、产出四类卡片。
+3. 不看正文，用一句话分别解释 Plugin、ctx、Session、Turn、Step、Tool、Profile、Seam 八个概念。

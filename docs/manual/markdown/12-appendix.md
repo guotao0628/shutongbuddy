@@ -56,6 +56,26 @@
 | Cordis 设计论文 | https://arxiv.org/abs/2608.25512 |
 | DeepSeek 开放平台 | https://platform.deepseek.com/ |
 
+## 附录 F 术语表（Glossary）
+
+| 术语 | 英文 | 含义 |
+| --- | --- | --- |
+| 插件 | Plugin | 导出 `apply` 函数的模块，向共享上下文注册能力 |
+| 上下文 | Context（`ctx`） | Cordis 的共享上下文，插件通过它注册服务、监听事件、声明效果 |
+| 会话 | Session | 一次持续的人机协作；底层是一份只追加的事件日志 |
+| 轮次 | Turn | 从零到多个 Step 构成；在"不再欠任何工作"时关闭 |
+| 步骤 | Step | 一次模型请求加上它所触发的工具调用 |
+| 工具 | Tool | 面向模型的能力单元，注册到 `ctx.tools` |
+| 运行配置 | Profile | 一组命名好的插件树组合：web、headless、sdk、sdk-minimal、acp |
+| 能力接缝 | Seam | 一个可替换能力的三角色契约：接口定义、提供者、消费者 |
+| 微内核 | Microkernel | 没有特权核心的架构，一切皆插件 |
+| 补丁 | Patch | 覆盖层，按层序替换插件树中的配置 |
+| 可逆效果 | Reversible Effects | 注册即效果，卸载即回退 |
+| 程序化工具调用 | PTC（Programmatic Tool Calls） | 工具成为可编程 API，返回规范 JSON 而非渲染文本 |
+| 投影 | Projection | 从会话日志派生模型上下文 |
+| 注入 | Injection | `agent.inject()` 追加持久上下文，进入下一个模型请求 |
+| 压缩 | Compaction | 上下文压缩，一个可替换的能力接缝 |
+| 子智能体 | Subagent | 通过 `ctx.subagents` 委托的智能体分身 |
 
 **初稿说明**：本册基于 DeepSeek Harness 开发者预览版（0.1.5-rc.2）官方文档撰写，项目迭代迅速，若行为与描述不符，以仓库文档为准；文中【待核】处请在出版前对照最新文档确认。
 

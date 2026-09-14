@@ -24,3 +24,15 @@
 - [ ] 术语统一复核（ShuTongBuddy / dsh / DeepSeek Harness / deepseek-v4-pro / flash）
 - [ ] 代码示例与 `plugins/`、`examples/` 目录的一致性
 - [ ] 所有外部链接（GitHub 仓库、官方文档站）有效性
+- [ ] 图表编号：全书表格/插图统一"表 X-Y""图 X-Y"编号（由出版社排版时统一处理）
+- [ ] 第 8 章 ASCII 架构图转为正式插图（由美编绘制）
+
+## 四、已完成的完善项（记录）
+
+- [x] 补齐 review 复习计划工具 + explain_mistake 答疑工具（第 5 章 5.7/5.8）
+- [x] 补齐 question-bank.json / mistakes.json / outline.json 结构示例（第 5 章 5.3）
+- [x] 第 8 章补完整代码指引（指向 examples/shu-tong-buddy-studio/）
+- [x] 口径统一：五个插件支撑四件套功能、答疑归属说明
+- [x] 每章学习目标 + 练习题（8 章）
+- [x] 术语表 Glossary（附录 F）
+- [x] 代码块语言标注（bash/typescript/python/yaml/text）

@@ -1,5 +1,8 @@
 # 第 8 章 实例二：ShuTongBuddy Studio（Web 备考助手）
 
+
+> **本章目标**：掌握 Web + FastAPI + Harness Python SDK 的完整应用构建，理解六阶段流水线与阶段级多模型分工。
+
 终章实例把前七章攒成一件完整作品：一个 Web 端的**大学生备考助手 ShuTongBuddy Studio**。前端跑在浏览器里，界面布局参考 Codex 风格；后端用 FastAPI 编排，智能体引擎就是 DeepSeek Harness——第 5 章写好的备考助手插件包在这里正式上岗。业务流程严格走六阶段：**知识点梳理 → 题库刷题 → AI 答疑 → 错题分析 → 复习计划 → 学习报告**，多模型分工与多智能体协同贯穿始终。
 
 ## 8.1 技术选型：为什么是 Web
@@ -42,6 +45,8 @@
 进程模型要点：harness.run() 是阻塞调用，必须放进后台线程 worker，通过 SSE 把阶段进度与输出推回浏览器——前端界面永不冻结。
 
 ## 8.3 环境搭建与多模型配置
+
+> **完整可运行代码**：本章核心代码已整理为可运行示例，位于仓库 `examples/shu-tong-buddy-studio/`（controller.py、pipeline.py、app.py、static/index.html、requirements.txt）。本章展示关键代码并逐段讲解，读者可对照示例从零跑通。
 
 ```bash
 py -3.10 -m venv .venv
@@ -206,3 +211,9 @@ es.onmessage = (e) => {
 **进阶：打包成桌面版**——若学生想要"双击即用"，用 Tauri 把这套 Web 前端包成桌面壳：Tauri 内置一个本地 WebView 指向本地 FastAPI 服务（启动时自动拉起 dsh 与后端），一套 Web 代码同时获得桌面形态。这是"Web 优先、桌面可打包"的完整闭环，核心代码零改动。
 
 人机共编题库、全程可审计的会话日志，是这个备考助手区别于"脚本调用 API"的本质。
+
+## 练习题
+
+1. 把 `examples/shu-tong-buddy-studio/` 跑起来，观察六阶段流水线在浏览器中的推进。
+2. 给 PIPELINE 增加一个"模拟考试"阶段（调用 practice 抽题 + 限时作答 + 判分）。
+3. （进阶）用 Tauri 把 static/index.html 打包成桌面应用，实现双击即用。

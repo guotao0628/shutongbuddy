@@ -1,5 +1,8 @@
 # 第 4 章 多模型 API 接入：DeepSeek V4 Pro/Flash、Kimi 与任意兼容端点
 
+
+> **本章目标**：掌握 DeepSeek V4 Pro/Flash、Kimi 与任意 OpenAI 兼容端点的接入，学会 settings.yaml 进阶配置与故障排查。
+
 Harness 的模型接入层是"万物皆插件"最好的广告牌：添加一个模型提供商，只是注册一个适配器；切换一个模型，不需要重启服务。本章把 DeepSeek V4 Pro/Flash、Kimi（Moonshot AI）以及任意 OpenAI 兼容网关的接入方法讲透，并给出一份故障排查速查表。
 
 ## 4.1 模型接入层全景
@@ -161,5 +164,8 @@ Harness 里"切模型"有三个层次，按场景选用：
 
 切换模型有三个层次，会话历史里的模型使用全程可审计。
 
+## 练习题
 
-
+1. 按 4.3 节的方法接入一个 Kimi 模型，并在会话中切换过去验证路由。
+2. 写一段 settings.yaml，接入一个 OpenAI 兼容网关（含 compat.supportsDeveloperRole 与 maxTokensField）。
+3. 分别说明遇到 401、UNKNOWN_MODEL、图片被拒时各自的排查路径。
