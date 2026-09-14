@@ -8,7 +8,6 @@ src = "docs/manual/markdown"
 git-repository-url = "https://github.com/guotao0628/shutongbuddy"
 edit-url-template = "https://github.com/guotao0628/shutongbuddy/edit/main/{path}"
 site-url = "/shutongbuddy/"
-additional-js = ["giscus.js"]
 
 [output.html.fold]
 enable = true
