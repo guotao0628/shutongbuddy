@@ -8,6 +8,7 @@
 一本开源实践手册 + 配套代码仓库：基于 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)（命令行简称 `dsh`）学习如何开发智能体应用——插件架构、多模型接入、插件开发与多智能体协同。
 
 > 📖 **在线阅读**：https://guotao0628.github.io/shutongbuddy/（mdBook 构建，部署于 GitHub Pages）
+> 📥 **下载 PDF**：https://guotao0628.github.io/shutongbuddy/deepseek-harness-in-practice.pdf
 >
 > **GitHub 仓库名：`shutongbuddy`**
 > 项目代号 / 产品名：**ShuTongBuddy**（书童）——一位懂你、陪你备考的伙伴。
@@ -51,5 +52,10 @@
 
 - 代码：以 [MIT 许可证](./LICENSE) 开源；
 - 文档/文字：采用 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)（署名）共享。
+
+## 联系方式
+
+- 作者邮箱：**guotao3s@163.com**
+- 问题反馈：欢迎通过 [GitHub Issues](https://github.com/guotao0628/shutongbuddy/issues) 提交。
 
 欢迎 fork、分享与贡献。

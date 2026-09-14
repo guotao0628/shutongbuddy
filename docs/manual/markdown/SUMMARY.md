@@ -2,89 +2,27 @@
 - [作者简介](01-author-bio.md)
 - [自序](02-preface.md)
 
-# 第一部分　入门
+# 第一部分 入门
 
 - [第 1 章 快速上手：十分钟跑通 DeepSeek Harness](03-part1-ch1.md)
-  - [1.1 DeepSeek Harness 是什么](03-part1-ch1.md#11-deepseek-harness-是什么)
-  - [1.2 环境准备](03-part1-ch1.md#12-环境准备)
-  - [1.3 三分钟启动 Web UI](03-part1-ch1.md#13-三分钟启动-web-ui)
-  - [1.4 配置第一个模型](03-part1-ch1.md#14-配置第一个模型)
-  - [1.5 选择工作区，下达第一个任务](03-part1-ch1.md#15-选择工作区下达第一个任务)
-  - [1.6 核心概念速览](03-part1-ch1.md#16-核心概念速览)
 - [第 2 章 架构解析：万物皆插件意味着什么](04-part1-ch2.md)
-  - [2.1 没有特权核心的微内核](04-part1-ch2.md#21-没有特权核心的微内核)
-  - [2.2 Cordis：插件框架底座](04-part1-ch2.md#22-cordis插件框架底座)
-  - [2.3 Profile、Bundle 与 Patch：插件树如何组合](04-part1-ch2.md#23-profilebundle-与-patch插件树如何组合)
-  - [2.4 能力接缝：一次替换，全局生效](04-part1-ch2.md#24-能力接缝一次替换全局生效)
-  - [2.5 事件系统：扩展点就是事件](04-part1-ch2.md#25-事件系统扩展点就是事件)
-  - [2.6 Turn 与 Step：一次任务的完整解剖](04-part1-ch2.md#26-turn-与-step一次任务的完整解剖)
-  - [2.7 会话日志：唯一的事实来源](04-part1-ch2.md#27-会话日志唯一的事实来源)
 
-# 第二部分　部署与模型
+# 第二部分 部署与模型
 
 - [第 3 章 安装部署与 Web UI](05-part2-ch3.md)
-  - [3.1 环境要求](05-part2-ch3.md#31-环境要求)
-  - [3.2 方式一：npx 直接运行（推荐日常使用）](05-part2-ch3.md#32-方式一npx-直接运行推荐日常使用)
-  - [3.3 方式二：源码构建（推荐给要改代码的读者）](05-part2-ch3.md#33-方式二源码构建推荐给要改代码的读者)
-  - [3.4 五种运行 Profile](05-part2-ch3.md#34-五种运行-profile)
-  - [3.5 命令行语法的两条规则](05-part2-ch3.md#35-命令行语法的两条规则)
-  - [3.6 Harness 主目录（$DSH_HOME）](05-part2-ch3.md#36-harness-主目录dsh_home)
-  - [3.7 安全基线：必须照做的六条](05-part2-ch3.md#37-安全基线必须照做的六条)
-- [第 4 章 多模型 API 接入：DeepSeek V4 Pro/Flash、Kimi 与任意兼容端点](06-part2-ch4.md)
-  - [4.1 模型接入层全景](06-part2-ch4.md#41-模型接入层全景)
-  - [4.2 接入 DeepSeek V4 Pro / Flash](06-part2-ch4.md#42-接入-deepseek-v4-pro-flash)
-  - [4.3 接入 Kimi（Moonshot AI）](06-part2-ch4.md#43-接入-kimimoonshot-ai)
-  - [4.4 接入任意 OpenAI 兼容端点](06-part2-ch4.md#44-接入任意-openai-兼容端点)
-  - [4.5 settings.yaml 进阶：三类高频定制](06-part2-ch4.md#45-settingsyaml-进阶三类高频定制)
-  - [（1）图像输入：input 与 defaultInput](06-part2-ch4.md#1图像输入input-与-defaultinput)
-  - [（2）推理挡位：reasoningEfforts](06-part2-ch4.md#2推理挡位reasoningefforts)
-  - [（3）请求兼容：compat](06-part2-ch4.md#3请求兼容compat)
-  - [4.6 模型切换的正确姿势](06-part2-ch4.md#46-模型切换的正确姿势)
-  - [4.7 故障排查速查表](06-part2-ch4.md#47-故障排查速查表)
+- [第 4 章 多模型 API 接入](06-part2-ch4.md)
 
-# 第三部分　插件与智能体
+# 第三部分 插件与智能体
 
 - [第 5 章 插件开发实战：ShuTongBuddy 备考助手插件](07-part3-ch5.md)
-  - [5.1 从业务到插件：备考助手需要什么](07-part3-ch5.md#51-从业务到插件备考助手需要什么)
-  - [5.2 热身：插件的最小形态](07-part3-ch5.md#52-热身插件的最小形态)
-  - [5.3 平台骨架：shu-tong-buddy 插件包](07-part3-ch5.md#53-平台骨架shu-tong-buddy-插件包)
-  - [5.4 工具插件一：题库 question_bank](07-part3-ch5.md#54-工具插件一题库-question_bank)
-  - [5.5 工具插件二：practice 抽题组卷](07-part3-ch5.md#55-工具插件二practice-抽题组卷)
-  - [5.6 钩子插件：错题门禁 mistake_gate](07-part3-ch5.md#56-钩子插件错题门禁-mistake_gate)
-  - [5.7 工具插件三：复习计划 review](07-part3-ch5.md#57-工具插件三复习计划-review)
-  - [5.8 工具插件四：答疑 explain_mistake](07-part3-ch5.md#58-工具插件四答疑-explain_mistake)
-  - [5.9 多智能体协同：备考任务的分工](07-part3-ch5.md#59-多智能体协同备考任务的分工)
-  - [5.10 加载、调试与持久安装](07-part3-ch5.md#510-加载调试与持久安装)
 - [第 6 章 智能体构建原理：Turn、装配、上下文与委托](08-part3-ch6.md)
-  - [6.1 Agent 的两半：接口与驱动器](08-part3-ch6.md#61-agent-的两半接口与驱动器)
-  - [6.2 系统提示词：装配而非拼接](08-part3-ch6.md#62-系统提示词装配而非拼接)
-  - [6.3 工具系统与 PTC 模式](08-part3-ch6.md#63-工具系统与-ptc-模式)
-  - [6.4 上下文工程：投影、注入与压缩](08-part3-ch6.md#64-上下文工程投影注入与压缩)
-  - [6.5 子智能体与多智能体协作](08-part3-ch6.md#65-子智能体与多智能体协作)
-  - [6.6 计划、目标与循环：给智能体装上"工作习惯"](08-part3-ch6.md#66-计划目标与循环给智能体装上工作习惯)
 
-# 第四部分　实战案例
+# 第四部分 实战案例
 
 - [第 7 章 实例一：备考资料库体检智能体](09-part4-ch7.md)
-  - [7.1 任务定义](09-part4-ch7.md#71-任务定义)
-  - [7.2 准备工作](09-part4-ch7.md#72-准备工作)
-  - [7.3 第一轮：结构总览](09-part4-ch7.md#73-第一轮结构总览)
-  - [7.4 第二轮：缺口盘点与报告落盘](09-part4-ch7.md#74-第二轮缺口盘点与报告落盘)
-  - [7.5 批量化：headless 一键体检](09-part4-ch7.md#75-批量化headless-一键体检)
-  - [7.6 补上短板：自定义资料统计工具](09-part4-ch7.md#76-补上短板自定义资料统计工具)
 - [第 8 章 实例二：ShuTongBuddy Studio（Web 备考助手）](10-part4-ch8.md)
-  - [8.1 技术选型：为什么是 Web](10-part4-ch8.md#81-技术选型为什么是-web)
-  - [8.2 总体架构](10-part4-ch8.md#82-总体架构)
-  - [8.3 环境搭建与多模型配置](10-part4-ch8.md#83-环境搭建与多模型配置)
-  - [8.4 核心代码一：HarnessController](10-part4-ch8.md#84-核心代码一harnesscontroller)
-  - [8.5 核心代码二：备考多阶段流水线](10-part4-ch8.md#85-核心代码二备考多阶段流水线)
-  - [8.6 核心代码三：Web 界面（Codex 布局）](10-part4-ch8.md#86-核心代码三web-界面codex-布局)
-  - [8.7 多模型与多智能体的落法](10-part4-ch8.md#87-多模型与多智能体的落法)
+
+# 结语与附录
+
 - [结束语：智能体工程及其未来发展方向](11-epilogue.md)
 - [附录](12-appendix.md)
-  - [附录 A 命令速查](12-appendix.md#附录-a-命令速查)
-  - [附录 B 关键文件位置（$DSH_HOME）](12-appendix.md#附录-b-关键文件位置dsh_home)
-  - [附录 C settings.yaml 高频字段速查](12-appendix.md#附录-c-settingsyaml-高频字段速查)
-  - [附录 D 故障排查一行表](12-appendix.md#附录-d-故障排查一行表)
-  - [附录 E 资源链接](12-appendix.md#附录-e-资源链接)
-  - [附录 F 术语表（Glossary）](12-appendix.md#附录-f-术语表glossary)
