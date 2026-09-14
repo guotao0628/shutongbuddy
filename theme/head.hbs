@@ -1,0 +1,42 @@
+<style>
+/* ============ ShuTongBuddy 在线书样式定制 ============ */
+
+/* 全局布局 */
+:root {
+    --content-max-width: 860px;   /* 内容宽度（默认 750px） */
+    --code-font-size: 0.85em;     /* 代码字号 */
+}
+
+/* 正文：15px + 1.7 行高 + 中文字体栈 */
+html, body {
+    font-size: 15px;
+    line-height: 1.7;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC",
+                 "Microsoft YaHei", "Noto Sans SC", "Segoe UI", sans-serif;
+}
+
+/* 标题字号 */
+h1 { font-size: 1.7em; }
+h2 { font-size: 1.35em; }
+h3 { font-size: 1.15em; }
+
+/* 代码字体 */
+code, pre {
+    font-family: "Cascadia Code", Consolas, "Source Code Pro", Menlo, monospace;
+}
+
+/* 明主题（Light）：清华紫 #660874 */
+.light {
+    --fg: #2f2f2f;                 /* 正文深灰 */
+    --links: #660874;              /* 链接清华紫 */
+    --sidebar-active: #660874;     /* 侧边栏选中项清华紫 */
+    --sidebar-header-border-color: #660874;
+}
+
+/* 暗主题（Coal/Navy/Ayu/Rust）：提亮的清华紫 */
+.coal, .navy, .ayu, .rust {
+    --links: #b28ad1;
+    --sidebar-active: #b28ad1;
+    --sidebar-header-border-color: #b28ad1;
+}
+</style>
