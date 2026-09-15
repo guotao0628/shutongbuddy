@@ -10,7 +10,9 @@ import version from './data/version.json';
 export const BOOK = {
   title: 'DeepSeek Harness 应用开发实践',
   subtitle: '基于 DeepSeek Harness 的智能体应用开发实战手册',
-  author: '郭涛',
+  author: '郭涛、李勇永',
+  /** 署名用（封面、分享卡片、元信息） */
+  authors: ['郭涛', '李勇永'] as const,
   email: 'guotao3s@163.com',
 } as const;
 

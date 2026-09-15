@@ -17,7 +17,7 @@
 ## 关于本书
 
 - 书名：《DeepSeek Harness 应用开发实践》
-- 作者：郭涛
+- 作者：郭涛、李勇永
 - 定位：本手册是[《大模型Agent应用开发》](https://www.tup.tsinghua.edu.cn/booksCenter/book_10674101.html)辅助读物
 - 结构：前置页 + 四部分（8 章）+ 结束语 + 附录 A–F
 - 贯穿案例：**ShuTongBuddy（书童）大学生备考助手**，第 8 章集成为 **ShuTongBuddy Studio**（Web 备考助手）

@@ -3,7 +3,7 @@ title: "本书内容简介"
 description: "DeepSeek Harness（命令行简称 dsh）是 DeepSeek 官方开源的智能体基座，其核心设计哲学只有一句话——万物皆插件：模型适配、工具调用、会话管理，乃至驱动智能体运转的 Agent 循环本身，都是可以……"
 ---
 
-**郭涛　著**
+**郭涛　李勇永　著**
 
 > 基于 DeepSeek Harness 的智能体应用开发实战手册
 

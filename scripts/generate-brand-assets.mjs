@@ -22,7 +22,7 @@ const PUBLIC = path.join(ROOT, 'public');
 const TITLE_1 = 'DeepSeek Harness';
 const TITLE_2 = '应用开发实践';
 const SUB = '基于 DeepSeek Harness 的智能体应用开发实战手册';
-const META = '郭涛　著';
+const META = '郭涛　李勇永　著';
 const COMPANION = '本手册是《大模型Agent应用开发》辅助读物。';
 const DOMAIN = 'guotao0628.github.io/shutongbuddy';
 

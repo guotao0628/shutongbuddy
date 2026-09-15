@@ -513,3 +513,33 @@ test.describe('定位声明（配套读物）', () => {
     await expect(page.locator(`link[rel="related"][href="${MAIN_BOOK}"]`)).toHaveCount(1);
   });
 });
+
+test.describe('作者署名（双作者）', () => {
+  test('中文作者简介页含两位作者及各自简介', async ({ page }) => {
+    await open(page, '/author/');
+    const body = page.locator('.sl-markdown-content');
+    await expect(page.locator('.sl-markdown-content h2')).toHaveCount(2);
+    await expect(body).toContainText('郭涛');
+    await expect(body).toContainText('李勇永');
+    await expect(body).toContainText('地图学与地理信息系统博士');
+    await expect(body).toContainText('面向对象程序设计和 GIS 应用');
+    await expect(body).toContainText('Agent 技术在教学与科研场景中的工程化实践');
+  });
+
+  test('英文作者简介页含两位作者', async ({ page }) => {
+    await page.goto(BASE + 'en/author/', { waitUntil: 'load' });
+    const body = page.locator('.sl-markdown-content');
+    await expect(body).toContainText('Guo Tao');
+    await expect(body).toContainText('Li Yongyong');
+    await expect(body).toContainText('Cartography and Geographic Information Systems');
+  });
+
+  test('封面、首页与元信息都署双作者', async ({ page }) => {
+    await open(page, '/brief/');
+    await expect(page.locator('.sl-markdown-content')).toContainText('郭涛　李勇永　著');
+
+    await open(page, '/');
+    await expect(page.locator('main')).toContainText('郭涛、李勇永 著');
+    expect(await page.locator('meta[name="author"]').count()).toBe(2);
+  });
+});

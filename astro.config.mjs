@@ -14,7 +14,7 @@ const GITHUB = `https://github.com/${OWNER}/${REPO}`;
 
 const BOOK_TITLE = 'DeepSeek Harness 应用开发实践';
 const BOOK_DESC =
-  '基于 DeepSeek Harness 的智能体应用开发实战手册：插件架构、多模型接入、插件开发与多智能体协同。郭涛 著。本手册是《大模型Agent应用开发》辅助读物。';
+  '基于 DeepSeek Harness 的智能体应用开发实战手册：插件架构、多模型接入、插件开发与多智能体协同。郭涛、李勇永 著。本手册是《大模型Agent应用开发》辅助读物。';
 
 export default defineConfig({
   site: SITE,
@@ -47,7 +47,7 @@ export default defineConfig({
           translations: { en: 'Front Matter' },
           items: [
             { label: '本书内容简介', translations: { en: 'About the Book' }, slug: 'brief' },
-            { label: '作者简介', translations: { en: 'About the Author' }, slug: 'author' },
+            { label: '作者简介', translations: { en: 'About the Authors' }, slug: 'author' },
             { label: '自序', translations: { en: 'Preface' }, slug: 'preface' },
           ],
         },

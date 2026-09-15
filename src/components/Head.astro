@@ -59,7 +59,7 @@ const UMAMI_SRC = import.meta.env.PUBLIC_UMAMI_SRC ?? 'https://cloud.umami.is/sc
 
 <Default />
 
-<meta name="author" content={BOOK.author} />
+{BOOK.authors.map((a) => (<meta name="author" content={a} />))}
 <meta name="theme-color" content={themeColor} />
 <meta property="og:image" content={ogImage} />
 <meta property="og:image:secure_url" content={ogImage} />
