@@ -295,7 +295,16 @@
         f.id = id;
         figureIds[no] = id;
         var alt = f.getAttribute('alt') || f.getAttribute('aria-label') || '';
-        f.insertAdjacentElement(
+
+        // 宽矢量插图在窄屏上改为横向滚动，避免被压到看不清
+        var anchorEl = f;
+        if (f.tagName.toLowerCase() === 'svg') {
+          var scroller = el('div', 'stb-figure-scroll');
+          f.parentNode.insertBefore(scroller, f);
+          scroller.appendChild(f);
+          anchorEl = scroller;
+        }
+        anchorEl.insertAdjacentElement(
           'afterend',
           el('span', 'stb-figure-caption', (IS_EN ? 'Figure ' : '图 ') + no + (alt ? '　' + alt : ''))
         );
@@ -634,6 +643,8 @@
       var w2 = document.createTreeWalker(content, NodeFilter.SHOW_TEXT);
       var n2 = [];
       while (w2.nextNode()) n2.push(w2.currentNode);
+      // 每个术语每页只链首次出现，避免窄屏上满篇下划线
+      var linkedTerms = {};
       n2.forEach(function (node) {
         if (!reAll.test(node.nodeValue)) {
           reAll.lastIndex = 0;
@@ -648,11 +659,16 @@
         var m;
         while ((m = reAll.exec(t)) !== null) {
           if (m.index > last) frag.appendChild(document.createTextNode(t.slice(last, m.index)));
-          var info = GLOSSARY[m[0]];
-          var a = el('a', 'glossary-term', m[0]);
-          a.href = url(LOCALE + 'glossary/') + info[0];
-          a.title = info[1];
-          frag.appendChild(a);
+          if (linkedTerms[m[0]]) {
+            frag.appendChild(document.createTextNode(m[0]));
+          } else {
+            linkedTerms[m[0]] = 1;
+            var info = GLOSSARY[m[0]];
+            var a = el('a', 'glossary-term', m[0]);
+            a.href = url(LOCALE + 'glossary/') + info[0];
+            a.title = info[1];
+            frag.appendChild(a);
+          }
           last = m.index + m[0].length;
         }
         if (last < t.length) frag.appendChild(document.createTextNode(t.slice(last)));

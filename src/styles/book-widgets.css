@@ -626,3 +626,256 @@ kbd {
     display: none !important;
   }
 }
+
+/* ==========================================================================
+   响应式与触控适配（手机 / iPad）
+   —— 覆盖 44px 触控目标、取消 hover 依赖、安全区、平板字号
+   ========================================================================== */
+
+/* ---------- 安全区（iPhone 刘海 / 底部指示条） ---------- */
+.font-ctl {
+  bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+}
+
+.back-to-top {
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+}
+
+.stb-toast {
+  bottom: calc(40px + env(safe-area-inset-bottom, 0px));
+}
+
+/* ---------- 触屏设备：常显 + 44px 触控目标 ---------- */
+@media (pointer: coarse), (hover: none) {
+  /* 代码下载按钮原本只在 hover 时出现，触屏上等于不存在 —— 改为常显 */
+  .code-download-btn {
+    opacity: 1;
+    width: 40px;
+    height: 40px;
+    font-size: 15px;
+    background: var(--sl-color-bg-nav);
+    border-color: var(--sl-color-gray-5);
+  }
+
+  /* 给右上角按钮让位，避免遮住代码首行 */
+  .expressive-code figure pre {
+    padding-top: 3.1rem;
+  }
+
+  .code-lang-tag {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+
+  /* 术语表锚点同样不能依赖 hover */
+  .stb-anchor {
+    opacity: 1;
+  }
+
+  .font-ctl {
+    gap: 10px;
+    right: 16px;
+  }
+
+  .font-ctl button,
+  .back-to-top {
+    width: 46px;
+    height: 46px;
+    font-size: 1rem;
+  }
+
+  .back-to-top {
+    font-size: 1.15rem;
+  }
+
+  .stb-tool-btn {
+    min-height: 44px;
+    padding: 0.55rem 1rem;
+    font-size: 0.86rem;
+  }
+
+  .exercise-toggle,
+  .quiz-btn {
+    min-height: 40px;
+  }
+
+  .quiz-btn {
+    margin-inline-start: 0.4rem;
+    padding: 0.35rem 0.8rem;
+  }
+
+  .stb-chip {
+    min-height: 40px;
+    padding: 0.4rem 0.95rem;
+    font-size: 0.84rem;
+  }
+
+  .chapter-check {
+    width: 20px;
+    height: 20px;
+    margin-inline-end: 0.6rem;
+  }
+
+  .stb-cover-badge {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.6rem;
+  }
+
+  /* 取消点击灰块与 300ms 双击缩放延迟 */
+  .stb-tool-btn,
+  .stb-chip,
+  .font-ctl button,
+  .back-to-top,
+  .code-download-btn,
+  .code-expand-btn,
+  .exercise-toggle,
+  .quiz-btn,
+  .stb-cover-card,
+  .chapter-check,
+  .stb-hl-del {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  /* 侧边栏勾选框行高加大，避免误触相邻章节 */
+  #starlight__sidebar nav a,
+  .sidebar nav a {
+    padding-block: 0.3rem;
+  }
+}
+
+/* ---------- 平板（641–1024px）：保留接近正文的字号与更大留白 ---------- */
+@media (min-width: 641px) and (max-width: 1024px) {
+  :root {
+    --stb-font-size: 14.5px;
+  }
+
+  .sl-markdown-content {
+    padding-inline: 0.5rem;
+  }
+
+  .stb-cover-grid {
+    gap: 1.25rem;
+  }
+
+  .sl-markdown-content table {
+    font-size: 0.92em;
+  }
+}
+
+/* ---------- 手机（≤640px） ---------- */
+@media (max-width: 640px) {
+  :root {
+    --stb-font-size: 13.5px;
+    --sl-content-pad-x: 1rem;
+  }
+
+  /* 目录卡片：压缩图片高度，13 张不至于占满整屏 */
+  .stb-cover-media {
+    aspect-ratio: 21 / 9;
+  }
+
+  .stb-cover-grid {
+    gap: 0.9rem;
+    margin-block: 0.75rem 1.5rem;
+  }
+
+  .stb-cover-title {
+    font-size: 0.92rem;
+  }
+
+  /* 宽插图改为横向滚动，而不是压到看不清 */
+  .stb-figure-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-inline: -1rem;
+    padding-inline: 1rem;
+  }
+
+  .stb-figure-scroll > svg {
+    min-width: 520px;
+  }
+
+  /* 下载页版本信息与订阅表单改为单列 */
+  .stb-version {
+    grid-template-columns: 1fr 1fr;
+    padding: 0.85rem 1rem;
+  }
+
+  .stb-subscribe-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .stb-subscribe-form input[type='email'] {
+    flex: none;
+    width: 100%;
+  }
+
+  /* 章末工具栏两列排布，避免一个个堆成很长一列 */
+  .page-toolbar {
+    gap: 0.5rem;
+  }
+
+  .page-toolbar .stb-tool-btn {
+    flex: 1 1 calc(50% - 0.25rem);
+    justify-content: center;
+  }
+
+  /* 阅读进度条与顶部导航不重叠 */
+  .reading-progress {
+    height: 3px;
+  }
+
+  /* 续读提示条：按钮换行铺满 */
+  .stb-resume {
+    gap: 0.5rem;
+    padding: 0.75rem 0.9rem;
+  }
+
+  .stb-resume-go {
+    margin-inline-start: 0;
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+
+  .stb-chips {
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .stb-chips-label {
+    flex: 1 1 100%;
+  }
+
+  /* 表格卡片化后补一格内边距 */
+  .sl-markdown-content td {
+    padding-block: 0.5rem;
+  }
+}
+
+/* ---------- 超窄屏（≤380px，如 iPhone SE） ---------- */
+@media (max-width: 380px) {
+  :root {
+    --stb-font-size: 13px;
+  }
+
+  .font-ctl button,
+  .back-to-top {
+    width: 42px;
+    height: 42px;
+  }
+
+  .stb-version {
+    grid-template-columns: 1fr;
+  }
+
+  .page-toolbar .stb-tool-btn {
+    flex: 1 1 100%;
+  }
+}
+
+.stb-figure-scroll > svg {
+  margin-inline: 0;
+}
+
