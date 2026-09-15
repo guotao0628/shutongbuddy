@@ -1,11 +1,13 @@
 ---
 /**
  * 覆写 Starlight 的 Head 组件：保留默认 head 输出，附加图书元信息、
- * 社交分享卡片、PWA 清单、RSS 与全站交互脚本。
+ * 每页专属的社交分享卡片、PWA 清单、RSS 与全站交互脚本。
  *
  * 注意：og:type / og:locale / og:site_name / og:url / twitter:card 由 Starlight
  * 默认 Head 输出，这里不再重复声明，避免同一 meta 出现两次。
  */
+import fs from 'node:fs';
+import path from 'node:path';
 import Default from '@astrojs/starlight/components/Head.astro';
 import { BOOK, REPO, PINNED_SEARCHES } from '../consts';
 import trending from '../data/trending.json';
@@ -14,7 +16,26 @@ const base = import.meta.env.BASE_URL;
 const site = Astro.site;
 const abs = (p: string) => (site ? new URL(base + p.replace(/^\//, ''), site).href : base + p);
 
-const ogImage = abs('og.png');
+/** 当前页在站点内的相对路径，例如 part1/ch1 或 en/brief */
+const rel = Astro.url.pathname.startsWith(base)
+  ? Astro.url.pathname.slice(base.length)
+  : Astro.url.pathname;
+const pagePath = rel.replace(/^\/+|\/+$/g, '');
+const slug = pagePath === '' ? 'index' : pagePath.replace(/\//g, '-');
+
+/**
+ * 分享卡片查找顺序：
+ *   英文页 → en-xxx.jpg，其次复用同名的中文卡片（章节尚未翻译）
+ *   其他页 → xxx.jpg
+ *   都没有 → index.jpg（书籍封面）
+ * 卡片由 scripts/generate-og-images.mjs 预生成并提交仓库。
+ */
+const ogDir = path.join(process.cwd(), 'public', 'og');
+const candidates = slug.startsWith('en-') ? [slug, slug.slice(3)] : [slug];
+candidates.push('index');
+const card = candidates.find((s) => fs.existsSync(path.join(ogDir, `${s}.jpg`)));
+const ogImage = card ? abs(`og/${card}.jpg`) : abs('og.png');
+const ogImageType = card ? 'image/jpeg' : 'image/png';
 
 /** 首页搜索热词 = 人工置顶词 + 构建期从书稿统计出的高频概念（去重，最多 10 个） */
 const hotTerms = [
@@ -32,10 +53,13 @@ const UMAMI_SRC = import.meta.env.PUBLIC_UMAMI_SRC ?? 'https://cloud.umami.is/sc
 <meta name="author" content={BOOK.author} />
 <meta name="theme-color" content="#660874" />
 <meta property="og:image" content={ogImage} />
+<meta property="og:image:secure_url" content={ogImage} />
+<meta property="og:image:type" content={ogImageType} />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content={BOOK.title} />
 <meta name="twitter:image" content={ogImage} />
+<meta name="twitter:image:alt" content={BOOK.title} />
 <meta name="book:author" content={BOOK.author} />
 <meta name="book:publisher" content={BOOK.press} />
 <link rel="apple-touch-icon" sizes="180x180" href={`${base}apple-touch-icon.png`} />

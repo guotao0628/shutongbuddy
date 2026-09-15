@@ -174,7 +174,7 @@ test.describe('SEO 与元信息', () => {
   test('分享卡片与 RSS 已注入', async ({ page }) => {
     await open(page, '/part1/ch1/');
     const og = await page.locator('meta[property="og:image"]').getAttribute('content');
-    expect(og).toContain('og.png');
+    expect(og).toContain('/og/');
     await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute(
       'content',
       'summary_large_image'
@@ -338,5 +338,50 @@ test.describe('全书目录封面', () => {
     await expect(page.locator('.stb-chapter-meta')).toHaveCount(0);
     await open(page, '/part1/ch1/');
     await expect(page.locator('.stb-chapter-meta')).toHaveCount(1);
+  });
+});
+
+test.describe('社交分享卡片', () => {
+  test('每页都有专属卡片，且图片可访问、体积可控', async ({ page, request }) => {
+    for (const p of ['/', '/part1/ch1/', '/glossary/', '/en/']) {
+      await open(page, p);
+      const url = await page.locator('meta[property="og:image"]').getAttribute('content');
+      expect(url, p).toMatch(/^https:\/\//);
+
+      // 用本地路径请求，避免测到线上旧版本
+      const localPath = new URL(url!).pathname;
+      const res = await request.get(localPath);
+      expect(res.status(), p + ' -> ' + localPath).toBe(200);
+      expect(res.headers()['content-type'], localPath).toContain('image/jpeg');
+
+      const len = Number(res.headers()['content-length'] || 0);
+      if (len) expect(len, localPath).toBeLessThan(300 * 1024);
+    }
+  });
+
+  test('不同页面用不同卡片', async ({ page }) => {
+    await open(page, '/part1/ch1/');
+    const a = await page.locator('meta[property="og:image"]').getAttribute('content');
+    await open(page, '/glossary/');
+    const b = await page.locator('meta[property="og:image"]').getAttribute('content');
+    expect(a).toContain('og/part1-ch1.jpg');
+    expect(b).toContain('og/glossary.jpg');
+    expect(a).not.toBe(b);
+  });
+
+  test('英文页回落：有译文用自己的卡片，未翻译章节复用中文卡片', async ({ page }) => {
+    await open(page, 'en/brief/');
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /og\/en-brief\.jpg$/);
+    await open(page, 'en/part1/ch1/');
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /og\/part1-ch1\.jpg$/);
+  });
+
+  test('补齐 og:image:type / secure_url / twitter:image:alt', async ({ page }) => {
+    await open(page, '/part1/ch1/');
+    await expect(page.locator('meta[property="og:image:type"]')).toHaveAttribute('content', 'image/jpeg');
+    await expect(page.locator('meta[property="og:image:secure_url"]')).toHaveCount(1);
+    await expect(page.locator('meta[name="twitter:image:alt"]')).toHaveCount(1);
+    await expect(page.locator('meta[property="og:image:width"]')).toHaveAttribute('content', '1200');
+    await expect(page.locator('meta[property="og:image:height"]')).toHaveAttribute('content', '630');
   });
 });
