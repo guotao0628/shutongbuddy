@@ -7,13 +7,19 @@
  * 默认 Head 输出，这里不再重复声明，避免同一 meta 出现两次。
  */
 import Default from '@astrojs/starlight/components/Head.astro';
-import { HOT_SEARCHES, BOOK, REPO } from '../consts';
+import { BOOK, REPO, PINNED_SEARCHES } from '../consts';
+import trending from '../data/trending.json';
 
 const base = import.meta.env.BASE_URL;
 const site = Astro.site;
 const abs = (p: string) => (site ? new URL(base + p.replace(/^\//, ''), site).href : base + p);
 
 const ogImage = abs('og.png');
+
+/** 首页搜索热词 = 人工置顶词 + 构建期从书稿统计出的高频概念（去重，最多 10 个） */
+const hotTerms = [
+  ...new Set([...PINNED_SEARCHES, ...trending.map((t: { term: string }) => t.term)]),
+].slice(0, 10);
 
 // 访问统计：只有配置了环境变量才会注入（默认不采集任何数据）
 const GA_ID = import.meta.env.PUBLIC_GA_ID;
@@ -58,9 +64,19 @@ const UMAMI_SRC = import.meta.env.PUBLIC_UMAMI_SRC ?? 'https://cloud.umami.is/sc
   )
 }
 
-<script is:inline define:vars={{ base, repo: `${REPO.owner}/${REPO.name}`, hot: [...HOT_SEARCHES] }}>
-  window.__STB__ = { base: base, repo: repo };
+<script
+  is:inline
+  define:vars={{
+    base,
+    repo: `${REPO.owner}/${REPO.name}`,
+    hot: hotTerms,
+    trending,
+    subscribe: import.meta.env.PUBLIC_SUBSCRIBE_ENDPOINT ?? '',
+  }}
+>
+  window.__STB__ = { base: base, repo: repo, subscribe: subscribe };
   window.__STB_HOT__ = hot;
+  window.__STB_TRENDING__ = trending;
 </script>
 <script>
   import '../scripts/book.js';

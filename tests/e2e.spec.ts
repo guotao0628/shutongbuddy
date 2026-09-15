@@ -1,7 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 
-/** 站点 base 前缀，与 astro.config.mjs 保持一致 */
-const BASE = '/shutongbuddy/';
+/** 站点 base 前缀；PR 预览会通过 BASE_PATH 传入嵌套路径 */
+const BASE = process.env.BASE_PATH || '/shutongbuddy/';
 
 /** 打开页面并等待交互脚本执行完 */
 async function open(page: Page, path: string) {
@@ -242,5 +242,49 @@ test.describe('插图编号与交叉引用', () => {
     await expect(page.locator('.stb-figure-caption').first()).toContainText('图 5-1');
     await open(page, '/part3/ch6/');
     await expect(page.locator('.stb-figure-caption').first()).toContainText('图 6-1');
+  });
+});
+
+test.describe('参考答案、订阅与热词', () => {
+  test('练习题参考答案默认折叠，可展开与收起', async ({ page }) => {
+    await open(page, '/part1/ch1/');
+    const panel = page.locator('.exercise-answer').first();
+    await expect(panel).toBeHidden();
+    const toggle = page.locator('.exercise-toggle').first();
+    await expect(toggle).toContainText('显示参考答案');
+    await toggle.click();
+    await expect(panel).toBeVisible();
+    await expect(panel).toContainText('保存后立即生效');
+    await expect(toggle).toContainText('隐藏参考答案');
+    await toggle.click();
+    await expect(panel).toBeHidden();
+  });
+
+  test('参考答案区块内不会混入「会了」按钮', async ({ page }) => {
+    await open(page, '/part1/ch1/');
+    expect(await page.locator('.exercise-answer .quiz-btn').count()).toBe(0);
+  });
+
+  test('订阅表单会校验邮箱格式', async ({ page }) => {
+    await open(page, '/part1/ch1/');
+    const form = page.locator('.stb-subscribe-form');
+    await expect(form).toBeVisible();
+    await expect(form.locator('input[type="email"]')).toHaveAttribute('required', '');
+    await form.evaluate((f) => f.setAttribute('novalidate', ''));
+    await form.locator('input[type="email"]').fill('bad-email');
+    await form.locator('button[type="submit"]').click();
+    await expect(page.locator('.subscribe-box .stb-error')).toContainText('有效的邮箱');
+  });
+
+  test('首页展示本书高频概念与本地最近搜索', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('stb-searches', JSON.stringify(['能力接缝']));
+    });
+    await open(page, '/');
+    const first = page.locator('.stb-chips').first();
+    await expect(first).toContainText('本书高频概念');
+    await expect(first.locator('.stb-chip')).not.toHaveCount(0);
+    await expect(page.locator('.stb-chips-mine')).toContainText('你搜过');
+    await expect(page.locator('.stb-chips-mine .stb-chip').first()).toHaveText('能力接缝');
   });
 });

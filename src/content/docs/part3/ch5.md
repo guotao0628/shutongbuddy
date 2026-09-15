@@ -533,3 +533,33 @@ dsh plugin 转发 pnpm 完成安装，并把导出 dsh.bundle 层的包登记进
 1. 给 question_bank 的 search 动作增加一个 `difficulty` 过滤参数。
 2. 写一个钩子插件，在 tools/pre-execute 拦截 practice 的抽题，限制单次最多 20 题。
 3. 给 review_plan 增加"按 topic 分组"的输出，让每日任务按知识点归类。
+
+**参考答案**
+
+1. 在 `input.schema` 里声明参数，模型才知道它存在：
+
+```ts
+difficulty: { type: 'number', description: '难度 1-3（可选）' },
+```
+
+执行时与其他过滤条件串起来即可：`if (args.difficulty) pool = pool.filter(q => q.difficulty === args.difficulty)`。
+
+2. 用 `tools/pre-execute` 瀑布改写参数：
+
+```ts
+export function apply(ctx: Context) {
+  ctx.on('tools/pre-execute', async (exec, next): Promise<PreToolDecision> => {
+    if (exec.name !== 'practice') return next()
+    const n = Number(exec.arguments?.count ?? 0)
+    if (n > 20) {
+      exec.arguments.count = 20        // 就地改写，作用到真实调用
+      // 也可以 return { deny: '单次最多 20 题' } 直接拒绝
+    }
+    return next()                       // 瀑布事件必须调用 next() 才会继续
+  })
+}
+```
+
+要点：`tools/*` 是瀑布事件，不调用 `next()` 会静默吞掉调用；“限制”既可以改写参数，也可以直接拒绝。
+
+3. 在 review 的 `execute` 里把每日任务按 `q.topic` 归并，输出结构从 `{ days: [...] }` 改成 `{ groups: [{ topic, tasks: [...] }] }`。**别忘了同步改 `output.schema`**：渲染函数与模型看到的结构必须一致，否则模型会按旧结构解析返回值而失败。

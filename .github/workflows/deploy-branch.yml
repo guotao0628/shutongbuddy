@@ -1,0 +1,54 @@
+name: Deploy to gh-pages branch (optional)
+
+# 可选的部署方式：把主站发布到 gh-pages 分支根目录，并保留 pr-preview/ 预览目录。
+#
+# 只有在仓库变量 PAGES_DEPLOY_MODE 设为 branch 时才会运行；
+# 不设置时本工作流直接跳过，主站仍由 deploy.yml 通过 GitHub Actions 部署。
+# 切换步骤见 docs/pr-preview.md。
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deploy-branch
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: vars.PAGES_DEPLOY_MODE == 'branch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify manuscript and build
+        run: |
+          npm run check
+          npm run check:typo
+          npm run build
+          npm run check:links
+
+      - name: Publish to gh-pages (keep existing previews)
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          # 保留 pr-preview/ 等既有文件，避免把预览目录一起冲掉
+          keep_files: true
+          commit_message: 'deploy: ${{ github.sha }}'

@@ -48,14 +48,8 @@ export const DOWNLOADS = [
   },
 ] as const;
 
-/** 首页热门搜索词（策划），真实的全站热词需要接入统计后端 */
-export const HOT_SEARCHES = [
-  'Profile',
-  '能力接缝',
-  'PTC',
-  'settings.yaml',
-  '插件开发',
-  '子智能体',
-  'Turn 与 Step',
-  'ShuTongBuddy',
-] as const;
+/**
+ * 首页人工置顶的搜索词（会排在构建期统计出的高频概念之前）。
+ * 其余热词由 scripts/prepare-assets.mjs 从书稿实际词频生成。
+ */
+export const PINNED_SEARCHES = ['能力接缝', 'PTC', 'settings.yaml'] as const;

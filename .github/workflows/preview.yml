@@ -1,0 +1,151 @@
+name: PR preview
+
+# 每个 PR 构建一份预览：
+#   1) 始终上传构建产物 artifact（不需要任何仓库设置，下载即可本地打开）
+#   2) 同时把预览发布到 gh-pages 分支的 pr-preview/pr-<n>/ 目录
+#      —— 若 Pages 的 Source 设为「Deploy from a branch → gh-pages」，
+#         该目录会直接以 URL 形式对外可访问（见 docs/pr-preview.md）
+#   3) 在 PR 上自动评论预览地址
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  build-preview:
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npm run check
+
+      - name: Typography check
+        run: npm run check:typo
+
+      - name: Build preview
+        env:
+          SITE_URL: https://${{ github.repository_owner }}.github.io
+          BASE_PATH: /${{ github.event.repository.name }}/pr-preview/pr-${{ github.event.pull_request.number }}/
+        run: npm run build
+
+      - name: Internal link check
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/pr-preview/pr-${{ github.event.pull_request.number }}/
+        run: npm run check:links
+
+      - name: End-to-end tests
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/pr-preview/pr-${{ github.event.pull_request.number }}/
+        run: npm run test:e2e
+
+      - name: Upload preview bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-pr${{ github.event.pull_request.number }}
+          path: ./dist
+          retention-days: 14
+
+      - name: Publish preview to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          destination_dir: pr-preview/pr-${{ github.event.pull_request.number }}
+          keep_files: true
+          commit_message: 'preview: PR #${{ github.event.pull_request.number }}'
+
+      - name: Comment preview links on the PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const marker = '<!-- stb-pr-preview -->';
+            const n = context.payload.pull_request.number;
+            const { owner, repo } = context.repo;
+            const runUrl = `${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`;
+            const hosted = `https://${owner}.github.io/${repo}/pr-preview/pr-${n}/`;
+
+            const body = [
+              marker,
+              '## 预览已就绪',
+              '',
+              `**托管预览**：${hosted}`,
+              '',
+              '> 该地址需要仓库的 Pages Source 设为 *Deploy from a branch → gh-pages* 才能打开；',
+              '> 若仍是 *GitHub Actions* 模式，请改用下面的产物包。详见 `docs/pr-preview.md`。',
+              '',
+              `**构建产物**（下载后本地打开 index.html 即可）：[Actions run](${runUrl}) → Artifacts → \`preview-pr${n}\``,
+              '',
+              `合并前的检查：\`astro check\`、中文排版检查、站内死链检查、${'`'}Playwright 端到端测试${'`'}均已在本工作流中运行。`,
+            ].join('\n');
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              ...context.repo,
+              issue_number: n,
+              per_page: 100,
+            });
+            const existing = comments.find((c) => c.body && c.body.includes(marker));
+
+            if (existing) {
+              await github.rest.issues.updateComment({ ...context.repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ ...context.repo, issue_number: n, body });
+            }
+
+  cleanup-preview:
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check whether gh-pages exists
+        id: check
+        uses: actions/github-script@v7
+        with:
+          script: |
+            try {
+              await github.rest.repos.getBranch({ ...context.repo, branch: 'gh-pages' });
+              core.setOutput('exists', 'true');
+            } catch (e) {
+              core.setOutput('exists', 'false');
+            }
+
+      - name: Checkout gh-pages
+        if: steps.check.outputs.exists == 'true'
+        uses: actions/checkout@v5
+        with:
+          ref: gh-pages
+          fetch-depth: 0
+
+      - name: Remove this PR's preview directory
+        if: steps.check.outputs.exists == 'true'
+        run: |
+          DIR="pr-preview/pr-${{ github.event.pull_request.number }}"
+          if [ -d "$DIR" ]; then
+            git rm -r --quiet "$DIR"
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git commit -m "chore: remove preview for PR #${{ github.event.pull_request.number }}"
+            git push
+          else
+            echo "预览目录不存在，无需清理"
+          fi

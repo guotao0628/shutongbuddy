@@ -27,12 +27,12 @@
 | 分类 | 功能 |
 | --- | --- |
 | **阅读** | 侧边栏 + 页内目录、明暗主题、阅读进度条、字号 A-/A+、跨会话位置恢复与「继续阅读」、章节阅读时长估算、打印单章 |
-| **学习** | 侧边栏章节已读勾选与进度、书签、最近阅读、正文划重点、练习题「会了」标记、学习时长统计 |
+| **学习** | 侧边栏章节已读勾选与进度、书签、最近阅读、正文划重点、练习题「会了」标记、**参考答案折叠**、学习时长统计 |
 | **我的阅读 / 我的划线** | 进度总览页与划线管理页；划线可导出 **Markdown / Anki(TSV) / JSON**，数据只存本地浏览器 |
 | **内容** | 中英双语（站点框架 + 前置页已英文化）、术语表独立页（含 Mermaid 概念图）、正文术语自动双链、图表编号与交叉引用、勘误与更新日志、统一的下载与版本页 |
-| **检索** | Pagefind 全文检索（构建期索引）、首页热门搜索词、最近搜索词记录、快捷键 `/` 唤起搜索 |
-| **互动** | giscus 评论（GitHub Discussions）、提交勘误、分享、点赞、邮件订阅 |
-| **工程** | `astro check` 类型检查、站内死链检查、中文排版检查、Playwright 端到端测试、Lighthouse 预算、Dependabot、PR 校验与预览产物 |
+| **检索** | Pagefind 全文检索（构建期索引）、首页「本书高频概念」热词（构建期按书稿词频统计）、本地最近搜索、快捷键 `/` 唤起搜索 |
+| **互动** | giscus 评论（GitHub Discussions）、提交勘误、分享、点赞、**邮件订阅表单**（可接任意 webhook） |
+| **工程** | `astro check` 类型检查、站内死链检查、中文排版检查、Playwright 端到端测试、Lighthouse 预算、Dependabot、PR 校验与预览（产物 + 可选托管 URL，见 [`docs/pr-preview.md`](./docs/pr-preview.md)） |
 | **PWA** | Web App Manifest、PNG 图标（192/512/maskable/apple-touch）、离线缓存 Service Worker |
 
 ## 技术栈
@@ -79,8 +79,8 @@
 │   └── assets/logo.svg
 ├── public/                        # favicon、PNG 图标、og.png、manifest、SW、PDF
 ├── scripts/                       # 构建期脚本（版本、下载包、品牌图、检查）
-├── tests/e2e.spec.ts              # 端到端测试
-├── .github/workflows/             # deploy / pr / lighthouse / external-links
+├── tests/e2e.spec.ts              # 端到端测试（29 条）
+├── .github/workflows/             # deploy / pr / preview / deploy-branch / lighthouse / external-links
 ├── plugins/shu-tong-buddy/        # 配套插件包（TypeScript）
 ├── agents/  examples/             # 多智能体与示例工程
 └── book_tools/                    # 本地构建辅助（已 gitignore，不发布）
@@ -124,7 +124,7 @@ description: "用于搜索结果与 SEO 的摘要"
 - 新增章节后，需要在 `astro.config.mjs` 的 `sidebar` 中登记（标签、所属部分、阅读顺序，以及英文 `translations`）。
 - 正文里的 `图 2-1` 会自动变成指向本章插图的锚点。
 - 内联 SVG 插图会被 `book_tools/` 的 PDF/DOCX 生成脚本跳过，因此不影响纸质交付物。
-- 以 `参考答案：` 开头的段落会自动折叠成「显示参考答案」按钮（目前书中练习题均为开放式问题，尚未使用该机制）。
+- **参考答案**：以独占一段的 `**参考答案**` 开头，其后到下一个标题之间的内容会被自动折叠成「显示参考答案」按钮——全书 8 章练习题都已按此约定写好参考答案。
 - 形如 `图 2-1` 的图注会自动编号；正文里写 `图 2-1` 即自动生成指向该图的锚点链接。
 
 ## 可选配置（环境变量）
@@ -133,6 +133,7 @@ description: "用于搜索结果与 SEO 的摘要"
 | --- | --- |
 | `PUBLIC_GA_ID` | Google Analytics 4 衡量 ID，配置后才注入统计脚本 |
 | `PUBLIC_UMAMI_WEBSITE_ID` / `PUBLIC_UMAMI_SRC` | Umami 统计（默认 `https://cloud.umami.is/script.js`） |
+| `PUBLIC_SUBSCRIBE_ENDPOINT` | 邮件订阅接收端点（Buttondown / Formspree / 自建 webhook 均可）。**未配置时**订阅表单会退化为「打开邮件客户端并预填好收件人、主题与邮箱」 |
 | `SITE_URL` / `BASE_PATH` | 覆盖站点地址与子路径（默认从 `GITHUB_REPOSITORY` 推导） |
 
 > 默认**不采集任何访问数据**；只有显式配置了统计 ID 才会加载脚本。

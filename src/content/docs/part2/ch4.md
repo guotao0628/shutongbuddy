@@ -169,3 +169,21 @@ Harness 里"切模型"有三个层次，按场景选用：
 1. 按 4.3 节的方法接入一个 Kimi 模型，并在会话中切换过去验证路由。
 2. 写一段 settings.yaml，接入一个 OpenAI 兼容网关（含 compat.supportsDeveloperRole 与 maxTokensField）。
 3. 分别说明遇到 401、UNKNOWN_MODEL、图片被拒时各自的排查路径。
+
+**参考答案**
+
+1. 在内置目录里选择 **moonshotai（Kimi）**，填入 Moonshot API Key 保存；随后在会话的模型选择器切到该模型，提一个短问题验证路由。会话历史会记录本会话使用过的模型，可据此确认确实走了新路由（第 4.6 节讲的“切模型的三个层次”在这里就能观察到）。
+2. 关键两行如下（其余按 4.4 节的模板补全）：
+
+```yaml
+providers:
+  my-gateway:
+    kind: openai-compatible
+    baseUrl: https://gateway.example.com/v1
+    apiKey: ${MY_GATEWAY_KEY}
+    compat:
+      supportsDeveloperRole: false   # 网关不认 developer 角色时置 false
+      maxTokensField: max_tokens     # 有的网关只认 max_tokens
+```
+
+3. **401**：凭据问题——Key 是否写对或已过期、`baseUrl` 与所选协议是否匹配、必要 header 是否缺失。**UNKNOWN_MODEL**：模型 ID 不在该 Provider 声明的模型列表里——核对 `settings.yaml` 的模型段与端点实际支持的 ID。**图片被拒**：声明的模态超出了端点实际能力——收窄 `input`/`defaultInput`，并且务必**开新会话**（旧会话日志里仍然带着那张图）。

@@ -165,3 +165,55 @@ const zipBuf = makeZip([
 ]);
 fs.writeFileSync(path.join(outDir, 'shutongbuddy-book.zip'), zipBuf);
 console.log(`[assets] shutongbuddy-book.zip (${(zipBuf.length / 1024).toFixed(1)} KB)`);
+
+/* ---------- 4. 高频概念（构建期从书稿统计，供首页搜索热词使用） ---------- */
+const TERM_LIST = [
+  'Plugin', 'Context', 'ctx', 'Session', 'Turn', 'Step', 'Tool', 'Profile', 'Bundle',
+  'Patch', 'Seam', 'Cordis', 'PTC', 'Compaction', 'Subagent', 'Projection', 'Injection',
+  'Harness', 'Agent', 'Microkernel', 'Skill', 'Memory',
+  '能力接缝', '微内核', '子智能体', '插件', '会话', '轮次', '步骤', '工具', '运行配置',
+  '补丁', '上下文', '压缩', '投影', '注入', '权限门', '错题本', '题库',
+];
+
+function stripForCounting(md) {
+  return md
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/`[^`]*`/g, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/https?:\/\/\S+/g, ' ');
+}
+
+function countTerm(text, term) {
+  if (/^[A-Za-z]/.test(term)) {
+    const re = new RegExp('\\b' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'g');
+    return (text.match(re) || []).length;
+  }
+  let n = 0;
+  let i = text.indexOf(term);
+  while (i !== -1) {
+    n++;
+    i = text.indexOf(term, i + term.length);
+  }
+  return n;
+}
+
+const counts = new Map();
+for (const ch of chapters) {
+  const clean = stripForCounting(ch.body);
+  for (const term of TERM_LIST) {
+    counts.set(term, (counts.get(term) || 0) + countTerm(clean, term));
+  }
+}
+
+const trending = [...counts.entries()]
+  .filter(([, n]) => n > 0)
+  .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+  .slice(0, 10)
+  .map(([term, count]) => ({ term, count }));
+
+fs.writeFileSync(
+  path.join(dataDir, 'trending.json'),
+  JSON.stringify(trending, null, 2) + '\n',
+  'utf8'
+);
+console.log('[assets] trending.json -> ' + trending.map((t) => `${t.term}(${t.count})`).join(', '));

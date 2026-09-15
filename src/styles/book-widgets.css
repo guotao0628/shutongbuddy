@@ -454,3 +454,87 @@ kbd {
     color: #555;
   }
 }
+
+/* ---------- 练习题参考答案（整块折叠） ---------- */
+.exercise-answer > :first-child {
+  margin-top: 0;
+}
+
+.exercise-answer > :last-child {
+  margin-bottom: 0;
+}
+
+.exercise-answer p {
+  margin-block: 0.6rem;
+}
+
+.exercise-answer ol,
+.exercise-answer ul {
+  margin-block: 0.5rem 0.8rem;
+  padding-inline-start: 1.4rem;
+}
+
+.exercise-answer li + li {
+  margin-top: 0.4rem;
+}
+
+.exercise-answer code {
+  font-size: 0.92em;
+}
+
+.exercise-answer .expressive-code {
+  margin-block: 0.8rem;
+}
+
+.exercise-toggle {
+  margin-block: 0.6rem;
+}
+
+/* ---------- 订阅表单 ---------- */
+.subscribe-box .stb-section-title {
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+.stb-subscribe-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.stb-subscribe-form input[type='email'] {
+  flex: 1 1 14rem;
+  min-width: 0;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--sl-color-hairline);
+  border-radius: 999px;
+  background: var(--sl-color-bg);
+  color: var(--sl-color-white);
+  font-family: inherit;
+  font-size: 0.85rem;
+}
+
+.stb-subscribe-form input[type='email']:focus {
+  outline: 2px solid var(--sl-color-accent);
+  outline-offset: 1px;
+  border-color: var(--sl-color-accent);
+}
+
+.stb-subscribe-form .stb-tool-btn[disabled] {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.stb-error {
+  color: var(--sl-color-red, #d33);
+}
+
+/* ---------- 两行搜索热词 ---------- */
+.stb-chips-mine {
+  margin-top: -1.4rem;
+}
+
+.stb-chips-mine .stb-chip {
+  border-style: dashed;
+}

@@ -526,20 +526,46 @@
 
     /* ============ 11. 练习题 ============ */
     if (content) {
-      content.querySelectorAll('p, li').forEach(function (node) {
-        if (node.dataset.stbDone) return;
-        var txt = (node.textContent || '').trim();
-        if (/^(参考答案|Answer)[:：]/.test(txt) && txt.length < 400) {
-          node.dataset.stbDone = '1';
-          node.classList.add('exercise-answer');
-          var sb = el('button', 'stb-tool-btn exercise-toggle', T.showAnswer);
-          sb.type = 'button';
-          node.parentNode.insertBefore(sb, node);
-          sb.addEventListener('click', function () {
-            node.classList.toggle('show');
-            sb.textContent = node.classList.contains('show') ? T.hideAnswer : T.showAnswer;
-          });
+      // 参考答案：支持两种写法
+      //   a) 独占一段的 **参考答案**，其后到下一个标题之间的内容整块折叠
+      //   b) 以「参考答案：」开头的单段
+      content.querySelectorAll('p').forEach(function (p) {
+        if (p.dataset.stbAnswer) return;
+        var txt = (p.textContent || '').trim();
+        var isBlock = /^(参考答案|Answer)$/.test(txt);
+        var isInline = /^(参考答案|Answer)[:：]/.test(txt);
+        if (!isBlock && !isInline) return;
+        p.dataset.stbAnswer = '1';
+
+        var group = [p];
+        if (isBlock) {
+          var cursor = p.nextElementSibling;
+          while (cursor) {
+            if (
+              cursor.tagName === 'H2' ||
+              cursor.tagName === 'H3' ||
+              (cursor.classList && cursor.classList.contains('sl-heading-wrapper'))
+            ) {
+              break;
+            }
+            group.push(cursor);
+            cursor = cursor.nextElementSibling;
+          }
         }
+
+        var panel = el('div', 'exercise-answer');
+        p.parentNode.insertBefore(panel, p);
+        group.forEach(function (n) {
+          panel.appendChild(n);
+        });
+
+        var sb = el('button', 'stb-tool-btn exercise-toggle', T.showAnswer);
+        sb.type = 'button';
+        panel.parentNode.insertBefore(sb, panel);
+        sb.addEventListener('click', function () {
+          panel.classList.toggle('show');
+          sb.textContent = panel.classList.contains('show') ? T.hideAnswer : T.showAnswer;
+        });
       });
 
       var quizItems = [];
@@ -548,6 +574,8 @@
         var wrapper = h.closest('.sl-heading-wrapper') || h;
         var node = wrapper.nextElementSibling;
         while (node && node.tagName !== 'H2' && !(node.querySelector && node.querySelector('h2'))) {
+          // 碰到参考答案就停止，别给答案也加上「会了」按钮
+          if (node.tagName === 'P' && /^(参考答案|Answer)/.test((node.textContent || '').trim())) break;
           if (node.tagName === 'OL' || node.tagName === 'UL') {
             node.querySelectorAll(':scope > li').forEach(function (li) {
               quizItems.push(li);
@@ -793,15 +821,99 @@
 
     /* ============ 16. 订阅 ============ */
     if (mount) {
+      var SUB_KEY = 'stb-subscribed';
+      var endpoint = CFG.subscribe || '';
       var subBox = el('div', 'subscribe-box');
-      subBox.innerHTML =
-        (IS_EN ? '📬 Get updates: email ' : '📬 订阅更新：发送邮件至 ') +
-        '<a href="mailto:guotao3s@163.com?subject=' +
-        encodeURIComponent(
-          IS_EN ? 'Subscribe: DeepSeek Harness in Practice' : '订阅《DeepSeek Harness 应用开发实践》更新'
-        ) +
-        '">guotao3s@163.com</a>' +
-        (IS_EN ? ', subject “Subscribe”.' : '，主题注明「订阅更新」。');
+      subBox.appendChild(el('div', 'stb-section-title', IS_EN ? '📬 Get updates' : '📬 订阅更新'));
+
+      var already = S.raw(SUB_KEY, null);
+      if (already) {
+        subBox.appendChild(
+          el(
+            'p',
+            'stb-note',
+            IS_EN ? 'Thanks — you are on the list.' : '你已在订阅列表中，谢谢！'
+          )
+        );
+      } else {
+        var subForm = document.createElement('form');
+        subForm.className = 'stb-subscribe-form';
+        subForm.noValidate = false;
+
+        var subInput = document.createElement('input');
+        subInput.type = 'email';
+        subInput.required = true;
+        subInput.autocomplete = 'email';
+        subInput.placeholder = IS_EN ? 'you@example.com' : '你的邮箱';
+        subInput.setAttribute('aria-label', IS_EN ? 'Email address' : '邮箱地址');
+
+        var subBtn = el('button', 'stb-tool-btn', IS_EN ? 'Subscribe' : '订阅');
+        subBtn.type = 'submit';
+
+        var subMsg = el('p', 'stb-note');
+        subForm.appendChild(subInput);
+        subForm.appendChild(subBtn);
+        subBox.appendChild(subForm);
+        subBox.appendChild(subMsg);
+
+        var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+        subForm.addEventListener('submit', function (ev) {
+          ev.preventDefault();
+          var email = (subInput.value || '').trim();
+          if (!EMAIL_RE.test(email)) {
+            subMsg.textContent = IS_EN ? 'Please enter a valid email address.' : '请输入有效的邮箱地址。';
+            subMsg.className = 'stb-note stb-error';
+            subInput.focus();
+            return;
+          }
+
+          if (endpoint) {
+            // 配置了订阅服务端点：POST JSON（Buttondown / Formspree / 自建 webhook 均可）
+            subBtn.disabled = true;
+            subMsg.className = 'stb-note';
+            subMsg.textContent = IS_EN ? 'Submitting…' : '提交中…';
+            fetch(endpoint, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email: email, source: location.href, book: 'dsh-in-practice' }),
+            })
+              .then(function (res) {
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                S.rawSet(SUB_KEY, email);
+                subMsg.textContent = IS_EN ? 'Subscribed. Thank you!' : '订阅成功，谢谢！';
+                subForm.remove();
+              })
+              .catch(function (err) {
+                subBtn.disabled = false;
+                subMsg.className = 'stb-note stb-error';
+                subMsg.textContent =
+                  (IS_EN ? 'Failed to submit: ' : '提交失败：') +
+                  err.message +
+                  (IS_EN ? ' — please email guotao3s@163.com instead.' : '，请改为发送邮件至 guotao3s@163.com。');
+              });
+            return;
+          }
+
+          // 未配置端点：退化为预填好的邮件（仍然比裸链友好）
+          var subject = IS_EN
+            ? 'Subscribe: DeepSeek Harness in Practice'
+            : '订阅《DeepSeek Harness 应用开发实践》更新';
+          var body = IS_EN
+            ? 'Please add this address to the update list: ' + email
+            : '请把这个邮箱加入更新通知列表：' + email;
+          location.href =
+            'mailto:guotao3s@163.com?subject=' +
+            encodeURIComponent(subject) +
+            '&body=' +
+            encodeURIComponent(body);
+          subMsg.className = 'stb-note';
+          subMsg.textContent = IS_EN
+            ? 'Opening your mail app — send the pre-filled message to finish.'
+            : '正在打开你的邮件客户端，直接发送预填好的邮件即可完成订阅。';
+        });
+      }
+
       mount.appendChild(subBox);
     }
 
@@ -1205,11 +1317,11 @@
         cta.insertAdjacentElement('afterend', box);
       }
 
-      var hot = (window.__STB_HOT__ || []).slice(0, 8);
-      if (hot.length) {
-        var chips = el('div', 'stb-chips');
-        chips.appendChild(el('span', 'stb-chips-label', IS_EN ? 'Popular searches' : '热门搜索'));
-        hot.forEach(function (term) {
+      function renderChips(label, terms, extraClass) {
+        if (!terms.length) return null;
+        var row = el('div', 'stb-chips' + (extraClass ? ' ' + extraClass : ''));
+        row.appendChild(el('span', 'stb-chips-label', label));
+        terms.forEach(function (term) {
           var c = el('button', 'stb-chip', term);
           c.type = 'button';
           c.addEventListener('click', function (ev) {
@@ -1230,11 +1342,30 @@
             );
             openSearch(term);
           });
-          chips.appendChild(c);
+          row.appendChild(c);
         });
-        var anchorEl = document.querySelector('.stb-home-continue') || cta;
-        anchorEl.insertAdjacentElement('afterend', chips);
+        return row;
       }
+
+      var anchorEl = document.querySelector('.stb-home-continue') || cta;
+
+      // 第一行：本书高频概念（构建期从书稿词频统计）
+      var hotRow = renderChips(
+        IS_EN ? 'Frequent concepts' : '本书高频概念',
+        (window.__STB_HOT__ || []).slice(0, 10)
+      );
+      if (hotRow) {
+        anchorEl.insertAdjacentElement('afterend', hotRow);
+        anchorEl = hotRow;
+      }
+
+      // 第二行：你这台机器上搜过的词（本地保存，不上传）
+      var mineRow = renderChips(
+        IS_EN ? 'Your recent searches' : '你搜过',
+        S.get('stb-searches', []).slice(0, 8),
+        'stb-chips-mine'
+      );
+      if (mineRow) anchorEl.insertAdjacentElement('afterend', mineRow);
     }
 
     /* ============ 24. 搜索词记录 ============ */
