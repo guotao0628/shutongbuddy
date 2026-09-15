@@ -6,6 +6,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import sharp from 'sharp';
+import { ACCENT } from './lib/accent.mjs';
 
 const ROOT = process.cwd();
 const COVERS = path.join(ROOT, 'src', 'assets', 'covers');
@@ -178,15 +179,15 @@ function card(art, badge, title) {
   const badgeSvg = badge
     ? '<rect x="' + PAD + '" y="196" width="' + badgeW + '" height="48" rx="24" fill="#ffffff" fill-opacity="0.93"/>\n  <text x="' +
       (PAD + badgeW / 2) + '" y="228" text-anchor="middle" font-family="' + SANS +
-      '" font-size="25" font-weight="700" fill="#660874">' + escapeXml(badge) + '</text>'
+      '" font-size="25" font-weight="700" fill="' + ACCENT.deep + '">' + escapeXml(badge) + '</text>'
     : '';
 
   return '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">\n' +
   '  <defs>\n' +
   '    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">\n' +
-  '      <stop offset="0%" stop-color="#2e0334"/>\n' +
-  '      <stop offset="52%" stop-color="#660874"/>\n' +
-  '      <stop offset="100%" stop-color="#9c37b3"/>\n' +
+  '      <stop offset="0%" stop-color="' + ACCENT.dark + '"/>\n' +
+  '      <stop offset="52%" stop-color="' + ACCENT.main + '"/>\n' +
+  '      <stop offset="100%" stop-color="' + ACCENT.light + '"/>\n' +
   '    </linearGradient>\n' +
   '    <radialGradient id="glow" cx="0.86" cy="0.1" r="0.72">\n' +
   '      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.22"/>\n' +

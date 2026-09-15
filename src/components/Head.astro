@@ -11,6 +11,7 @@ import path from 'node:path';
 import Default from '@astrojs/starlight/components/Head.astro';
 import { BOOK, REPO, PINNED_SEARCHES } from '../consts';
 import trending from '../data/trending.json';
+import { PALETTE, defaultSwatch, hslHex, hexToHsl } from '../palette';
 
 const base = import.meta.env.BASE_URL;
 const site = Astro.site;
@@ -37,6 +38,14 @@ const card = candidates.find((s) => fs.existsSync(path.join(ogDir, `${s}.jpg`)))
 const ogImage = card ? abs(`og/${card}.jpg`) : abs('og.png');
 const ogImageType = card ? 'image/jpeg' : 'image/png';
 
+/**
+ * 配色：默认取自 src/palette.ts 的 DEFAULT_ACCENT。
+ * theme-color 用默认色的深调（同时也是面板里未选择时的初始值）。
+ */
+const accentDefault = defaultSwatch();
+const deepHsl = hexToHsl(accentDefault.hex);
+const themeColor = hslHex(deepHsl.h, Math.max(30, deepHsl.s), 30);
+
 /** 首页搜索热词 = 人工置顶词 + 构建期从书稿统计出的高频概念（去重，最多 10 个） */
 const hotTerms = [
   ...new Set([...PINNED_SEARCHES, ...trending.map((t: { term: string }) => t.term)]),
@@ -51,7 +60,7 @@ const UMAMI_SRC = import.meta.env.PUBLIC_UMAMI_SRC ?? 'https://cloud.umami.is/sc
 <Default />
 
 <meta name="author" content={BOOK.author} />
-<meta name="theme-color" content="#660874" />
+<meta name="theme-color" content={themeColor} />
 <meta property="og:image" content={ogImage} />
 <meta property="og:image:secure_url" content={ogImage} />
 <meta property="og:image:type" content={ogImageType} />
@@ -96,11 +105,15 @@ const UMAMI_SRC = import.meta.env.PUBLIC_UMAMI_SRC ?? 'https://cloud.umami.is/sc
     hot: hotTerms,
     trending,
     subscribe: import.meta.env.PUBLIC_SUBSCRIBE_ENDPOINT ?? '',
+    palette: PALETTE,
+    accentDefault: accentDefault.name,
   }}
 >
   window.__STB__ = { base: base, repo: repo, subscribe: subscribe };
   window.__STB_HOT__ = hot;
   window.__STB_TRENDING__ = trending;
+  window.__STB_PALETTE__ = palette;
+  window.__STB_ACCENT_DEFAULT__ = accentDefault;
 </script>
 <script>
   import '../scripts/book.js';

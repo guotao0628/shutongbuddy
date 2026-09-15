@@ -46,19 +46,21 @@ test.describe('章节页核心交互', () => {
   test('注入阅读进度条、字号控件、返回顶部、章末工具栏', async ({ page }) => {
     await open(page, '/part1/ch1/');
     await expect(page.locator('.reading-progress')).toHaveCount(1);
-    await expect(page.locator('.font-ctl button')).toHaveCount(2);
+    await expect(page.locator('.stb-font-dec')).toHaveCount(1);
+    await expect(page.locator('.stb-font-inc')).toHaveCount(1);
+    await expect(page.locator('.stb-color-btn')).toHaveCount(1);
     await expect(page.locator('.back-to-top')).toHaveCount(1);
     expect(await page.locator('.page-toolbar .stb-tool-btn').count()).toBeGreaterThanOrEqual(5);
   });
 
   test('A+ / A- 改变正文字号并写入 localStorage', async ({ page }) => {
     await open(page, '/part1/ch1/');
-    await page.locator('.font-ctl button').nth(1).click();
+    await page.locator('.stb-font-inc').click();
     expect(await page.evaluate(() => localStorage.getItem('stb-font-size'))).toBe('15');
     expect(
       await page.evaluate(() => getComputedStyle(document.querySelector('.sl-markdown-content p')!).fontSize)
     ).toBe('15px');
-    await page.locator('.font-ctl button').nth(0).click();
+    await page.locator('.stb-font-dec').click();
     expect(await page.evaluate(() => localStorage.getItem('stb-font-size'))).toBe('14');
   });
 
@@ -383,5 +385,86 @@ test.describe('社交分享卡片', () => {
     await expect(page.locator('meta[name="twitter:image:alt"]')).toHaveCount(1);
     await expect(page.locator('meta[property="og:image:width"]')).toHaveAttribute('content', '1200');
     await expect(page.locator('meta[property="og:image:height"]')).toHaveAttribute('content', '630');
+  });
+});
+
+test.describe('配色切换（中国传统色）', () => {
+  test('面板含 24 色，选色后亮/暗两套令牌都同步', async ({ page }) => {
+    await open(page, '/part1/ch1/');
+    const btn = page.locator('.stb-color-btn');
+    await expect(btn).toBeVisible();
+    await btn.click();
+    const panel = page.locator('.stb-palette');
+    await expect(panel).toBeVisible();
+    await expect(panel.locator('.stb-swatch')).toHaveCount(24);
+
+    const before = await page.evaluate(() =>
+      getComputedStyle(document.documentElement).getPropertyValue('--stb-accent').trim()
+    );
+    await panel.locator('.stb-swatch').last().click();
+    const after = await page.evaluate(() =>
+      getComputedStyle(document.documentElement).getPropertyValue('--stb-accent').trim()
+    );
+    expect(after).not.toBe(before);
+
+    const mapped = await page.evaluate(() => {
+      const de = document.documentElement;
+      const read = () => getComputedStyle(de).getPropertyValue('--sl-color-accent').trim();
+      const prev = de.dataset.theme;
+      de.dataset.theme = 'dark';
+      const dark = read();
+      de.dataset.theme = 'light';
+      const light = read();
+      de.dataset.theme = prev ?? 'dark';
+      return { dark, light };
+    });
+    expect(mapped.dark).not.toBe(mapped.light);
+    expect(mapped.dark.length).toBeGreaterThan(0);
+
+    await expect(page.locator('.stb-swatch[aria-pressed="true"]')).toHaveCount(1);
+    expect(await page.locator('meta[name="theme-color"]').getAttribute('content')).toBeTruthy();
+  });
+
+  test('选择结果写入本地并在刷新后保持', async ({ page }) => {
+    await open(page, '/part1/ch1/');
+    await page.locator('.stb-color-btn').click();
+    await page.locator('.stb-swatch').nth(5).click();
+    expect(await page.evaluate(() => localStorage.getItem('stb-accent'))).toContain('hex');
+
+    await page.reload({ waitUntil: 'load' });
+    await page.waitForSelector('.reading-progress', { state: 'attached' });
+    expect(
+      await page.evaluate(() => document.documentElement.style.getPropertyValue('--stb-accent'))
+    ).not.toBe('');
+  });
+
+  test('恢复默认后清空内联变量与本地记录', async ({ page }) => {
+    await open(page, '/part1/ch1/');
+    await page.locator('.stb-color-btn').click();
+    await page.locator('.stb-swatch').last().click();
+    await page.locator('.stb-palette-reset').click();
+    expect(await page.evaluate(() => localStorage.getItem('stb-accent'))).toBeNull();
+    expect(await page.evaluate(() => document.documentElement.style.length)).toBe(0);
+    await expect(page.locator('.stb-swatch[aria-pressed="true"]')).toHaveCount(0);
+  });
+
+  test('Esc 可关闭面板', async ({ page }) => {
+    await open(page, '/part1/ch1/');
+    const panel = page.locator('.stb-palette');
+    await page.locator('.stb-color-btn').click();
+    await expect(panel).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(panel).toBeHidden();
+  });
+
+  test('旧的写死配色变量已不存在', async ({ page }) => {
+    await open(page, '/part1/ch1/');
+    const legacy = await page.evaluate(() => {
+      const cs = getComputedStyle(document.documentElement);
+      return ['--stb-tsinghua', '--stb-tsinghua-deep', '--stb-tsinghua-soft'].map((v) =>
+        cs.getPropertyValue(v).trim()
+      );
+    });
+    expect(legacy).toEqual(['', '', '']);
   });
 });

@@ -140,3 +140,18 @@ test.describe('响应式：目录与导航', () => {
     expect(cols).toBeLessThanOrEqual(2);
   });
 });
+
+  test('配色色块在触屏上足够大且面板不溢出屏幕', async ({ page }) => {
+    await open(page, '/part1/ch1/');
+    await page.locator('.stb-color-btn').click();
+    const panel = page.locator('.stb-palette');
+    await expect(panel).toBeVisible();
+    const box = await panel.boundingBox();
+    const vw = page.viewportSize()!.width;
+    expect(box!.x).toBeGreaterThanOrEqual(0);
+    expect(box!.x + box!.width).toBeLessThanOrEqual(vw + 1);
+
+    const swatch = await page.locator('.stb-swatch').first().boundingBox();
+    expect(swatch!.width).toBeGreaterThanOrEqual(30);
+    expect(swatch!.height).toBeGreaterThanOrEqual(30);
+  });

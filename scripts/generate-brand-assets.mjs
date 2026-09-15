@@ -14,6 +14,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import sharp from 'sharp';
+import { ACCENT } from './lib/accent.mjs';
 
 const ROOT = process.cwd();
 const PUBLIC = path.join(ROOT, 'public');
@@ -30,9 +31,9 @@ const SERIF = "'SimSun','Songti SC','Noto Serif CJK SC',serif";
 const ogSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#3d0446"/>
-      <stop offset="55%" stop-color="#660874"/>
-      <stop offset="100%" stop-color="#8e2ba6"/>
+      <stop offset="0%" stop-color="${ACCENT.dark}"/>
+      <stop offset="55%" stop-color="${ACCENT.main}"/>
+      <stop offset="100%" stop-color="${ACCENT.light}"/>
     </linearGradient>
     <radialGradient id="glow" cx="0.85" cy="0.15" r="0.7">
       <stop offset="0%" stop-color="#ffffff" stop-opacity="0.22"/>
@@ -56,7 +57,7 @@ const ogSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630"
   <text x="88" y="268" font-family="${SERIF}" font-size="82" font-weight="700" fill="#ffffff">${TITLE_1}</text>
   <text x="88" y="366" font-family="${SERIF}" font-size="82" font-weight="700" fill="#ffffff">${TITLE_2}</text>
 
-  <rect x="88" y="408" width="132" height="5" rx="2.5" fill="#e0c9ee"/>
+  <rect x="88" y="408" width="132" height="5" rx="2.5" fill="${ACCENT.pale}"/>
 
   <text x="88" y="474" font-family="${FONT}" font-size="28" fill="#ffffff" fill-opacity="0.9">${SUB}</text>
   <text x="88" y="530" font-family="${FONT}" font-size="26" fill="#ffffff" fill-opacity="0.75">${META}</text>

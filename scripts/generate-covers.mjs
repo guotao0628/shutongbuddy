@@ -9,6 +9,7 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
+import { ACCENT } from './lib/accent.mjs';
 
 const OUT = path.join(process.cwd(), 'src', 'assets', 'covers');
 
@@ -20,9 +21,9 @@ function frame(label) {
   return `
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#33043a"/>
-      <stop offset="55%" stop-color="#660874"/>
-      <stop offset="100%" stop-color="#9631ad"/>
+      <stop offset="0%" stop-color="${ACCENT.dark}"/>
+      <stop offset="55%" stop-color="${ACCENT.main}"/>
+      <stop offset="100%" stop-color="${ACCENT.light}"/>
     </linearGradient>
     <radialGradient id="glow" cx="0.82" cy="0.12" r="0.75">
       <stop offset="0%" stop-color="#ffffff" stop-opacity="0.20"/>

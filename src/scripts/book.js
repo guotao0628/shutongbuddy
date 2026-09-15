@@ -413,10 +413,10 @@
     var FONT_STEPS = [12, 13, 14, 15, 16, 17, 18, 20];
     var FONT_DEFAULT = 14;
     var fontCtl = el('div', 'font-ctl');
-    var decBtn = el('button', null, 'A-');
+    var decBtn = el('button', 'stb-font-dec', 'A-');
     decBtn.type = 'button';
     decBtn.title = T.decrease;
-    var incBtn = el('button', null, 'A+');
+    var incBtn = el('button', 'stb-font-inc', 'A+');
     incBtn.type = 'button';
     incBtn.title = T.increase;
     fontCtl.appendChild(decBtn);
@@ -445,6 +445,179 @@
     incBtn.addEventListener('click', function () {
       stepFont(1);
     });
+
+    /* ============ 7b. 配色切换（中国传统色 · 紫色系） ============ */
+    (function paletteSwitch() {
+      var list = (window.__STB_PALETTE__ || []).slice();
+      if (!list.length) return;
+
+      var PKEY = 'stb-accent';
+      var VARS = [
+        '--stb-accent',
+        '--stb-accent-deep',
+        '--stb-accent-wash',
+        '--stb-accent-soft',
+        '--stb-accent-pale',
+        '--stb-accent-shadow',
+      ];
+
+      function hexToHsl(hex) {
+        var r = parseInt(hex.slice(1, 3), 16) / 255;
+        var g = parseInt(hex.slice(3, 5), 16) / 255;
+        var b = parseInt(hex.slice(5, 7), 16) / 255;
+        var max = Math.max(r, g, b);
+        var min = Math.min(r, g, b);
+        var l = (max + min) / 2;
+        var h = 0;
+        var s = 0;
+        if (max !== min) {
+          var d = max - min;
+          s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+          if (max === r) h = (g - b) / d + (g < b ? 6 : 0);
+          else if (max === g) h = (b - r) / d + 2;
+          else h = (r - g) / d + 4;
+          h *= 60;
+        }
+        return { h: Math.round(h), s: Math.round(s * 100), l: Math.round(l * 100) };
+      }
+
+      function hsl(h, s, l) {
+        return 'hsl(' + h + ', ' + s + '%, ' + l + '%)';
+      }
+
+      // 亮色主题压暗、暗色主题提亮，保证两种主题下都够对比度
+      function tokensFor(hex) {
+        var c = hexToHsl(hex);
+        var sat = function (k, min) {
+          return Math.max(min, Math.min(80, Math.round(c.s * k) + 8));
+        };
+        return {
+          '--stb-accent': hsl(c.h, sat(1.1, 24), Math.min(44, c.l)),
+          '--stb-accent-deep': hsl(c.h, sat(1.1, 24), Math.max(20, Math.min(30, c.l - 16))),
+          '--stb-accent-wash': hsl(c.h, Math.min(44, Math.round(c.s * 0.9) + 10), 95),
+          '--stb-accent-soft': hsl(c.h, sat(0.85, 30), Math.max(72, Math.min(80, c.l + 26))),
+          '--stb-accent-pale': hsl(c.h, Math.max(24, Math.round(c.s * 0.7)), 87),
+          '--stb-accent-shadow': hsl(c.h, sat(0.9, 26), 20),
+        };
+      }
+
+      function apply(hex) {
+        var root = document.documentElement;
+        if (!hex) {
+          VARS.forEach(function (v) {
+            root.style.removeProperty(v);
+          });
+          return;
+        }
+        var t = tokensFor(hex);
+        VARS.forEach(function (v) {
+          root.style.setProperty(v, t[v]);
+        });
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute('content', t['--stb-accent-deep']);
+      }
+
+      var savedAccent = S.get(PKEY, null);
+      if (savedAccent && savedAccent.hex) apply(savedAccent.hex);
+
+      var colorBtn = el('button', 'stb-color-btn');
+      colorBtn.type = 'button';
+      colorBtn.title = IS_EN ? 'Colour theme' : '切换配色';
+      colorBtn.setAttribute('aria-label', colorBtn.title);
+      colorBtn.setAttribute('aria-expanded', 'false');
+      colorBtn.innerHTML =
+        '<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">' +
+        '<circle cx="6.4" cy="6.4" r="4.1" fill="currentColor" opacity=".92"/>' +
+        '<circle cx="13.6" cy="6.4" r="4.1" fill="currentColor" opacity=".55"/>' +
+        '<circle cx="6.4" cy="13.6" r="4.1" fill="currentColor" opacity=".55"/>' +
+        '<circle cx="13.6" cy="13.6" r="4.1" fill="currentColor" opacity=".3"/>' +
+        '</svg>';
+
+      var panel = el('div', 'stb-palette');
+      panel.setAttribute('role', 'group');
+      panel.setAttribute('aria-label', IS_EN ? 'Colour theme' : '配色');
+      panel.appendChild(
+        el('p', 'stb-palette-title', IS_EN ? 'Traditional Chinese purples' : '中国传统色 · 紫色系')
+      );
+
+      var grid = el('div', 'stb-swatches');
+      list.forEach(function (s) {
+        var b = el('button', 'stb-swatch');
+        b.type = 'button';
+        b.style.background = s.hex;
+        b.title = s.name + '　' + s.hex;
+        b.setAttribute('aria-label', s.name + ' ' + s.hex);
+        b.setAttribute('aria-pressed', 'false');
+        b.setAttribute('data-hex', s.hex);
+        b.setAttribute('data-name', s.name);
+        b.addEventListener('click', function () {
+          S.set(PKEY, { hex: s.hex, name: s.name });
+          apply(s.hex);
+          sync();
+        });
+        grid.appendChild(b);
+      });
+      panel.appendChild(grid);
+
+      var currentRow = el('p', 'stb-palette-current');
+      var chip = document.createElement('i');
+      var label = el('span');
+      currentRow.appendChild(chip);
+      currentRow.appendChild(label);
+      panel.appendChild(currentRow);
+      panel.appendChild(
+        el(
+          'p',
+          'stb-palette-hint',
+          IS_EN ? 'Artwork keeps its original colour.' : '封面插画不随配色改变。'
+        )
+      );
+
+      var resetBtn = el('button', 'stb-tool-btn stb-palette-reset', IS_EN ? 'Reset' : '恢复默认');
+      resetBtn.type = 'button';
+      resetBtn.addEventListener('click', function () {
+        S.del(PKEY);
+        apply(null);
+        sync();
+      });
+      panel.appendChild(resetBtn);
+
+      function sync() {
+        var sel = S.get(PKEY, null);
+        var hex = sel && sel.hex ? sel.hex : '';
+        var name = sel && sel.name ? sel.name : window.__STB_ACCENT_DEFAULT__ || '';
+        grid.querySelectorAll('.stb-swatch').forEach(function (b) {
+          b.setAttribute('aria-pressed', b.getAttribute('data-hex') === hex ? 'true' : 'false');
+        });
+        var def = list.filter(function (s) {
+          return s.name === name;
+        })[0];
+        chip.style.background = hex || (def ? def.hex : 'transparent');
+        label.textContent = name + (hex ? '　' + hex : IS_EN ? ' (default)' : '（默认）');
+      }
+      sync();
+
+      colorBtn.addEventListener('click', function (ev) {
+        ev.stopPropagation();
+        var open = panel.classList.toggle('show');
+        colorBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      document.addEventListener('click', function (ev) {
+        if (!panel.classList.contains('show')) return;
+        if (panel.contains(ev.target) || colorBtn.contains(ev.target)) return;
+        panel.classList.remove('show');
+        colorBtn.setAttribute('aria-expanded', 'false');
+      });
+      document.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Escape' && panel.classList.contains('show')) {
+          panel.classList.remove('show');
+          colorBtn.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      fontCtl.insertBefore(colorBtn, fontCtl.firstChild);
+      fontCtl.appendChild(panel);
+    })();
 
     /* ============ 8. 返回顶部 ============ */
     var topBtn = el('button', 'back-to-top', '↑');

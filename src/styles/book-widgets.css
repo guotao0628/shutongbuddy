@@ -100,7 +100,7 @@ a.stb-figref {
   display: block;
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--stb-tsinghua-soft), var(--sl-color-accent));
+  background: linear-gradient(90deg, var(--stb-accent-soft), var(--sl-color-accent));
   transition: width 0.3s ease;
 }
 
@@ -568,7 +568,7 @@ kbd {
   position: relative;
   display: block;
   aspect-ratio: 16 / 9;
-  background: #3d0446;
+  background: var(--stb-accent-shadow);
 }
 
 .stb-cover-media img {
@@ -585,8 +585,8 @@ kbd {
   inset-inline-start: 0.6rem;
   padding: 0.1rem 0.5rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.9);
-  color: #660874;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--stb-accent-deep);
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.03em;
@@ -677,7 +677,7 @@ kbd {
     right: 16px;
   }
 
-  .font-ctl button,
+  .font-ctl > button,
   .back-to-top {
     width: 46px;
     height: 46px;
@@ -724,7 +724,7 @@ kbd {
   /* 取消点击灰块与 300ms 双击缩放延迟 */
   .stb-tool-btn,
   .stb-chip,
-  .font-ctl button,
+  .font-ctl > button,
   .back-to-top,
   .code-download-btn,
   .code-expand-btn,
@@ -860,7 +860,7 @@ kbd {
     --stb-font-size: 13px;
   }
 
-  .font-ctl button,
+  .font-ctl > button,
   .back-to-top {
     width: 42px;
     height: 42px;
@@ -879,3 +879,114 @@ kbd {
   margin-inline: 0;
 }
 
+
+/* ==========================================================================
+   配色切换（中国传统色 · 紫色系）
+   —— 面板绝对定位在浮动控件左侧，因此无需关心控件自身的高度
+   ========================================================================== */
+.font-ctl > button.stb-color-btn svg {
+  display: block;
+  margin: 0 auto;
+}
+
+.stb-palette {
+  position: absolute;
+  right: calc(100% + 12px);
+  bottom: 0;
+  width: 252px;
+  max-width: 74vw;
+  padding: 0.9rem;
+  border: 1px solid var(--sl-color-hairline);
+  border-radius: 14px;
+  background: var(--sl-color-bg-nav);
+  box-shadow: var(--sl-shadow-lg);
+  display: none;
+}
+
+.stb-palette.show {
+  display: block;
+}
+
+.stb-palette-title {
+  margin: 0 0 0.65rem;
+  font-size: 0.76rem;
+  letter-spacing: 0.04em;
+  color: var(--sl-color-gray-3);
+}
+
+.stb-swatches {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 7px;
+}
+
+.stb-swatch {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.stb-swatch:hover {
+  transform: scale(1.08);
+}
+
+.stb-swatch[aria-pressed='true'] {
+  outline: 2px solid var(--sl-color-white);
+  outline-offset: 2px;
+}
+
+.stb-swatch:focus-visible {
+  outline: 2px solid var(--sl-color-accent);
+  outline-offset: 2px;
+}
+
+.stb-palette-current {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.75rem;
+  font-size: 0.76rem;
+  color: var(--sl-color-gray-2);
+}
+
+.stb-palette-current i {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  border-radius: 5px;
+  border: 1px solid var(--sl-color-hairline);
+}
+
+.stb-palette-hint {
+  margin: 0.4rem 0 0;
+  font-size: 0.68rem;
+  line-height: 1.5;
+  color: var(--sl-color-gray-4);
+}
+
+.stb-palette-reset {
+  display: inline-flex;
+  height: auto;
+  margin-top: 0.7rem;
+  width: 100%;
+  justify-content: center;
+}
+
+@media (max-width: 640px) {
+  .stb-palette {
+    width: 236px;
+    padding: 0.8rem;
+  }
+
+  .stb-swatches {
+    gap: 6px;
+  }
+}
