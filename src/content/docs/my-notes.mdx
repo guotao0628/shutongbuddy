@@ -1,0 +1,24 @@
+---
+title: 我的划线
+description: 查看你在书里划的重点，并导出为 Markdown 或 Anki 卡片。数据只保存在你自己的浏览器里。
+---
+
+<div class="stb-notes-toolbar not-content">
+  <button type="button" id="stb-export-md" class="stb-tool-btn">⬇ 导出 Markdown</button>
+  <button type="button" id="stb-export-anki" class="stb-tool-btn">⬇ 导出 Anki (TSV)</button>
+  <button type="button" id="stb-export-json" class="stb-tool-btn">⬇ 导出 JSON</button>
+  <button type="button" id="stb-notes-clear" class="stb-tool-btn stb-danger">清空全部</button>
+  <button type="button" id="stb-notes-sync" class="stb-tool-btn">↻ 从本机重新同步</button>
+</div>
+
+<div id="stb-notes-page">
+  <p class="stb-loading">正在读取本地划线数据…</p>
+</div>
+
+---
+
+## 怎么用
+
+1. 在正文里**用鼠标选中一段文字**，松开即完成划线（再点一下划线可取消）。
+2. 划过的内容会自动汇总到本页，按章节分组。
+3. 点「导出 Markdown」得到带出处链接的摘录；点「导出 Anki (TSV)」可直接导入 Anki（正面=章节，背面=摘录）。

@@ -29,8 +29,6 @@ DeepSeek Harness（命令行简称 `dsh`）是 DeepSeek 官方开源的智能体
 
 **（1）Node.js 22.19+ 或 24 及以上。** 在终端执行：
 
-
-
 ```bash
 node -v
 ```

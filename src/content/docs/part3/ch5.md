@@ -101,6 +101,47 @@ shu-tong-buddy/
 
 备考数据的存储选型：直接用一个 JSON 文件放在工作区内。理由：① 刷题中途换会话/换智能体时题库与错题不丢——它们是工作区事实，不属于任何单一对话；② 人类可以随时手工编辑；③ 第 8 章的 ShuTongBuddy Studio 前端可以直接读写同一个文件做题库与错题本面板。这正体现了 Harness 的设计哲学：持久事实落盘，模型上下文从事实投影。
 
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 320" role="img" aria-label="ShuTongBuddy 五个插件围绕共享上下文与状态文件的协作关系">
+  <defs>
+    <marker id="stbArrow5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--sl-color-gray-3)"/>
+    </marker>
+  </defs>
+
+  <rect x="200" y="126" width="200" height="56" rx="10" fill="var(--sl-color-accent-low)" stroke="var(--sl-color-accent)" stroke-width="1.4"/>
+  <text x="300" y="150" font-size="13" text-anchor="middle" fill="var(--sl-color-white)">ctx 共享上下文</text>
+  <text x="300" y="169" font-size="11" text-anchor="middle" fill="var(--sl-color-gray-3)">ctx.tools · ctx.on</text>
+
+  <rect x="30" y="18" width="150" height="52" rx="8" fill="var(--sl-color-gray-6)" stroke="var(--sl-color-gray-4)" stroke-width="1.2"/>
+  <text x="105" y="40" font-size="12" text-anchor="middle" fill="var(--sl-color-white)">question_bank</text>
+  <text x="105" y="58" font-size="10.5" text-anchor="middle" fill="var(--sl-color-gray-3)">题库增删查（5.4）</text>
+
+  <rect x="225" y="18" width="150" height="52" rx="8" fill="var(--sl-color-gray-6)" stroke="var(--sl-color-gray-4)" stroke-width="1.2"/>
+  <text x="300" y="40" font-size="12" text-anchor="middle" fill="var(--sl-color-white)">practice</text>
+  <text x="300" y="58" font-size="10.5" text-anchor="middle" fill="var(--sl-color-gray-3)">抽题组卷（5.5）</text>
+
+  <rect x="420" y="18" width="150" height="52" rx="8" fill="var(--sl-color-gray-6)" stroke="var(--sl-color-gray-4)" stroke-width="1.2"/>
+  <text x="495" y="40" font-size="12" text-anchor="middle" fill="var(--sl-color-white)">review</text>
+  <text x="495" y="58" font-size="10.5" text-anchor="middle" fill="var(--sl-color-gray-3)">复习计划（5.7）</text>
+
+  <rect x="30" y="244" width="150" height="52" rx="8" fill="var(--sl-color-gray-6)" stroke="var(--sl-color-gray-4)" stroke-width="1.2"/>
+  <text x="105" y="266" font-size="12" text-anchor="middle" fill="var(--sl-color-white)">mistake_gate</text>
+  <text x="105" y="284" font-size="10.5" text-anchor="middle" fill="var(--sl-color-gray-3)">错题门禁钩子（5.6）</text>
+
+  <rect x="420" y="244" width="150" height="52" rx="8" fill="var(--sl-color-gray-6)" stroke="var(--sl-color-gray-4)" stroke-width="1.2"/>
+  <text x="495" y="266" font-size="12" text-anchor="middle" fill="var(--sl-color-white)">tutor</text>
+  <text x="495" y="284" font-size="10.5" text-anchor="middle" fill="var(--sl-color-gray-3)">答疑 explain_mistake（5.8）</text>
+
+  <line x1="150" y1="70" x2="240" y2="126" stroke="var(--sl-color-gray-3)" stroke-width="1.1" marker-end="url(#stbArrow5)"/>
+  <line x1="300" y1="70" x2="300" y2="126" stroke="var(--sl-color-gray-3)" stroke-width="1.1" marker-end="url(#stbArrow5)"/>
+  <line x1="450" y1="70" x2="360" y2="126" stroke="var(--sl-color-gray-3)" stroke-width="1.1" marker-end="url(#stbArrow5)"/>
+  <line x1="150" y1="244" x2="240" y2="182" stroke="var(--sl-color-gray-3)" stroke-width="1.1" marker-end="url(#stbArrow5)"/>
+  <line x1="450" y1="244" x2="360" y2="182" stroke="var(--sl-color-gray-3)" stroke-width="1.1" marker-end="url(#stbArrow5)"/>
+
+  <text x="300" y="228" font-size="11" text-anchor="middle" fill="var(--sl-color-gray-3)">读写工作区状态文件</text>
+  <text x="300" y="316" font-size="11" text-anchor="middle" fill="var(--sl-color-gray-3)">question-bank.json · mistakes.json · review-plan.json</text>
+</svg>
+
 三个状态文件的结构先亮出来，后面每个插件都围绕它们读写：
 
 **question-bank.json**（题库）：

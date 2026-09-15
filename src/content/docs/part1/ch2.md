@@ -13,6 +13,48 @@ description: "第 1 章你已经把 Harness 跑了起来。这一章回答一个
 
 Harness 走了一条更彻底的路：**微内核（Microkernel）**。整个系统中没有一个"特权核心"可以被打补丁——模型适配器、工具注册表、会话日志、权限策略，甚至驱动智能体运转的 Agent 循环本身，统统是插件。官方架构文档对每个产品功能做了一张"功能 → 机制"对照表，每一行都对应某个公开扩展点上的监听器，**没有一行需要修改循环本体**。这是可检验的微内核主张。
 
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 306" role="img" aria-label="声明层、插件树与 Cordis 上下文的分层结构">
+  <defs>
+    <marker id="stbArrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--sl-color-gray-3)"/>
+    </marker>
+  </defs>
+
+  <text x="20" y="26" font-size="12" fill="var(--sl-color-gray-3)">声明层</text>
+  <rect x="108" y="8" width="132" height="38" rx="8" fill="var(--sl-color-accent-low)" stroke="var(--sl-color-accent)" stroke-width="1.2"/>
+  <text x="174" y="32" font-size="13" text-anchor="middle" fill="var(--sl-color-white)">Profile</text>
+  <rect x="256" y="8" width="132" height="38" rx="8" fill="var(--sl-color-accent-low)" stroke="var(--sl-color-accent)" stroke-width="1.2"/>
+  <text x="322" y="32" font-size="13" text-anchor="middle" fill="var(--sl-color-white)">Bundle</text>
+  <rect x="404" y="8" width="132" height="38" rx="8" fill="var(--sl-color-accent-low)" stroke="var(--sl-color-accent)" stroke-width="1.2"/>
+  <text x="470" y="32" font-size="13" text-anchor="middle" fill="var(--sl-color-white)">Patch</text>
+
+  <line x1="240" y1="27" x2="256" y2="27" stroke="var(--sl-color-gray-3)" stroke-width="1.2" marker-end="url(#stbArrow2)"/>
+  <line x1="388" y1="27" x2="404" y2="27" stroke="var(--sl-color-gray-3)" stroke-width="1.2" marker-end="url(#stbArrow2)"/>
+
+  <line x1="280" y1="52" x2="280" y2="92" stroke="var(--sl-color-gray-3)" stroke-width="1.2" marker-end="url(#stbArrow2)"/>
+  <text x="292" y="76" font-size="11" fill="var(--sl-color-gray-3)">叠加 / 覆写</text>
+
+  <text x="20" y="118" font-size="12" fill="var(--sl-color-gray-3)">插件树</text>
+  <rect x="108" y="96" width="100" height="44" rx="8" fill="var(--sl-color-gray-6)" stroke="var(--sl-color-gray-4)" stroke-width="1.2"/>
+  <text x="158" y="123" font-size="12" text-anchor="middle" fill="var(--sl-color-white)">模型适配器</text>
+  <rect x="218" y="96" width="100" height="44" rx="8" fill="var(--sl-color-gray-6)" stroke="var(--sl-color-gray-4)" stroke-width="1.2"/>
+  <text x="268" y="123" font-size="12" text-anchor="middle" fill="var(--sl-color-white)">工具注册表</text>
+  <rect x="328" y="96" width="100" height="44" rx="8" fill="var(--sl-color-gray-6)" stroke="var(--sl-color-gray-4)" stroke-width="1.2"/>
+  <text x="378" y="123" font-size="12" text-anchor="middle" fill="var(--sl-color-white)">会话日志</text>
+  <rect x="438" y="96" width="100" height="44" rx="8" fill="var(--sl-color-gray-6)" stroke="var(--sl-color-gray-4)" stroke-width="1.2"/>
+  <text x="488" y="123" font-size="12" text-anchor="middle" fill="var(--sl-color-white)">Agent 循环</text>
+
+  <line x1="280" y1="146" x2="280" y2="186" stroke="var(--sl-color-gray-3)" stroke-width="1.2" marker-end="url(#stbArrow2)"/>
+  <text x="292" y="170" font-size="11" fill="var(--sl-color-gray-3)">注册 / 监听</text>
+
+  <text x="20" y="216" font-size="12" fill="var(--sl-color-gray-3)">Cordis</text>
+  <rect x="108" y="190" width="430" height="48" rx="8" fill="var(--sl-color-accent-low)" stroke="var(--sl-color-accent)" stroke-width="1.4"/>
+  <text x="323" y="220" font-size="13" text-anchor="middle" fill="var(--sl-color-white)">共享上下文 ctx —— 服务 · 事件 · 可逆效果</text>
+
+  <text x="280" y="272" font-size="11.5" text-anchor="middle" fill="var(--sl-color-gray-3)">没有特权核心：所有层都由同一批公开扩展点组成</text>
+  <text x="280" y="292" font-size="11.5" text-anchor="middle" fill="var(--sl-color-gray-3)">卸载插件 = 回退它的全部效果</text>
+</svg>
+
 对使用者的现实意义：
 
 - 官方能做到的，你也能做到——因为官方用的扩展点和你用的是同一批；
@@ -48,8 +90,6 @@ Harness 建立在 Cordis 之上。Cordis 的设计来自论文《A Programming P
 **Profile（运行配置）**：存放在 Harness 主目录中的命名组合，声明它叠加哪些 Bundle、持有哪些外部插件、以及用户自己的补丁文件。官方模板有五个：`web`、`headless`、`sdk`、`sdk-minimal`、`acp`。你在第 1 章执行的 `dsh web`，就是 `--profile web` 的别名。
 
 **Patch（补丁层）**：对插件树的声明式覆写。补丁按 id 定位插件树中的某一行，整体替换其配置，或插入新行。层的应用顺序是：
-
-- 
 
 ```text
 Profile 中按序列出的每个 Bundle 的补丁

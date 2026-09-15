@@ -21,8 +21,6 @@ description: "第 1 章用的是最省事的路径。本章把安装部署这件
 
 ## 3.2 方式一：npx 直接运行（推荐日常使用）
 
-- 
-
 ```bash
 npx @deepseek-ai/dsh web
 ```

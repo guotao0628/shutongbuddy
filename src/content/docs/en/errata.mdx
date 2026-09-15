@@ -1,0 +1,39 @@
+---
+title: Errata & Updates
+description: How to report errata for DeepSeek Harness in Practice, plus the changelog and publishing status.
+---
+
+import { VERSION, REPO_URL } from '../../../consts';
+
+export const ISSUES = `${REPO_URL}/issues/new?title=${encodeURIComponent('Errata: ')}`;
+
+## Report an erratum
+
+Typos, wrong technical statements, code that does not run — please open an issue. The "Report erratum" button at the bottom of every page pre-fills the chapter URL.
+
+<a class="sl-link-button primary not-content" href={ISSUES}>Report an erratum</a>
+<a class="sl-link-button secondary not-content" href={`${REPO_URL}/issues`}>Browse open issues</a>
+
+> If your question is about a specific piece of code, including your environment (OS, Node version, `dsh --version`) speeds things up a lot.
+
+## Changelog
+
+| Version | Date | Change |
+| --- | --- | --- |
+| v1.0.0 | 2026-09 | The online book was rebuilt on **Astro + Starlight**: all chapters moved into a content collection, build-time full-text search (Pagefind), light/dark themes, reading progress and font sizing, highlights with export, a standalone glossary, a download centre and an errata page. |
+| v1.0.0 | 2026-09 | Fixed three leftover empty list items in the manuscript (they rendered as stray bullets); removed the mdBook configuration and theme. |
+| v0.9.0 | 2026-08 | First draft completed: 4 parts, 8 chapters, epilogue and appendices A–F; A5 print-layout PDF and Word deliverables generated. |
+
+> Current site: v{VERSION.version} (commit `{VERSION.commit}`).
+
+## Publishing status
+
+| Stage | Status |
+| --- | --- |
+| First draft | ✅ Done |
+| Online book live | ✅ Done |
+| Technical verification (running every command and code sample) | ⏳ In progress |
+| Publisher editing | ⏳ In progress |
+| Publication | ⏳ Pending |
+
+> The book is based on DeepSeek Harness developer preview (0.1.5-rc.2). The project iterates quickly — if behaviour in the book disagrees with the latest release, **the official repository documentation wins**. Issues are welcome.

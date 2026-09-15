@@ -18,6 +18,44 @@ description: "第 2 章看了架构全景，第 5 章学会了自己动手。本
 
 驱动器的输入只有一个收件箱（Inbox）：用户消息、注入的上下文、插件的跟进消息，都从这一个口子进入循环。输入被认领后，第 2.6 节那张 Turn/Step 事件序列开始运转。
 
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 262" role="img" aria-label="Turn 与 Step 的执行时序">
+  <defs>
+    <marker id="stbArrow6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--sl-color-gray-3)"/>
+    </marker>
+  </defs>
+
+  <rect x="12" y="52" width="596" height="112" rx="10" fill="none" stroke="var(--sl-color-accent)" stroke-width="1.4" stroke-dasharray="6 4"/>
+  <text x="28" y="44" font-size="12" fill="var(--sl-color-accent)">Turn（轮次）</text>
+
+  <rect x="30" y="80" width="150" height="60" rx="8" fill="var(--sl-color-gray-6)" stroke="var(--sl-color-gray-4)" stroke-width="1.2"/>
+  <text x="105" y="104" font-size="12" text-anchor="middle" fill="var(--sl-color-white)">Step 1</text>
+  <text x="105" y="124" font-size="11" text-anchor="middle" fill="var(--sl-color-gray-3)">模型请求 → 工具调用</text>
+
+  <rect x="204" y="80" width="150" height="60" rx="8" fill="var(--sl-color-gray-6)" stroke="var(--sl-color-gray-4)" stroke-width="1.2"/>
+  <text x="279" y="104" font-size="12" text-anchor="middle" fill="var(--sl-color-white)">Step 2</text>
+  <text x="279" y="124" font-size="11" text-anchor="middle" fill="var(--sl-color-gray-3)">模型请求 → 工具调用</text>
+
+  <rect x="378" y="80" width="150" height="60" rx="8" fill="var(--sl-color-gray-6)" stroke="var(--sl-color-gray-4)" stroke-width="1.2"/>
+  <text x="453" y="104" font-size="12" text-anchor="middle" fill="var(--sl-color-white)">Step n</text>
+  <text x="453" y="124" font-size="11" text-anchor="middle" fill="var(--sl-color-gray-3)">模型请求 → 产出</text>
+
+  <line x1="180" y1="110" x2="204" y2="110" stroke="var(--sl-color-gray-3)" stroke-width="1.2" marker-end="url(#stbArrow6)"/>
+  <line x1="354" y1="110" x2="378" y2="110" stroke="var(--sl-color-gray-3)" stroke-width="1.2" marker-end="url(#stbArrow6)"/>
+
+  <rect x="30" y="8" width="240" height="32" rx="8" fill="var(--sl-color-accent-low)" stroke="var(--sl-color-accent)" stroke-width="1.2"/>
+  <text x="150" y="29" font-size="11.5" text-anchor="middle" fill="var(--sl-color-white)">Inbox：用户消息 / 注入 / 跟进</text>
+  <line x1="150" y1="40" x2="150" y2="76" stroke="var(--sl-color-gray-3)" stroke-width="1.2" marker-end="url(#stbArrow6)"/>
+
+  <line x1="528" y1="110" x2="566" y2="110" stroke="var(--sl-color-gray-3)" stroke-width="1.2" marker-end="url(#stbArrow6)"/>
+  <text x="566" y="106" font-size="11" text-anchor="end" fill="var(--sl-color-gray-3)"> </text>
+
+  <rect x="12" y="188" width="596" height="60" rx="10" fill="var(--sl-color-gray-6)" stroke="var(--sl-color-gray-4)" stroke-width="1.2"/>
+  <text x="310" y="212" font-size="12" text-anchor="middle" fill="var(--sl-color-white)">不再欠任何工作 → Turn 关闭</text>
+  <text x="310" y="234" font-size="11" text-anchor="middle" fill="var(--sl-color-gray-3)">全过程写入 session/event 事件日志（唯一事实来源）</text>
+  <line x1="453" y1="140" x2="453" y2="188" stroke="var(--sl-color-gray-3)" stroke-width="1.2" marker-end="url(#stbArrow6)"/>
+</svg>
+
 ## 6.2 系统提示词：装配而非拼接
 
 系统提示词由 `core/system-prompt` 包负责组装（`ctx.systemPrompt`），单位是**节（Section）**：任何插件都可以注册一节提示词，带排序与作用域。两个现成例子：

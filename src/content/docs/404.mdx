@@ -1,0 +1,18 @@
+---
+title: 页面不存在
+description: 找不到你要的页面。
+template: splash
+---
+
+import { REPO_URL } from '../../consts';
+
+export const base = import.meta.env.BASE_URL;
+
+这个地址没有对应的内容，可能是链接过期或章节改名了。
+
+你可以：
+
+- 回到<a href={base}>封面与全书目录</a>；
+- 使用右上角的**搜索**（快捷键 <kbd>/</kbd> 或 <kbd>Ctrl</kbd> + <kbd>K</kbd>）直接检索关键词；
+- 查看<a href={`${base}glossary/`}>术语表</a>或<a href={`${base}downloads/`}>下载页</a>；
+- 如果你是点正文里的链接过来的，欢迎<a href={`${REPO_URL}/issues/new`}>提交勘误</a>告诉我。

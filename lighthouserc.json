@@ -1,0 +1,32 @@
+{
+  "ci": {
+    "collect": {
+      "startServerCommand": "npm run preview",
+      "startServerReadyPattern": "Local",
+      "startServerReadyTimeout": 60000,
+      "url": [
+        "http://127.0.0.1:4321/shutongbuddy/",
+        "http://127.0.0.1:4321/shutongbuddy/part1/ch1/",
+        "http://127.0.0.1:4321/shutongbuddy/part2/ch3/"
+      ],
+      "numberOfRuns": 1,
+      "settings": {
+        "preset": "desktop",
+        "locale": "zh-CN"
+      }
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["warn", { "minScore": 0.8 }],
+        "categories:accessibility": ["warn", { "minScore": 0.9 }],
+        "categories:best-practices": ["warn", { "minScore": 0.9 }],
+        "categories:seo": ["warn", { "minScore": 0.9 }],
+        "unused-javascript": "off",
+        "uses-long-cache-ttl": "off"
+      }
+    },
+    "upload": {
+      "target": "temporary-public-storage"
+    }
+  }
+}

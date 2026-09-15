@@ -1,0 +1,49 @@
+---
+title: 勘误与更新
+description: 《DeepSeek Harness 应用开发实践》在线书勘误提交方式、更新日志与出版进度。
+---
+
+import { VERSION, REPO_URL } from '../../consts';
+
+export const ISSUES = `${REPO_URL}/issues/new?title=${encodeURIComponent('勘误：')}`;
+
+## 提交勘误
+
+发现错别字、技术描述有误、代码跑不通，欢迎直接提 Issue。正文每一页底部的「提交勘误」按钮会自动带上章节地址。
+
+<a class="sl-link-button primary not-content" href={ISSUES}>提交勘误</a>
+<a class="sl-link-button secondary not-content" href={`${REPO_URL}/issues`}>查看已有 Issue</a>
+
+> 如果是对某段代码有疑问，附上你的环境（操作系统、Node 版本、`dsh --version`）会快很多。
+
+## 更新日志
+
+| 版本 | 时间 | 变更 |
+| --- | --- | --- |
+| v1.0.0 | 2026-09 | 在线书改用 **Astro + Starlight** 重构：全文迁移到内容集合、构建期全文检索（Pagefind）、明暗主题、阅读进度与字号调节、划线笔记与导出、术语表独立页、下载中心、勘误页。 |
+| v1.0.0 | 2026-09 | 修复正文中 3 处遗留的空列表项（会在页面上渲染成孤立圆点）；清理 mdBook 相关配置与主题。 |
+| v0.9.0 | 2026-08 | 初稿完成，四部分 8 章 + 结束语 + 附录 A–F；生成 A5 印刷版式 PDF 与 Word 交付物。 |
+
+> 当前站点：v{VERSION.version}（提交 `{VERSION.commit}`）。
+
+## 出版进度
+
+| 阶段 | 状态 |
+| --- | --- |
+| 初稿撰写 | ✅ 完成 |
+| 在线书上线 | ✅ 完成 |
+| 技术核对（命令与代码实机验证） | ⏳ 进行中 |
+| 出版社编校 | ⏳ 进行中 |
+| 正式出版 | ⏳ 待定 |
+
+### 技术核对待办
+
+以下条目需要在实际的 DeepSeek Harness 环境中逐条跑通后确认（核对清单见仓库 `docs/verification-checklist.md`）：
+
+- [ ] 第 3 章的安装与 Profile 命令在最新发布版上的行为
+- [ ] 第 4 章的 `settings.yaml` 字段与挡位取值
+- [ ] 第 5 章插件包在真实 `dsh` 中的加载与持久安装
+- [ ] 第 7、8 章示例工程的端到端运行
+- [ ] 全书标注【待核】的 2 处描述
+
+> 本书基于 DeepSeek Harness 开发者预览版（0.1.5-rc.2）撰写。项目迭代很快，若书中行为与最新版本不一致，**以官方仓库文档为准**，也欢迎提 Issue 告知。

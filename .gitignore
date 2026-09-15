@@ -6,6 +6,11 @@ dist/
 build/
 .astro/
 
+# 测试与 CI 产物
+playwright-report/
+test-results/
+.lighthouseci/
+
 # Logs
 *.log
 npm-debug.log*
@@ -18,7 +23,6 @@ npm-debug.log*
 # Editor / OS
 .DS_Store
 .idea/
-.vscode/
 Thumbs.db
 
 # Temp
@@ -28,8 +32,11 @@ Thumbs.db
 __pycache__/
 *.pyc
 
-# mdBook build output
-book/
+# 构建期生成（由 scripts/prepare-assets.mjs 重新生成，不入库）
+src/data/version.json
+public/downloads/*.md
+public/downloads/*.zip
+public/downloads/*.epub
 
 # Local build tools & environment (NOT for GitHub publishing)
 book_tools/

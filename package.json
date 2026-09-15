@@ -5,17 +5,34 @@
   "type": "module",
   "description": "《DeepSeek Harness 应用开发实践》在线书（Astro + Starlight）",
   "scripts": {
+    "predev": "node scripts/prepare-assets.mjs",
     "dev": "astro dev",
     "start": "astro dev",
+    "prebuild": "node scripts/prepare-assets.mjs",
     "build": "astro build",
     "preview": "astro preview",
+    "astro": "astro",
+    "precheck": "node scripts/prepare-assets.mjs",
     "check": "astro check",
-    "astro": "astro"
+    "check:links": "node scripts/check-links.mjs",
+    "check:links:external": "node scripts/check-links.mjs --external",
+    "check:typo": "node scripts/check-typography.mjs",
+    "brand": "node scripts/generate-brand-assets.mjs",
+    "epub": "node scripts/build-epub.mjs",
+    "test:e2e": "playwright test",
+    "verify": "npm run check && npm run build && npm run check:typo && npm run check:links && npm run test:e2e"
   },
   "dependencies": {
+    "@astrojs/rss": "^4.0.12",
     "@astrojs/starlight": "^0.42.0",
     "astro": "^7.3.2",
+    "mermaid": "^12.0.0",
     "sharp": "^0.35.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.5",
+    "@playwright/test": "^1.63.0",
+    "typescript": "^5.9.0"
   },
   "allowScripts": {
     "esbuild": true

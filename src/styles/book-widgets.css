@@ -1,0 +1,456 @@
+/* ==========================================================================
+   《DeepSeek Harness 应用开发实践》在线书 —— 阅读组件样式
+   与 book.css 同属自定义层（非 @layer），因此同样优先于 Starlight 默认样式。
+   ========================================================================== */
+
+/* ---------- 继续阅读提示条 ---------- */
+.stb-resume {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 1.5rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--sl-color-accent);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--sl-color-accent) 8%, transparent);
+  font-size: 0.86rem;
+}
+
+.stb-resume > span:first-child {
+  font-weight: 700;
+  color: var(--sl-color-text-accent);
+}
+
+.stb-resume-go {
+  margin-inline-start: auto;
+}
+
+.stb-resume-x {
+  border: none;
+  background: transparent;
+  color: var(--sl-color-gray-3);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 0.2rem;
+}
+
+.stb-resume-x:hover {
+  color: var(--sl-color-text-accent);
+}
+
+/* ---------- 章节元信息（阅读时长） ---------- */
+.stb-chapter-meta {
+  margin: 0.35rem 0 1.4rem;
+  font-size: 0.8rem;
+  color: var(--sl-color-gray-3);
+  letter-spacing: 0.02em;
+}
+
+/* ---------- 图表编号与引用 ---------- */
+.stb-figure-caption {
+  display: block;
+  margin: -0.4rem 0 1.4rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--sl-color-gray-3);
+}
+
+.sl-markdown-content svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.5rem auto 0.4rem;
+}
+
+a.stb-figref {
+  color: var(--sl-color-text-accent);
+  text-decoration: none;
+  border-bottom: 1px dotted currentColor;
+}
+
+/* ---------- Mermaid ---------- */
+.mermaid {
+  margin: 1.5rem 0;
+  text-align: center;
+  overflow-x: auto;
+}
+
+.mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ---------- 「我的阅读」 ---------- */
+.stb-loading {
+  color: var(--sl-color-gray-3);
+  font-size: 0.9rem;
+}
+
+.stb-progressbar {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--sl-color-gray-6);
+  overflow: hidden;
+  margin: 0.75rem 0 0.5rem;
+}
+
+.stb-progressbar > span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--stb-tsinghua-soft), var(--sl-color-accent));
+  transition: width 0.3s ease;
+}
+
+.stb-chapter-status {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.stb-chapter-status li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.stb-chapter-status li.is-read {
+  background: color-mix(in srgb, var(--sl-color-accent) 8%, transparent);
+}
+
+.stb-chapter-status a {
+  flex: 1;
+  text-decoration: none;
+  color: var(--sl-color-white);
+}
+
+.stb-chapter-status a:hover {
+  color: var(--sl-color-text-accent);
+}
+
+.stb-mark {
+  color: var(--sl-color-text-accent);
+  font-weight: 700;
+}
+
+.stb-link-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.stb-link-list li {
+  padding: 0.3rem 0;
+  border-bottom: 1px dashed var(--sl-color-hairline);
+}
+
+.stb-link-list a {
+  text-decoration: none;
+  color: var(--sl-color-white);
+}
+
+.stb-link-list a:hover {
+  color: var(--sl-color-text-accent);
+}
+
+.stb-continue-card {
+  margin: 0.75rem 0;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--sl-color-accent);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--sl-color-accent) 8%, transparent);
+  font-size: 1rem;
+}
+
+.stb-continue-card a {
+  text-decoration: none;
+  color: var(--sl-color-text-accent);
+  font-weight: 700;
+}
+
+.stb-note {
+  font-size: 0.85rem;
+  color: var(--sl-color-gray-3);
+}
+
+/* ---------- 「我的划线」 ---------- */
+.stb-notes-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.stb-hl-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 1.5rem;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.stb-hl-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.55rem 0.8rem;
+  border-inline-start: 3px solid var(--sl-color-accent);
+  background: color-mix(in srgb, var(--sl-color-accent) 6%, transparent);
+  border-radius: 0 6px 6px 0;
+  font-size: 0.9rem;
+}
+
+.stb-hl-list a {
+  flex: 1;
+  text-decoration: none;
+  color: var(--sl-color-white);
+}
+
+.stb-hl-list a:hover {
+  color: var(--sl-color-text-accent);
+}
+
+.stb-hl-del {
+  border: none;
+  background: transparent;
+  color: var(--sl-color-gray-3);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.stb-hl-del:hover {
+  color: var(--sl-color-red, #d33);
+}
+
+.stb-danger:hover {
+  color: var(--sl-color-red, #d33) !important;
+  border-color: var(--sl-color-red, #d33) !important;
+}
+
+/* ---------- 首页：继续阅读 + 热门搜索 ---------- */
+.stb-home-continue {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin: -0.5rem 0 1.5rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--sl-color-hairline);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--sl-color-accent) 6%, transparent);
+  font-size: 0.9rem;
+}
+
+.stb-home-continue-label {
+  font-weight: 700;
+  color: var(--sl-color-text-accent);
+}
+
+.stb-home-continue a {
+  text-decoration: none;
+  color: var(--sl-color-white);
+}
+
+.stb-home-continue a:hover {
+  color: var(--sl-color-text-accent);
+}
+
+.stb-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  margin: -0.75rem 0 2rem;
+}
+
+.stb-chips-label {
+  font-size: 0.8rem;
+  color: var(--sl-color-gray-3);
+  margin-inline-end: 0.2rem;
+}
+
+.stb-chip {
+  padding: 0.22rem 0.7rem;
+  border: 1px solid var(--sl-color-hairline);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--sl-color-gray-2);
+  font-size: 0.8rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.stb-chip:hover {
+  color: var(--sl-color-text-accent);
+  border-color: var(--sl-color-accent);
+}
+
+/* ---------- 下载页 ---------- */
+.stb-version {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0 2rem;
+  padding: 1rem 1.2rem;
+  border: 1px solid var(--sl-color-hairline);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--sl-color-accent) 5%, transparent);
+}
+
+.stb-version > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.stb-version dt {
+  font-size: 0.75rem;
+  color: var(--sl-color-gray-3);
+  letter-spacing: 0.04em;
+}
+
+.stb-version dd {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--sl-color-white);
+}
+
+.stb-download-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 2rem;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.stb-download-list li {
+  padding: 0.85rem 1.1rem;
+  border: 1px solid var(--sl-color-hairline);
+  border-radius: 8px;
+  transition: border-color 0.15s ease;
+}
+
+.stb-download-list li:hover {
+  border-color: var(--sl-color-accent);
+}
+
+.stb-download-list a {
+  display: block;
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--sl-color-text-accent);
+}
+
+.stb-download-note {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.82rem;
+  color: var(--sl-color-gray-3);
+}
+
+/* ---------- 术语表页 ---------- */
+.stb-glossary {
+  margin: 1.5rem 0;
+}
+
+.stb-glossary-item {
+  padding: 0.85rem 0;
+  border-bottom: 1px dashed var(--sl-color-hairline);
+}
+
+.stb-glossary-item dt {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-weight: 700;
+  scroll-margin-top: 5rem;
+}
+
+.stb-glossary-cn {
+  color: var(--sl-color-white);
+  font-size: 1rem;
+}
+
+.stb-glossary-en {
+  font-size: 0.82rem;
+  color: var(--sl-color-text-accent);
+  font-family: var(--sl-font-mono);
+}
+
+.stb-anchor {
+  margin-inline-start: auto;
+  opacity: 0;
+  text-decoration: none;
+  color: var(--sl-color-gray-3);
+  font-weight: 400;
+}
+
+.stb-glossary-item:hover .stb-anchor {
+  opacity: 1;
+}
+
+.stb-glossary-item dd {
+  margin: 0.3rem 0 0;
+  font-size: 0.9rem;
+  color: var(--sl-color-gray-2);
+}
+
+kbd {
+  padding: 0.1em 0.4em;
+  border: 1px solid var(--sl-color-hairline);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  background: var(--sl-color-bg-inline-code);
+  font-family: var(--sl-font-mono);
+  font-size: 0.85em;
+}
+
+/* ---------- 移动端 ---------- */
+@media (max-width: 600px) {
+  .stb-notes-toolbar {
+    gap: 0.4rem;
+  }
+
+  .stb-notes-toolbar .stb-tool-btn {
+    flex: 1 1 44%;
+    justify-content: center;
+  }
+
+  .stb-glossary-item dt {
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  .stb-anchor {
+    display: none;
+  }
+}
+
+/* ---------- 打印 ---------- */
+@media print {
+  .stb-notes-toolbar,
+  .stb-resume,
+  .stb-chips,
+  .stb-home-continue,
+  .stb-anchor {
+    display: none !important;
+  }
+
+  .stb-chapter-meta,
+  .stb-figure-caption {
+    color: #555;
+  }
+}

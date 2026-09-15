@@ -28,8 +28,6 @@ DeepSeek 是 Harness 的一等公民路由，接入只需一步：打开 **Setti
 
 DeepSeek 路由的一个特色是**推理挡位（Reasoning Effort）**：其模型原生提供 `off`、`low`、`high`、`max` 四挡，模型选择器中的 **Effort** 菜单直接可选；路由级默认挡位在 `settings.yaml` 里设置：
 
-- 
-
 ```yaml
 llm-deepseek:
   reasoningEffort: max
@@ -135,7 +133,7 @@ Harness 里"切模型"有三个层次，按场景选用：
 | 层次 | 做法 | 适用 |
 | --- | --- | --- |
 | 会话级 | 模型选择器直接换；新会话跟随新默认 | 日常手动切换 |
-| 路由级 | 同一 Provider ID 下并列多个模型，按需选 | 一key多模型（V4 Pro/Flash 同路由） |
+| 路由级 | 同一 Provider ID 下并列多个模型，按需选 | 一个 Key 多模型（V4 Pro/Flash 同路由） |
 | 编排级 | 不同子智能体/任务绑定不同模型 | 多模型分工协作（第 8 章） |
 
 
