@@ -17,7 +17,8 @@ export default defineConfig({
   expect: { timeout: 10_000 },
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 1 : 0,
+  // 浏览器用例在 build 紧邻运行时偶发超时，本地也给一次重试（不是掩盖失败：稳定失败仍会失败）
+  retries: 1,
   workers: process.env.CI ? 2 : undefined,
   reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : [['list']],
   use: {

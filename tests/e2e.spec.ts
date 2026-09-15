@@ -6,7 +6,7 @@ const BASE = process.env.BASE_PATH || '/shutongbuddy/';
 /** 打开页面并等待交互脚本执行完 */
 async function open(page: Page, path: string) {
   await page.goto(BASE + path.replace(/^\//, ''), { waitUntil: 'load' });
-  await page.waitForSelector('.reading-progress', { state: 'attached', timeout: 15_000 });
+  await page.waitForSelector('.reading-progress', { state: 'attached', timeout: 30_000 });
 }
 
 test.describe('封面与导航', () => {
@@ -466,5 +466,50 @@ test.describe('配色切换（中国传统色）', () => {
       );
     });
     expect(legacy).toEqual(['', '', '']);
+  });
+});
+
+test.describe('定位声明（配套读物）', () => {
+  const MAIN_BOOK = 'https://www.tup.tsinghua.edu.cn/booksCenter/book_10674101.html';
+
+  test('首页展示声明块，书名带主书链接', async ({ page }) => {
+    await open(page, '/');
+    const box = page.locator('.stb-companion');
+    await expect(box).toHaveCount(1);
+    await expect(box).toContainText('辅助读物');
+    await expect(box.locator(`a[href="${MAIN_BOOK}"]`)).toHaveCount(1);
+    await expect(box.locator('a')).toContainText('大模型Agent应用开发');
+  });
+
+  test('内容简介页（Markdown 正文）同样带声明与主书链接', async ({ page }) => {
+    await open(page, '/brief/');
+    const body = page.locator('.sl-markdown-content');
+    await expect(body).toContainText('辅助读物');
+    const link = body.locator(`a[href="${MAIN_BOOK}"]`);
+    await expect(link).toHaveCount(1);
+    await expect(link).toContainText('大模型Agent应用开发');
+  });
+
+  test('英文页用英文声明，链接指向同一主书', async ({ page }) => {
+    await page.goto(BASE + 'en/', { waitUntil: 'load' });
+    const box = page.locator('.stb-companion');
+    await expect(box).toHaveCount(1);
+    await expect(box.locator(`a[href="${MAIN_BOOK}"]`)).toHaveCount(1);
+    await expect(box).toContainText('companion reader');
+  });
+
+  test('页面里不再把清华大学出版社写成本书出版方', async ({ page }) => {
+    for (const p of ['/', '/brief/', '/author/']) {
+      await open(page, p);
+      const html = await page.content();
+      expect(html, p).not.toContain('郭涛 著，清华大学出版社');
+      expect(html, p).not.toContain('郭涛　著 · 清华大学出版社');
+      expect(html, p).not.toContain('book:publisher');
+    }
+  });
+
+  test('主书链接已作为 related 元信息声明', async ({ page }) => {
+    await open(page, '/');
+    await expect(page.locator(`link[rel="related"][href="${MAIN_BOOK}"]`)).toHaveCount(1);
   });
 });

@@ -1,9 +1,9 @@
 ---
 title: DeepSeek Harness in Practice
-description: A hands-on handbook for building agent applications with DeepSeek Harness — plugin architecture, multi-model integration, plugin development and multi-agent collaboration.
+description: A hands-on handbook for building agent applications with DeepSeek Harness — plugin architecture, multi-model integration, plugin development and multi-agent collaboration. A companion reader to *Large Model Agent Application Development*.
 template: splash
 hero:
-  tagline: A hands-on handbook for building agent applications with DeepSeek Harness · By Guo Tao · Tsinghua University Press
+  tagline: A hands-on handbook for building agent applications with DeepSeek Harness · By Guo Tao
 ---
 
 import { LinkButton } from '@astrojs/starlight/components';
@@ -31,6 +31,10 @@ export const GITHUB = 'https://github.com/guotao0628/shutongbuddy';
   <LinkButton href={`${base}downloads/`} icon="download" variant="secondary">Downloads</LinkButton>
   <LinkButton href={GITHUB} icon="github" variant="minimal">Source code</LinkButton>
 </p>
+
+<div class="stb-companion">
+  This manual is a companion reader to <a href="https://www.tup.tsinghua.edu.cn/booksCenter/book_10674101.html" target="_blank" rel="noopener"><em>Large Model Agent Application Development</em></a> (《大模型Agent应用开发》, Tsinghua University Press).
+</div>
 
 **DeepSeek Harness** (CLI name `dsh`) is DeepSeek's open-source agent substrate. Its design philosophy fits in one sentence — **everything is a plugin**: model adapters, tool invocation, session management, even the agent loop that drives the whole thing, are all replaceable plugins.
 

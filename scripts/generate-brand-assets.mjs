@@ -22,7 +22,8 @@ const PUBLIC = path.join(ROOT, 'public');
 const TITLE_1 = 'DeepSeek Harness';
 const TITLE_2 = '应用开发实践';
 const SUB = '基于 DeepSeek Harness 的智能体应用开发实战手册';
-const META = '郭涛　著　·　清华大学出版社';
+const META = '郭涛　著';
+const COMPANION = '本手册是《大模型Agent应用开发》辅助读物。';
 const DOMAIN = 'guotao0628.github.io/shutongbuddy';
 
 const FONT = "'Microsoft YaHei','PingFang SC','Noto Sans CJK SC','Source Han Sans SC',sans-serif";
@@ -59,10 +60,11 @@ const ogSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630"
 
   <rect x="88" y="408" width="132" height="5" rx="2.5" fill="${ACCENT.pale}"/>
 
-  <text x="88" y="474" font-family="${FONT}" font-size="28" fill="#ffffff" fill-opacity="0.9">${SUB}</text>
-  <text x="88" y="530" font-family="${FONT}" font-size="26" fill="#ffffff" fill-opacity="0.75">${META}</text>
+  <text x="88" y="462" font-family="${FONT}" font-size="26" fill="#ffffff" fill-opacity="0.9">${SUB}</text>
+  <text x="88" y="512" font-family="${FONT}" font-size="24" fill="#ffffff" fill-opacity="0.82">${META}</text>
+  <text x="88" y="554" font-family="${FONT}" font-size="19" fill="#ffffff" fill-opacity="0.7">${COMPANION}</text>
 
-  <text x="88" y="586" font-family="${FONT}" font-size="20" fill="#ffffff" fill-opacity="0.55" letter-spacing="0.5">${DOMAIN}</text>
+  <text x="88" y="596" font-family="${FONT}" font-size="19" fill="#ffffff" fill-opacity="0.5" letter-spacing="0.5">${DOMAIN}</text>
 </svg>`;
 
 const faviconSvg = fs.readFileSync(path.join(PUBLIC, 'favicon.svg'), 'utf8');

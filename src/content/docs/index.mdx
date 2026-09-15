@@ -1,9 +1,9 @@
 ---
 title: DeepSeek Harness 应用开发实践
-description: 基于 DeepSeek Harness 的智能体应用开发实战手册：插件架构、多模型接入、插件开发与多智能体协同。郭涛 著，清华大学出版社。
+description: 基于 DeepSeek Harness 的智能体应用开发实战手册：插件架构、多模型接入、插件开发与多智能体协同。郭涛 著。本手册是《大模型Agent应用开发》辅助读物。
 template: splash
 hero:
-  tagline: 基于 DeepSeek Harness 的智能体应用开发实战手册 · 郭涛 著 · 清华大学出版社
+  tagline: 基于 DeepSeek Harness 的智能体应用开发实战手册 · 郭涛 著
 ---
 
 import { LinkButton } from '@astrojs/starlight/components';
@@ -31,6 +31,10 @@ export const GITHUB = 'https://github.com/guotao0628/shutongbuddy';
   <LinkButton href={`${base}downloads/`} icon="download" variant="secondary">下载中心</LinkButton>
   <LinkButton href={GITHUB} icon="github" variant="minimal">配套代码仓库</LinkButton>
 </p>
+
+<div class="stb-companion">
+  本手册是<a href="https://www.tup.tsinghua.edu.cn/booksCenter/book_10674101.html" target="_blank" rel="noopener">《大模型Agent应用开发》</a>辅助读物。
+</div>
 
 **DeepSeek Harness**（命令行简称 `dsh`）是 DeepSeek 官方开源的智能体基座，其核心设计哲学只有一句话——**万物皆插件**：模型适配、工具调用、会话管理，乃至驱动智能体运转的 Agent 循环本身，都是可以替换的插件。
 

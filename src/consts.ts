@@ -1,13 +1,29 @@
 import version from './data/version.json';
 
-/** 图书与仓库的全局常量 */
+/**
+ * 图书与仓库的全局常量。
+ *
+ * 注意：本手册不是清华大学出版社的出版物，而是《大模型Agent应用开发》的辅助读物。
+ * 因此全站不得再出现「清华大学出版社」作为本书出版方的表述，
+ * 统一改为 COMPANION.statement。
+ */
 export const BOOK = {
   title: 'DeepSeek Harness 应用开发实践',
   subtitle: '基于 DeepSeek Harness 的智能体应用开发实战手册',
   author: '郭涛',
-  press: '清华大学出版社',
   email: 'guotao3s@163.com',
 } as const;
+
+/** 本手册的定位：配套读物 + 主书链接与声明文案 */
+export const COMPANION = {
+  title: '大模型Agent应用开发',
+  url: 'https://www.tup.tsinghua.edu.cn/booksCenter/book_10674101.html',
+  /** 纯文本场景（分享卡片、PDF/DOCX 封面、meta 描述）用这句 */
+  statement: '本手册是《大模型Agent应用开发》辅助读物。',
+} as const;
+
+/** 声明文案里的书名部分，供 Markdown/MDX 做超链接时复用 */
+export const COMPANION_LINK = `[《${COMPANION.title}》](${COMPANION.url})`;
 
 export const REPO = {
   owner: process.env.GITHUB_REPOSITORY_OWNER ?? 'guotao0628',
@@ -29,7 +45,7 @@ export const DOWNLOADS = [
   {
     name: 'PDF（A5 印刷版式）',
     file: 'downloads/deepseek-harness-in-practice.pdf',
-    note: '仿清华社版式，A5 / 宋体 9.5pt，含页码目录，适合打印',
+    note: 'A5 书版印刷版式，宋体 9.5pt，含页码目录，适合打印',
   },
   {
     name: 'EPUB（电子书）',

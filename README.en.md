@@ -16,7 +16,8 @@ An open-source practical handbook and companion codebase for building agent appl
 ## About the Book
 
 - Title: *DeepSeek Harness 应用开发实践* (DeepSeek Harness in Practice)
-- Author: 郭涛 (Guo Tao) ｜ Publisher: 清华大学出版社 (Tsinghua University Press)
+- Author: 郭涛 (Guo Tao)
+- Scope: a companion reader to [*Large Model Agent Application Development*](https://www.tup.tsinghua.edu.cn/booksCenter/book_10674101.html) (《大模型Agent应用开发》, Tsinghua University Press)
 - Structure: front matter + 4 parts (8 chapters) + epilogue + appendices A–F
 - Running case: **ShuTongBuddy**, integrated into **ShuTongBuddy Studio** (a web-based exam-prep assistant)
 - Companion code: `plugins/shu-tong-buddy/`, `examples/`, `agents/`

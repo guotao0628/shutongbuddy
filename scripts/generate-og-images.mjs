@@ -15,7 +15,8 @@ const OUT = path.join(ROOT, 'public', 'og');
 const W = 1200;
 const H = 630;
 const BOOK = 'DeepSeek Harness 应用开发实践';
-const AUTHOR = '郭涛　著　·　清华大学出版社';
+const AUTHOR = '郭涛　著';
+const COMPANION = '本手册是《大模型Agent应用开发》辅助读物。';
 const DOMAIN = 'guotao0628.github.io/shutongbuddy';
 const SANS = "'Microsoft YaHei','PingFang SC','Noto Sans CJK SC','Source Han Sans SC',sans-serif";
 const SERIF = "'SimSun','Songti SC','Noto Serif CJK SC',serif";
@@ -207,8 +208,9 @@ function card(art, badge, title) {
   '  ' + badgeSvg + '\n\n' +
   '  ' + titleSvg + '\n\n' +
   '  <rect x="' + PAD + '" y="' + barY + '" width="120" height="5" rx="2.5" fill="#e0c9ee"/>\n\n' +
-  '  <text x="' + PAD + '" y="546" font-family="' + SANS + '" font-size="26" fill="#ffffff" fill-opacity="0.86">' + escapeXml(AUTHOR) + '</text>\n' +
-  '  <text x="' + PAD + '" y="590" font-family="' + SANS + '" font-size="21" fill="#ffffff" fill-opacity="0.5" letter-spacing="0.5">' + escapeXml(DOMAIN) + '</text>\n' +
+  '  <text x="' + PAD + '" y="518" font-family="' + SANS + '" font-size="26" fill="#ffffff" fill-opacity="0.9">' + escapeXml(AUTHOR) + '</text>\n' +
+  '  <text x="' + PAD + '" y="558" font-family="' + SANS + '" font-size="20" fill="#ffffff" fill-opacity="0.78">' + escapeXml(COMPANION) + '</text>\n' +
+  '  <text x="' + PAD + '" y="602" font-family="' + SANS + '" font-size="19" fill="#ffffff" fill-opacity="0.5" letter-spacing="0.5">' + escapeXml(DOMAIN) + '</text>\n' +
   '</svg>';
 }
 

@@ -3,11 +3,11 @@
 ## 一、待核对的技术细节（书中【待核】标记，共 2 处）
 
 ### 1. `output.schema` 的 `additionalProperties` 写法
-- **位置**：第 7 章 7.6 节（`docs/manual/markdown/09-part4-ch7.md`）
+- **位置**：第 7 章 7.6 节（`src/content/docs/part4/ch7.md`）
 - **内容**：`material_stats` 工具的 `output.schema` 用了 `additionalProperties`，需对照所用 DeepSeek Harness 版本的 `ValueSchemaSpec` 确认是否接受；若不被接受，改为返回数组 `[{ type, files, bytes }]`。
 
 ### 2. sdk Profile 下多提供商的会话级指定方式
-- **位置**：第 8 章 8.3 节（`docs/manual/markdown/10-part4-ch8.md`）
+- **位置**：第 8 章 8.3 节（`src/content/docs/part4/ch8.md`）
 - **内容**：sdk Profile 下多提供商（如 Kimi）的会话级模型指定方式，需对照所用 SDK 版本参考；备选方案是为 Kimi 单独起一个 dsh 实例，通过子智能体 ACP 委托（见 8.7 节）。
 
 ## 二、需作者确认的出版信息
@@ -15,8 +15,8 @@
 | 事项 | 现状 | 需确认 |
 |------|------|--------|
 | 作者简介书目 | ✅ 已更新（《大模型设计模式》《Agentic AI 智能体应用开发（第 2 版）》《大模型前沿与实践》） | 已完成 |
-| 封面 | 脚本生成的简化封面（书名 + 郭涛 著 + 清华大学出版社） | 正式封面需清华社排版（含书号、CIP、定价、条形码、防伪标签） |
-| 版权页 | 简化版（版权所有 + 书名 + 作者 + 出版社） | 补书号、CIP、版次、印次 |
+| 封面 | 脚本生成的简化封面（书名 + 郭涛 著 + 配套读物声明） | 本手册是《大模型Agent应用开发》辅助读物，不单独申请 ISBN/CIP；如需独立正式封面再另议 |
+| 版权页 | 简化版（版权所有 + 书名 + 作者 + 配套读物声明） | 补版次、印次；不涉及书号与 CIP |
 
 ## 三、建议出版前完成的校对
 

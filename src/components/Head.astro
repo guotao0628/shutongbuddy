@@ -9,7 +9,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import Default from '@astrojs/starlight/components/Head.astro';
-import { BOOK, REPO, PINNED_SEARCHES } from '../consts';
+import { BOOK, COMPANION, REPO, PINNED_SEARCHES } from '../consts';
 import trending from '../data/trending.json';
 import { PALETTE, defaultSwatch, hslHex, hexToHsl } from '../palette';
 
@@ -70,7 +70,7 @@ const UMAMI_SRC = import.meta.env.PUBLIC_UMAMI_SRC ?? 'https://cloud.umami.is/sc
 <meta name="twitter:image" content={ogImage} />
 <meta name="twitter:image:alt" content={BOOK.title} />
 <meta name="book:author" content={BOOK.author} />
-<meta name="book:publisher" content={BOOK.press} />
+<link rel="related" href={COMPANION.url} />
 <link rel="apple-touch-icon" sizes="180x180" href={`${base}apple-touch-icon.png`} />
 <link rel="manifest" href={`${base}manifest.webmanifest`} />
 <link rel="alternate" type="application/rss+xml" title={`${BOOK.title} · 更新`} href={abs('rss.xml')} />

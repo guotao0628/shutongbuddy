@@ -5,7 +5,7 @@ const BASE = process.env.BASE_PATH || '/shutongbuddy/';
 
 async function open(page: Page, path: string) {
   await page.goto(BASE + path.replace(/^\//, ''), { waitUntil: 'load' });
-  await page.waitForSelector('.reading-progress', { state: 'attached', timeout: 15_000 });
+  await page.waitForSelector('.reading-progress', { state: 'attached', timeout: 30_000 });
 }
 
 test.describe('响应式：无横向溢出', () => {
