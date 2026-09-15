@@ -5,9 +5,9 @@
       "startServerReadyPattern": "Local",
       "startServerReadyTimeout": 60000,
       "url": [
-        "http://127.0.0.1:4321/shutongbuddy/",
-        "http://127.0.0.1:4321/shutongbuddy/part1/ch1/",
-        "http://127.0.0.1:4321/shutongbuddy/part2/ch3/"
+        "http://localhost:4321/shutongbuddy/",
+        "http://localhost:4321/shutongbuddy/part1/ch1/",
+        "http://localhost:4321/shutongbuddy/part2/ch3/"
       ],
       "numberOfRuns": 1,
       "settings": {
@@ -26,7 +26,8 @@
       }
     },
     "upload": {
-      "target": "temporary-public-storage"
+      "target": "filesystem",
+      "outputDir": "./.lighthouseci/reports"
     }
   }
 }

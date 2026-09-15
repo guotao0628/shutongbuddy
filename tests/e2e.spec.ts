@@ -205,3 +205,25 @@ test.describe('键盘快捷键', () => {
     expect(await page.evaluate(() => localStorage.getItem('stb-font-size'))).toBe('13');
   });
 });
+
+test.describe('全文检索', () => {
+  test('中文关键词能检索到结果', async ({ page }) => {
+    await open(page, '/part1/ch1/');
+    await page.keyboard.press('/');
+    const input = page.locator('.pagefind-ui__search-input').first();
+    await expect(input).toBeVisible();
+    await input.fill('能力接缝');
+    await expect(page.locator('.pagefind-ui__result').first()).toBeVisible({ timeout: 30_000 });
+    const first = await page.locator('.pagefind-ui__result').first().innerText();
+    expect(first.length).toBeGreaterThan(0);
+  });
+
+  test('英文关键词同样可检索', async ({ page }) => {
+    await open(page, '/part1/ch2/');
+    await page.keyboard.press('/');
+    const input = page.locator('.pagefind-ui__search-input').first();
+    await expect(input).toBeVisible();
+    await input.fill('Profile');
+    await expect(page.locator('.pagefind-ui__result').first()).toBeVisible({ timeout: 30_000 });
+  });
+});
