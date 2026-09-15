@@ -1,0 +1,29 @@
+---
+/**
+ * 《全书目录》用的带封面卡片。
+ *
+ * cover 既可以是 import 进来的资源对象（src/assets/covers/*.svg），
+ * 也可以直接给一个 public/ 下的字符串路径——
+ * 将来若换成扩散模型生成的位图，只要替换 cover 的值即可，无需改结构。
+ */
+interface Props {
+  title: string;
+  href: string;
+  cover: { src: string } | string;
+  badge?: string;
+}
+
+const { title, href, cover, badge } = Astro.props;
+const src = typeof cover === 'string' ? cover : cover.src;
+---
+
+<a class="stb-cover-card" href={href}>
+  <span class="stb-cover-media">
+    <img src={src} alt="" width="640" height="360" loading="lazy" decoding="async" />
+    {badge && <span class="stb-cover-badge">{badge}</span>}
+  </span>
+  <span class="stb-cover-body">
+    <span class="stb-cover-title">{title}</span>
+    <span class="stb-cover-desc"><slot /></span>
+  </span>
+</a>

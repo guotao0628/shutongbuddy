@@ -268,7 +268,9 @@
       if (enMatch) chNum = enMatch[1];
     }
 
-    if (content && h1) {
+    // splash 页面（封面）不是正文，不显示阅读时长
+    var isSplash = !!document.querySelector('.hero');
+    if (content && h1 && !isSplash) {
       var textAll = content.textContent || '';
       var cjk = (textAll.match(/[\u4e00-\u9fff]/g) || []).length;
       var words = (textAll.match(/[A-Za-z0-9]+/g) || []).length;

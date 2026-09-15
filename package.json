@@ -18,6 +18,7 @@
     "check:links:external": "node scripts/check-links.mjs --external",
     "check:typo": "node scripts/check-typography.mjs",
     "brand": "node scripts/generate-brand-assets.mjs",
+    "covers": "node scripts/generate-covers.mjs",
     "epub": "node scripts/build-epub.mjs",
     "test:e2e": "playwright test",
     "verify": "npm run check && npm run build && npm run check:typo && npm run check:links && npm run test:e2e"

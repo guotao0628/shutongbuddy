@@ -14,7 +14,7 @@ test.describe('封面与导航', () => {
     await open(page, '/');
     await expect(page.locator('main h1')).toContainText('DeepSeek Harness');
     await expect(page.locator('.stb-cta a').first()).toBeVisible();
-    expect(await page.locator('.card, .sl-link-card').count()).toBeGreaterThanOrEqual(10);
+    expect(await page.locator('.stb-cover-card').count()).toBeGreaterThanOrEqual(10);
   });
 
   test('侧边栏包含 4 个部分与阅读工具', async ({ page }) => {
@@ -286,5 +286,57 @@ test.describe('参考答案、订阅与热词', () => {
     await expect(first.locator('.stb-chip')).not.toHaveCount(0);
     await expect(page.locator('.stb-chips-mine')).toContainText('你搜过');
     await expect(page.locator('.stb-chips-mine .stb-chip').first()).toHaveText('能力接缝');
+  });
+});
+
+test.describe('全书目录封面', () => {
+  test('首页目录每个条目都有封面图且能加载', async ({ page }) => {
+    await open(page, '/');
+    const cards = page.locator('.stb-cover-card');
+    await expect(cards).toHaveCount(13);
+
+    // 逐张确认图片真的解码成功（naturalWidth > 0），排除 404 或损坏的 SVG
+    const broken = await page.evaluate(async () => {
+      const imgs = Array.from(
+        document.querySelectorAll<HTMLImageElement>('.stb-cover-media img')
+      );
+      imgs.forEach((i) => {
+        i.loading = 'eager';
+      });
+      await Promise.all(
+        imgs.map(
+          (i) =>
+            new Promise<void>((res) => {
+              if (i.complete) return res();
+              i.addEventListener('load', () => res(), { once: true });
+              i.addEventListener('error', () => res(), { once: true });
+            })
+        )
+      );
+      return imgs
+        .filter((i) => !i.complete || i.naturalWidth === 0)
+        .map((i) => i.getAttribute('src'));
+    });
+    expect(broken).toEqual([]);
+  });
+
+  test('封面卡片链接指向对应章节', async ({ page }) => {
+    await open(page, '/');
+    await expect(page.locator('.stb-cover-card').first()).toHaveAttribute('href', /brief\/$/);
+    await expect(
+      page.locator('.stb-cover-card', { hasText: '第 5 章' }).first()
+    ).toHaveAttribute('href', /part3\/ch5\/$/);
+  });
+
+  test('英文目录同样有封面', async ({ page }) => {
+    await page.goto(BASE + 'en/', { waitUntil: 'load' });
+    await expect(page.locator('.stb-cover-card')).toHaveCount(13);
+  });
+
+  test('封面页不显示章节阅读时长', async ({ page }) => {
+    await open(page, '/');
+    await expect(page.locator('.stb-chapter-meta')).toHaveCount(0);
+    await open(page, '/part1/ch1/');
+    await expect(page.locator('.stb-chapter-meta')).toHaveCount(1);
   });
 });

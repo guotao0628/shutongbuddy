@@ -6,7 +6,22 @@ hero:
   tagline: A hands-on handbook for building agent applications with DeepSeek Harness · By Guo Tao · Tsinghua University Press
 ---
 
-import { CardGrid, LinkCard, LinkButton } from '@astrojs/starlight/components';
+import { LinkButton } from '@astrojs/starlight/components';
+import CoverCard from '../../../components/CoverCard.astro';
+
+import cBrief from '../../../assets/covers/brief.svg';
+import cAuthor from '../../../assets/covers/author.svg';
+import cPreface from '../../../assets/covers/preface.svg';
+import cCh1 from '../../../assets/covers/ch1.svg';
+import cCh2 from '../../../assets/covers/ch2.svg';
+import cCh3 from '../../../assets/covers/ch3.svg';
+import cCh4 from '../../../assets/covers/ch4.svg';
+import cCh5 from '../../../assets/covers/ch5.svg';
+import cCh6 from '../../../assets/covers/ch6.svg';
+import cCh7 from '../../../assets/covers/ch7.svg';
+import cCh8 from '../../../assets/covers/ch8.svg';
+import cEpilogue from '../../../assets/covers/epilogue.svg';
+import cAppendix from '../../../assets/covers/appendix.svg';
 
 export const base = import.meta.env.BASE_URL + 'en/';
 export const GITHUB = 'https://github.com/guotao0628/shutongbuddy';
@@ -27,72 +42,72 @@ The book is aimed at engineers, researchers and students who already program and
 
 ### Front matter
 
-<CardGrid>
-  <LinkCard title="About the book" href={`${base}brief/`}>
+<div class="stb-cover-grid">
+  <CoverCard title="About the book" href={`${base}brief/`} cover={cBrief} badge="Intro">
     What this book covers and who it is for.
-  </LinkCard>
-  <LinkCard title="About the author" href={`${base}author/`}>
+  </CoverCard>
+  <CoverCard title="About the author" href={`${base}author/`} cover={cAuthor} badge="Author">
     A short biography.
-  </LinkCard>
-  <LinkCard title="Preface" href={`${base}preface/`}>
+  </CoverCard>
+  <CoverCard title="Preface" href={`${base}preface/`} cover={cPreface} badge="Preface">
     Why this book was written.
-  </LinkCard>
-</CardGrid>
+  </CoverCard>
+</div>
 
 ### Part 1 — Getting started
 
-<CardGrid>
-  <LinkCard title="Chapter 1 · Quick start" href={`${base}part1/ch1/`}>
+<div class="stb-cover-grid">
+  <CoverCard title="Chapter 1 · Quick start" href={`${base}part1/ch1/`} cover={cCh1} badge="Ch 1">
     Get DeepSeek Harness running in ten minutes and complete your first agent task.
-  </LinkCard>
-  <LinkCard title="Chapter 2 · Architecture" href={`${base}part1/ch2/`}>
+  </CoverCard>
+  <CoverCard title="Chapter 2 · Architecture" href={`${base}part1/ch2/`} cover={cCh2} badge="Ch 2">
     Microkernel, Cordis, Profile/Bundle/Patch, capability seams and the event system.
-  </LinkCard>
-</CardGrid>
+  </CoverCard>
+</div>
 
 ### Part 2 — Deployment and models
 
-<CardGrid>
-  <LinkCard title="Chapter 3 · Install and Web UI" href={`${base}part2/ch3/`}>
+<div class="stb-cover-grid">
+  <CoverCard title="Chapter 3 · Install and Web UI" href={`${base}part2/ch3/`} cover={cCh3} badge="Ch 3">
     Five run profiles, CLI syntax, the harness home directory and the security baseline.
-  </LinkCard>
-  <LinkCard title="Chapter 4 · Multi-model access" href={`${base}part2/ch4/`}>
+  </CoverCard>
+  <CoverCard title="Chapter 4 · Multi-model access" href={`${base}part2/ch4/`} cover={cCh4} badge="Ch 4">
     DeepSeek V4 Pro/Flash, Kimi, and any OpenAI-compatible endpoint.
-  </LinkCard>
-</CardGrid>
+  </CoverCard>
+</div>
 
 ### Part 3 — Plugins and agents
 
-<CardGrid>
-  <LinkCard title="Chapter 5 · Plugin development" href={`${base}part3/ch5/`}>
+<div class="stb-cover-grid">
+  <CoverCard title="Chapter 5 · Plugin development" href={`${base}part3/ch5/`} cover={cCh5} badge="Ch 5">
     Build ShuTongBuddy's question bank, practice generator, mistake gate, review planner and tutor plugins.
-  </LinkCard>
-  <LinkCard title="Chapter 6 · How agents work" href={`${base}part3/ch6/`}>
+  </CoverCard>
+  <CoverCard title="Chapter 6 · How agents work" href={`${base}part3/ch6/`} cover={cCh6} badge="Ch 6">
     Turns and steps, prompt assembly, the tool system and PTC, context engineering, subagents.
-  </LinkCard>
-</CardGrid>
+  </CoverCard>
+</div>
 
 ### Part 4 — Case studies
 
-<CardGrid>
-  <LinkCard title="Chapter 7 · Study-material audit agent" href={`${base}part4/ch7/`}>
+<div class="stb-cover-grid">
+  <CoverCard title="Chapter 7 · Study-material audit agent" href={`${base}part4/ch7/`} cover={cCh7} badge="Ch 7">
     From task definition to batch headless runs, plus a custom material-stats tool.
-  </LinkCard>
-  <LinkCard title="Chapter 8 · ShuTongBuddy Studio" href={`${base}part4/ch8/`}>
+  </CoverCard>
+  <CoverCard title="Chapter 8 · ShuTongBuddy Studio" href={`${base}part4/ch8/`} cover={cCh8} badge="Ch 8">
     Integrate the plugins into a full web exam-prep assistant (FastAPI + SSE).
-  </LinkCard>
-</CardGrid>
+  </CoverCard>
+</div>
 
 ### Epilogue and appendices
 
-<CardGrid>
-  <LinkCard title="Epilogue" href={`${base}epilogue/`}>
+<div class="stb-cover-grid">
+  <CoverCard title="Epilogue" href={`${base}epilogue/`} cover={cEpilogue} badge="Epilogue">
     Agent engineering and where it is heading.
-  </LinkCard>
-  <LinkCard title="Appendices" href={`${base}appendix/`}>
+  </CoverCard>
+  <CoverCard title="Appendices" href={`${base}appendix/`} cover={cAppendix} badge="Appendix">
     Command reference, key file locations, settings.yaml fields, troubleshooting and glossary.
-  </LinkCard>
-</CardGrid>
+  </CoverCard>
+</div>
 
 ---
 

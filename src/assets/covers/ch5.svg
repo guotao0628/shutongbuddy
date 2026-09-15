@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-label="嵌合的拼图块">
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#33043a"/>
+      <stop offset="55%" stop-color="#660874"/>
+      <stop offset="100%" stop-color="#9631ad"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.82" cy="0.12" r="0.75">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="640" height="360" fill="url(#bg)"/>
+  <rect width="640" height="360" fill="url(#glow)"/>
+  <text x="600" y="326" text-anchor="end"
+        font-family="Georgia, 'Times New Roman', serif" font-size="150" font-weight="700"
+        fill="#ffffff" fill-opacity="0.13">05</text>
+
+  <g transform="translate(238,168)" fill="none" stroke="#ffffff" stroke-width="4.2"
+     stroke-linecap="round" stroke-linejoin="round">
+    <rect x="-124" y="-58" width="112" height="116" rx="14" fill="#ffffff" fill-opacity=".16"/>
+    <circle cx="-68" cy="-58" r="19"/>
+    <circle cx="-12" cy="0" r="19" stroke-opacity=".7"/>
+    <rect x="24" y="-34" width="86" height="68" rx="14" stroke-opacity=".9"/>
+    <circle cx="67" cy="-34" r="15" stroke-opacity=".7"/>
+    <path d="M-64 -12 h44 M-64 14 h44 M-64 -12 v26" stroke-opacity=".5" stroke-width="3.2"/>
+  </g>
+</svg>

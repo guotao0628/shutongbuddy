@@ -538,3 +538,91 @@ kbd {
 .stb-chips-mine .stb-chip {
   border-style: dashed;
 }
+
+/* ---------- 《全书目录》封面卡片 ---------- */
+.stb-cover-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: 1.1rem;
+  margin: 1rem 0 2rem;
+}
+
+.stb-cover-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--sl-color-hairline);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--sl-color-bg);
+  text-decoration: none;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.stb-cover-card:hover {
+  border-color: var(--sl-color-accent);
+  transform: translateY(-2px);
+  box-shadow: var(--sl-shadow-md);
+}
+
+.stb-cover-media {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 9;
+  background: #3d0446;
+}
+
+.stb-cover-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  margin: 0;
+}
+
+.stb-cover-badge {
+  position: absolute;
+  top: 0.5rem;
+  inset-inline-start: 0.6rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #660874;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.stb-cover-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.85rem 1rem 1rem;
+}
+
+.stb-cover-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: var(--sl-color-white);
+}
+
+.stb-cover-card:hover .stb-cover-title {
+  color: var(--sl-color-text-accent);
+}
+
+.stb-cover-desc {
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--sl-color-gray-3);
+}
+
+.stb-cover-desc p {
+  margin: 0;
+}
+
+/* 打印时不显示装饰性封面 */
+@media print {
+  .stb-cover-media {
+    display: none !important;
+  }
+}
