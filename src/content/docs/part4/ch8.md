@@ -25,23 +25,23 @@ description: "终章实例把前七章攒成一件完整作品：一个 Web 端�
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 360" font-family="'Microsoft YaHei', sans-serif" style="max-width:100%;height:auto;">
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-      <path d="M0,0 L10,5 L0,10 Z" fill="#660874"/>
+      <path d="M0,0 L10,5 L0,10 Z" fill="var(--sl-color-accent)"/>
     </marker>
   </defs>
-  <rect x="80" y="20" width="400" height="80" rx="10" fill="#f1e6f5" stroke="#660874" stroke-width="2"/>
-  <text x="280" y="48" text-anchor="middle" font-size="15" font-weight="bold" fill="#660874">浏览器（ShuTongBuddy Studio Web 界面）</text>
-  <text x="280" y="70" text-anchor="middle" font-size="12" fill="#555">左栏：备考阶段 · 中栏：对话流 · 右栏：题库/错题本</text>
-  <line x1="280" y1="100" x2="280" y2="128" stroke="#660874" stroke-width="2" marker-end="url(#arrow)"/>
-  <text x="292" y="118" font-size="11" fill="#888">HTTP + SSE</text>
-  <rect x="80" y="130" width="400" height="70" rx="10" fill="#faf5fc" stroke="#660874" stroke-width="2"/>
-  <text x="280" y="156" text-anchor="middle" font-size="15" font-weight="bold" fill="#660874">FastAPI 服务</text>
-  <text x="280" y="178" text-anchor="middle" font-size="12" fill="#555">HarnessController（后台线程）→ DeepSeekHarness（Python SDK）</text>
-  <line x1="280" y1="200" x2="280" y2="228" stroke="#660874" stroke-width="2" marker-end="url(#arrow)"/>
-  <text x="292" y="218" font-size="11" fill="#888">JSON-RPC stdio</text>
-  <rect x="80" y="230" width="400" height="95" rx="10" fill="#f1e6f5" stroke="#660874" stroke-width="2"/>
-  <text x="280" y="256" text-anchor="middle" font-size="15" font-weight="bold" fill="#660874">dsh --profile sdk（独立进程）</text>
-  <text x="280" y="278" text-anchor="middle" font-size="12" fill="#555">shu-tong-buddy 插件包（question_bank / practice / mistake-gate / review / tutor）</text>
-  <text x="280" y="300" text-anchor="middle" font-size="12" fill="#555">模型路由：deepseek-v4-pro / flash / Kimi</text>
+  <rect x="80" y="20" width="400" height="80" rx="10" fill="var(--sl-color-accent-low)" stroke="var(--sl-color-accent)" stroke-width="2"/>
+  <text x="280" y="48" text-anchor="middle" font-size="15" font-weight="bold" fill="var(--sl-color-accent)">浏览器（ShuTongBuddy Studio Web 界面）</text>
+  <text x="280" y="70" text-anchor="middle" font-size="12" fill="var(--sl-color-gray-2)">左栏：备考阶段 · 中栏：对话流 · 右栏：题库/错题本</text>
+  <line x1="280" y1="100" x2="280" y2="128" stroke="var(--sl-color-accent)" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="292" y="118" font-size="11" fill="var(--sl-color-gray-3)">HTTP + SSE</text>
+  <rect x="80" y="130" width="400" height="70" rx="10" fill="var(--sl-color-bg-inline-code)" stroke="var(--sl-color-accent)" stroke-width="2"/>
+  <text x="280" y="156" text-anchor="middle" font-size="15" font-weight="bold" fill="var(--sl-color-accent)">FastAPI 服务</text>
+  <text x="280" y="178" text-anchor="middle" font-size="12" fill="var(--sl-color-gray-2)">HarnessController（后台线程）→ DeepSeekHarness（Python SDK）</text>
+  <line x1="280" y1="200" x2="280" y2="228" stroke="var(--sl-color-accent)" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="292" y="218" font-size="11" fill="var(--sl-color-gray-3)">JSON-RPC stdio</text>
+  <rect x="80" y="230" width="400" height="95" rx="10" fill="var(--sl-color-accent-low)" stroke="var(--sl-color-accent)" stroke-width="2"/>
+  <text x="280" y="256" text-anchor="middle" font-size="15" font-weight="bold" fill="var(--sl-color-accent)">dsh --profile sdk（独立进程）</text>
+  <text x="280" y="278" text-anchor="middle" font-size="12" fill="var(--sl-color-gray-2)">shu-tong-buddy 插件包（question_bank / practice / mistake-gate / review / tutor）</text>
+  <text x="280" y="300" text-anchor="middle" font-size="12" fill="var(--sl-color-gray-2)">模型路由：deepseek-v4-pro / flash / Kimi</text>
 </svg>
 
 进程模型要点：harness.run() 是阻塞调用，必须放进后台线程 worker，通过 SSE 把阶段进度与输出推回浏览器——前端界面永不冻结。
