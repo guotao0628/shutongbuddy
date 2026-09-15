@@ -227,3 +227,20 @@ test.describe('全文检索', () => {
     await expect(page.locator('.pagefind-ui__result').first()).toBeVisible({ timeout: 30_000 });
   });
 });
+
+test.describe('插图编号与交叉引用', () => {
+  test('插图自动编号为「图 N-M」并可被正文引用', async ({ page }) => {
+    await open(page, '/part1/ch2/');
+    await expect(page.locator('.stb-figure-caption').first()).toContainText('图 2-1');
+    const ref = page.locator('a.stb-figref').first();
+    await expect(ref).toHaveAttribute('href', '#fig-2-1');
+    await expect(page.locator('#fig-2-1')).toHaveCount(1);
+  });
+
+  test('第 5、6 章插图同样编号', async ({ page }) => {
+    await open(page, '/part3/ch5/');
+    await expect(page.locator('.stb-figure-caption').first()).toContainText('图 5-1');
+    await open(page, '/part3/ch6/');
+    await expect(page.locator('.stb-figure-caption').first()).toContainText('图 6-1');
+  });
+});
