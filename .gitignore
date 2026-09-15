@@ -1,9 +1,10 @@
 # Dependencies
 node_modules/
 
-# Build output
+# Astro build output
 dist/
 build/
+.astro/
 
 # Logs
 *.log

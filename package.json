@@ -1,0 +1,23 @@
+{
+  "name": "shutongbuddy-book",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "《DeepSeek Harness 应用开发实践》在线书（Astro + Starlight）",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.42.0",
+    "astro": "^7.3.2",
+    "sharp": "^0.35.3"
+  },
+  "allowScripts": {
+    "esbuild": true
+  }
+}

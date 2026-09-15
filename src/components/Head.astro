@@ -1,0 +1,27 @@
+---
+/**
+ * 覆写 Starlight 的 Head 组件：保留默认 head 输出，附加图书元信息、
+ * PWA 清单与全站交互脚本。
+ */
+import Default from '@astrojs/starlight/components/Head.astro';
+
+const owner = process.env.GITHUB_REPOSITORY_OWNER ?? 'guotao0628';
+const repo = process.env.GITHUB_REPOSITORY?.split('/')[1] ?? 'shutongbuddy';
+const base = import.meta.env.BASE_URL;
+---
+
+<Default />
+
+<meta name="author" content="郭涛" />
+<meta name="theme-color" content="#660874" />
+<meta property="og:type" content="book" />
+<meta property="og:locale" content="zh_CN" />
+<link rel="manifest" href={`${base}manifest.webmanifest`} />
+<link rel="apple-touch-icon" href={`${base}favicon.svg`} />
+
+<script is:inline define:vars={{ base, repo: `${owner}/${repo}` }}>
+  window.__STB__ = { base: base, repo: repo };
+</script>
+<script>
+  import '../scripts/book.js';
+</script>

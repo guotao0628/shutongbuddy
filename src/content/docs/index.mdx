@@ -1,0 +1,99 @@
+---
+title: DeepSeek Harness 应用开发实践
+description: 基于 DeepSeek Harness 的智能体应用开发实战手册：插件架构、多模型接入、插件开发与多智能体协同。郭涛 著，清华大学出版社。
+template: splash
+hero:
+  tagline: 基于 DeepSeek Harness 的智能体应用开发实战手册 · 郭涛 著 · 清华大学出版社
+---
+
+import { CardGrid, LinkCard, LinkButton } from '@astrojs/starlight/components';
+
+export const base = import.meta.env.BASE_URL;
+export const GITHUB = 'https://github.com/guotao0628/shutongbuddy';
+
+<p class="stb-cta">
+  <LinkButton href={`${base}part1/ch1/`} icon="right-arrow">开始阅读</LinkButton>
+  <LinkButton href={`${base}downloads/deepseek-harness-in-practice.pdf`} icon="download" variant="secondary">下载 PDF</LinkButton>
+  <LinkButton href={GITHUB} icon="github" variant="minimal">配套代码仓库</LinkButton>
+</p>
+
+**DeepSeek Harness**（命令行简称 `dsh`）是 DeepSeek 官方开源的智能体基座，其核心设计哲学只有一句话——**万物皆插件**：模型适配、工具调用、会话管理，乃至驱动智能体运转的 Agent 循环本身，都是可以替换的插件。
+
+本书是一本面向开发者的实战手册，系统讲解如何基于 DeepSeek Harness 构建智能体应用，聚焦四大主线：**快速上手与架构解析、安装部署与多模型接入、插件开发与智能体构建、实战案例**。全书以大学生备考助手 **ShuTongBuddy**（书童）作为贯穿案例——第 5 章为它开发插件包，第 8 章把它集成为完整的 Web 应用 ShuTongBuddy Studio，让读者在"动手做"中掌握从插件架构到智能体工程的完整路径。
+
+本书适合有编程基础、希望快速上手智能体应用开发的工程师、研究者与高校学生阅读。阅读本书只需具备基础的 TypeScript 与 Python 阅读能力，以及调用大模型 API 的经验。
+
+## 全书目录
+
+### 前置
+
+<CardGrid>
+  <LinkCard title="本书内容简介" href={`${base}brief/`}>
+    这本书讲什么、适合谁读。
+  </LinkCard>
+  <LinkCard title="作者简介" href={`${base}author/`}>
+    关于作者。
+  </LinkCard>
+  <LinkCard title="自序" href={`${base}preface/`}>
+    为什么写这本书。
+  </LinkCard>
+</CardGrid>
+
+### 第一部分　入门
+
+<CardGrid>
+  <LinkCard title="第 1 章　快速上手" href={`${base}part1/ch1/`}>
+    十分钟跑通 DeepSeek Harness，完成第一个智能体任务。
+  </LinkCard>
+  <LinkCard title="第 2 章　架构解析" href={`${base}part1/ch2/`}>
+    微内核、Cordis、Profile/Bundle/Patch、能力接缝与事件系统。
+  </LinkCard>
+</CardGrid>
+
+### 第二部分　部署与模型
+
+<CardGrid>
+  <LinkCard title="第 3 章　安装部署与 Web UI" href={`${base}part2/ch3/`}>
+    五种运行 Profile、命令行语法、Harness 主目录与安全基线。
+  </LinkCard>
+  <LinkCard title="第 4 章　多模型 API 接入" href={`${base}part2/ch4/`}>
+    DeepSeek V4 Pro/Flash、Kimi 与任意 OpenAI 兼容端点。
+  </LinkCard>
+</CardGrid>
+
+### 第三部分　插件与智能体
+
+<CardGrid>
+  <LinkCard title="第 5 章　插件开发实战" href={`${base}part3/ch5/`}>
+    为 ShuTongBuddy 开发题库、组卷、错题门禁、复习计划与答疑插件。
+  </LinkCard>
+  <LinkCard title="第 6 章　智能体构建原理" href={`${base}part3/ch6/`}>
+    Turn 与 Step、系统提示词装配、工具系统与 PTC、上下文工程、子智能体。
+  </LinkCard>
+</CardGrid>
+
+### 第四部分　实战案例
+
+<CardGrid>
+  <LinkCard title="第 7 章　备考资料库体检智能体" href={`${base}part4/ch7/`}>
+    从任务定义到批量化 headless 体检，并补上自定义资料统计工具。
+  </LinkCard>
+  <LinkCard title="第 8 章　ShuTongBuddy Studio" href={`${base}part4/ch8/`}>
+    把插件集成为完整的 Web 备考助手（FastAPI + SSE）。
+  </LinkCard>
+</CardGrid>
+
+### 结语与附录
+
+<CardGrid>
+  <LinkCard title="结束语" href={`${base}epilogue/`}>
+    智能体工程及其未来发展方向。
+  </LinkCard>
+  <LinkCard title="附录：速查表与术语表" href={`${base}appendix/`}>
+    命令速查、关键文件位置、settings.yaml 字段、故障排查与 Glossary。
+  </LinkCard>
+</CardGrid>
+
+---
+
+> 在线阅读 · 下载 PDF · 联系作者：guotao3s@163.com

@@ -1,0 +1,72 @@
+name: Build and deploy book site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build site
+        run: npm run build
+
+      - name: Verify build output
+        run: |
+          ls -la dist/ | head -40
+          test -f dist/index.html
+          test -f dist/part1/ch1/index.html
+          test -f dist/pagefind/pagefind.js
+
+      - name: Build EPUB (best effort)
+        continue-on-error: true
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq pandoc
+          node scripts/build-epub.mjs
+          mkdir -p dist/epub
+          pandoc work/epub/book.md \
+            -o dist/epub/deepseek-harness-in-practice.epub \
+            --toc --toc-depth=2 \
+            --metadata title="DeepSeek Harness 应用开发实践" \
+            --metadata author="郭涛" \
+            --metadata lang=zh-CN
+          ls -la dist/epub/
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

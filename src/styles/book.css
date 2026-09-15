@@ -1,0 +1,555 @@
+/* ==========================================================================
+   《DeepSeek Harness 应用开发实践》在线书样式
+   Starlight 自身样式全部位于 @layer 中，本文件不分层 → 天然拥有更高优先级，
+   因此无需依赖加载顺序即可稳定覆盖。
+   ========================================================================== */
+
+/* ---------- 1. 设计令牌 ---------- */
+:root {
+  /* 正文字号中枢：A- / A+ 按钮直接改这个值，标题随之等比缩放 */
+  --stb-font-size: 14px;
+  --stb-tsinghua: #660874;
+  --stb-tsinghua-deep: #4a0656;
+  --stb-tsinghua-soft: #c39bd8;
+
+  /* 字号体系 */
+  --sl-text-body: var(--stb-font-size);
+  --sl-text-code: calc(var(--stb-font-size) * 0.9);
+  --sl-text-h1: calc(var(--stb-font-size) * 1.72);
+  --sl-text-h2: calc(var(--stb-font-size) * 1.4);
+  --sl-text-h3: calc(var(--stb-font-size) * 1.18);
+  --sl-text-h4: calc(var(--stb-font-size) * 1.06);
+  --sl-text-h5: calc(var(--stb-font-size) * 1);
+  --sl-line-height: 1.8;
+  --sl-line-height-headings: 1.35;
+
+  /* 版心宽度 */
+  --sl-content-width: 46rem;
+
+  /* 字体 */
+  --sl-font: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", "Noto Sans SC",
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  --sl-font-mono: "Cascadia Code", "JetBrains Mono", Consolas, "Source Code Pro", Menlo,
+    ui-monospace, monospace;
+}
+
+/* 暗色主题（Starlight 默认即暗色） */
+:root {
+  --sl-color-accent-low: hsl(292, 45%, 22%);
+  --sl-color-accent: var(--stb-tsinghua-soft);
+  --sl-color-accent-high: #e0c9ee;
+}
+
+/* 亮色主题：清华紫 */
+:root[data-theme='light'] {
+  --sl-color-accent-low: #f1e6f5;
+  --sl-color-accent: var(--stb-tsinghua);
+  --sl-color-accent-high: var(--stb-tsinghua-deep);
+}
+
+/* ---------- 2. 图书排版 ---------- */
+/* 注意：Starlight 定义了 --sl-text-body 但从未使用，正文字号必须直接设在内容容器上 */
+.sl-markdown-content {
+  font-size: var(--stb-font-size);
+  line-height: var(--sl-line-height);
+}
+
+/* 标题用宋体衬线，贴近纸质书观感；正文保持无衬线以保证屏幕可读性 */
+.sl-markdown-content :is(h1, h2, h3, h4),
+main h1,
+.stb-section-title {
+  font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun", serif;
+  font-weight: 700;
+  letter-spacing: 0.015em;
+}
+
+/* 章标题下方的紫色分隔线 */
+.sl-markdown-content h1 {
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--sl-color-accent-low);
+}
+
+.sl-markdown-content h2 {
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--sl-color-hairline);
+}
+
+.sl-markdown-content p {
+  margin-block: 0.85em;
+  text-align: justify;
+  text-justify: inter-ideograph;
+}
+
+/* 正文首段首行不缩进（网文习惯），但段落之间留白更松 */
+.sl-markdown-content :is(ul, ol) {
+  margin-block: 0.85em;
+}
+
+.sl-markdown-content li + li {
+  margin-top: 0.35em;
+}
+
+/* 行内代码：淡紫底 */
+.sl-markdown-content :not(pre) > code {
+  background: color-mix(in srgb, var(--sl-color-accent) 12%, transparent);
+  color: var(--sl-color-text-accent);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  font-weight: 500;
+}
+
+/* 引用块 */
+.sl-markdown-content blockquote {
+  border-inline-start: 4px solid var(--sl-color-accent);
+  background: color-mix(in srgb, var(--sl-color-accent) 7%, transparent);
+  border-radius: 0 6px 6px 0;
+}
+
+/* 表格 */
+.sl-markdown-content table {
+  display: table;
+  width: 100%;
+  font-size: 0.95em;
+}
+
+.sl-markdown-content thead th {
+  background: color-mix(in srgb, var(--sl-color-accent) 10%, transparent);
+}
+
+/* ---------- 3. 代码块 ---------- */
+.expressive-code {
+  margin-block: 1.25rem;
+}
+
+.expressive-code figure pre {
+  position: relative;
+  font-size: var(--sl-text-code);
+  line-height: 1.65;
+}
+
+/* 语言标签 */
+.code-lang-tag {
+  position: absolute;
+  top: 0;
+  inset-inline-start: 0;
+  font-size: 11px;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: 0 0 6px 0;
+  background: color-mix(in srgb, var(--sl-color-accent) 22%, transparent);
+  color: var(--sl-color-text-accent);
+  font-family: var(--sl-font-mono);
+  pointer-events: none;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+}
+
+/* 下载按钮 */
+.code-download-btn {
+  position: absolute;
+  top: 6px;
+  inset-inline-end: 6px;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--sl-color-hairline);
+  border-radius: 6px;
+  background: var(--sl-color-bg);
+  color: var(--sl-color-gray-2);
+  font-size: 12px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s ease, color 0.15s ease;
+  z-index: 3;
+}
+
+.expressive-code figure:hover .code-download-btn,
+.code-download-btn:focus-visible {
+  opacity: 1;
+}
+
+.code-download-btn:hover {
+  color: var(--sl-color-text-accent);
+  border-color: var(--sl-color-accent);
+}
+
+/* 超长代码折叠 */
+pre.code-collapsed {
+  max-height: 520px;
+  overflow: hidden;
+}
+
+pre.code-collapsed::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 90px;
+  background: linear-gradient(to bottom, transparent, var(--sl-color-bg));
+  pointer-events: none;
+}
+
+.code-expand-btn {
+  display: block;
+  margin: -0.6rem auto 1.25rem;
+  padding: 0.35rem 1rem;
+  font-size: 0.85rem;
+  border: 1px solid var(--sl-color-accent);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--sl-color-text-accent);
+  cursor: pointer;
+}
+
+.code-expand-btn:hover {
+  background: color-mix(in srgb, var(--sl-color-accent) 12%, transparent);
+}
+
+/* ---------- 4. 阅读进度条 ---------- */
+.reading-progress {
+  position: fixed;
+  top: 0;
+  inset-inline-start: 0;
+  height: 3px;
+  width: 0;
+  background: linear-gradient(90deg, var(--stb-tsinghua-soft), var(--sl-color-accent));
+  z-index: 9999;
+  transition: width 0.08s linear;
+  pointer-events: none;
+}
+
+/* ---------- 5. 浮动控件 ---------- */
+.font-ctl {
+  position: fixed;
+  right: 20px;
+  bottom: 76px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 9997;
+}
+
+.font-ctl button,
+.back-to-top {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--sl-color-hairline);
+  background: var(--sl-color-bg-nav);
+  color: var(--sl-color-gray-2);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--sl-shadow-md);
+  transition: color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.font-ctl button:hover,
+.back-to-top:hover {
+  color: var(--sl-color-text-accent);
+  border-color: var(--sl-color-accent);
+  transform: translateY(-1px);
+}
+
+.back-to-top {
+  position: fixed;
+  right: 20px;
+  bottom: 24px;
+  z-index: 9997;
+  opacity: 0;
+  visibility: hidden;
+  font-size: 1rem;
+}
+
+.back-to-top.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 轻提示 */
+.stb-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 40px;
+  transform: translateX(-50%) translateY(12px);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  background: var(--sl-color-gray-6);
+  color: var(--sl-color-white);
+  border: 1px solid var(--sl-color-hairline);
+  font-size: 0.85rem;
+  box-shadow: var(--sl-shadow-lg);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 9998;
+  max-width: min(90vw, 520px);
+  word-break: break-all;
+}
+
+.stb-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ---------- 6. 侧边栏：已读勾选与进度 ---------- */
+.chapter-check {
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  margin-inline-end: 0.4rem;
+  border: 1.5px solid var(--sl-color-gray-4);
+  border-radius: 3px;
+  vertical-align: -2px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.chapter-check:hover {
+  border-color: var(--sl-color-accent);
+}
+
+.chapter-check:checked {
+  background: var(--sl-color-accent);
+  border-color: var(--sl-color-accent);
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='white'%3E%3Cpath d='M6.2 11.4 3 8.2l1.1-1.1 2.1 2.1 5-5L12.3 5.3z'/%3E%3C/svg%3E");
+  background-size: 100% 100%;
+}
+
+#starlight__sidebar nav a,
+.sidebar nav a {
+  display: flex;
+  align-items: flex-start;
+}
+
+.stb-progress-label {
+  margin: 1rem var(--sl-sidebar-pad-x) 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--sl-color-hairline);
+  font-size: 0.75rem;
+  color: var(--sl-color-gray-3);
+  letter-spacing: 0.02em;
+}
+
+/* ---------- 7. 章末工具栏 ---------- */
+.page-toolbar,
+.subscribe-box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 2.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--sl-color-hairline);
+}
+
+.stb-tool-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: 0.35rem 0.85rem;
+  border: 1px solid var(--sl-color-hairline);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--sl-color-gray-2);
+  font-size: 0.82rem;
+  font-family: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.stb-tool-btn:hover {
+  color: var(--sl-color-text-accent);
+  border-color: var(--sl-color-accent);
+  background: color-mix(in srgb, var(--sl-color-accent) 8%, transparent);
+}
+
+.stb-tool-btn.on {
+  color: var(--sl-color-text-accent);
+  border-color: var(--sl-color-accent);
+  background: color-mix(in srgb, var(--sl-color-accent) 14%, transparent);
+}
+
+.subscribe-box {
+  display: block;
+  margin-top: 1.5rem;
+  padding: 0.85rem 1rem;
+  border: 1px dashed var(--sl-color-accent);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--sl-color-accent) 6%, transparent);
+  font-size: 0.85rem;
+  color: var(--sl-color-gray-2);
+}
+
+/* ---------- 8. 练习题 ---------- */
+.exercise-answer {
+  display: none;
+  margin-top: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-inline-start: 3px solid var(--sl-color-accent);
+  background: color-mix(in srgb, var(--sl-color-accent) 7%, transparent);
+  border-radius: 0 6px 6px 0;
+}
+
+.exercise-answer.show {
+  display: block;
+}
+
+.exercise-toggle {
+  margin-block: 0.5rem;
+}
+
+/* 练习题内的「会了」按钮：更紧凑，随列表项排布 */
+.quiz-btn {
+  margin-inline-start: 0.5rem;
+  padding: 0.1rem 0.55rem;
+  font-size: 0.72rem;
+  vertical-align: baseline;
+}
+
+/* ---------- 9. 术语 tooltip ---------- */
+.glossary-term {
+  border-bottom: 1px dashed var(--sl-color-accent);
+  cursor: help;
+  color: var(--sl-color-text-accent);
+}
+
+/* ---------- 10. 划重点 ---------- */
+mark.stb-hl {
+  background: color-mix(in srgb, var(--stb-tsinghua-soft) 45%, transparent);
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 2px;
+  cursor: pointer;
+}
+
+/* ---------- 11. 图片 ---------- */
+.img-caption {
+  display: block;
+  margin-top: 0.5rem;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--sl-color-gray-3);
+}
+
+/* ---------- 12. 评论区 ---------- */
+#giscus-container {
+  margin-top: 2.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--sl-color-hairline);
+}
+
+.stb-section-title {
+  margin-bottom: 0.85rem;
+  font-size: 1.05rem;
+  color: var(--sl-color-white);
+}
+
+/* ---------- 13. 首页 CTA ---------- */
+.stb-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-block: 1.5rem 2rem;
+  text-align: start;
+}
+
+/* ---------- 14. 移动端 ---------- */
+@media (max-width: 768px) {
+  :root {
+    --stb-font-size: 13.5px;
+  }
+
+  .sl-markdown-content p {
+    text-align: start;
+  }
+
+  .font-ctl {
+    right: 12px;
+    bottom: 68px;
+  }
+
+  .back-to-top {
+    right: 12px;
+    bottom: 18px;
+  }
+
+  .font-ctl button,
+  .back-to-top {
+    width: 34px;
+    height: 34px;
+  }
+}
+
+/* 移动端表格卡片化 */
+@media (max-width: 600px) {
+  .sl-markdown-content table,
+  .sl-markdown-content thead,
+  .sl-markdown-content tbody,
+  .sl-markdown-content tr,
+  .sl-markdown-content th,
+  .sl-markdown-content td {
+    display: block;
+    width: 100%;
+  }
+
+  .sl-markdown-content thead {
+    display: none;
+  }
+
+  .sl-markdown-content tr {
+    margin-bottom: 1rem;
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .sl-markdown-content td {
+    border: none;
+    border-bottom: 1px solid var(--sl-color-hairline);
+    padding-inline-start: 0.75rem;
+  }
+
+  .sl-markdown-content td:last-child {
+    border-bottom: none;
+  }
+
+  .sl-markdown-content td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--sl-color-text-accent);
+    margin-bottom: 0.15rem;
+  }
+}
+
+/* ---------- 15. 打印 ---------- */
+@media print {
+  .reading-progress,
+  .font-ctl,
+  .back-to-top,
+  .stb-toast,
+  .page-toolbar,
+  .subscribe-box,
+  #giscus-container,
+  .code-download-btn,
+  .code-lang-tag,
+  .chapter-check,
+  .stb-progress-label,
+  .code-expand-btn {
+    display: none !important;
+  }
+
+  .exercise-answer {
+    display: block !important;
+  }
+
+  .sl-markdown-content h1 {
+    border-bottom: none;
+  }
+}
