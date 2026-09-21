@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# 全书正文均可公开检索
+Sitemap: https://guotao0628.github.io/shutongbuddy/pr-preview/pr-9/sitemap-index.xml

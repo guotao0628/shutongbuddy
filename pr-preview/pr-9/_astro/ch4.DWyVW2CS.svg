@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-label="多个模型汇聚到路由">
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1d112c"/>
+      <stop offset="55%" stop-color="#7b5aa3"/>
+      <stop offset="100%" stop-color="#9a74c8"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.82" cy="0.12" r="0.75">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="640" height="360" fill="url(#bg)"/>
+  <rect width="640" height="360" fill="url(#glow)"/>
+  <text x="600" y="326" text-anchor="end"
+        font-family="Georgia, 'Times New Roman', serif" font-size="150" font-weight="700"
+        fill="#ffffff" fill-opacity="0.13">04</text>
+
+  <g transform="translate(238,168)" fill="none" stroke="#ffffff" stroke-width="4.2"
+     stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="-108" cy="-66" r="27"/>
+    <circle cx="-108" cy="0" r="27"/>
+    <circle cx="-108" cy="66" r="27"/>
+    <circle cx="-108" cy="-66" r="7" fill="#ffffff" fill-opacity=".5" stroke="none"/>
+    <circle cx="-108" cy="0" r="7" fill="#ffffff" fill-opacity=".8" stroke="none"/>
+    <circle cx="-108" cy="66" r="7" fill="#ffffff" fill-opacity=".35" stroke="none"/>
+    <rect x="26" y="-52" width="104" height="104" rx="22" fill="#ffffff" fill-opacity=".18"/>
+    <circle cx="78" cy="0" r="14" fill="#ffffff" fill-opacity=".85" stroke="none"/>
+    <path d="M78 -24 v-12 M78 24 v12 M54 0 h-12 M102 0 h12" stroke-width="4.5"/>
+    <path d="M-80 -66 C -30 -66, -24 -34, 22 -22" stroke-opacity=".7" stroke-width="3.6"/>
+    <path d="M-80 0 H 22" stroke-opacity=".9" stroke-width="3.8"/>
+    <path d="M-80 66 C -30 66, -24 34, 22 22" stroke-opacity=".7" stroke-width="3.6"/>
+    <path d="M22 -22 l-14 -3 M22 -22 l-5 13" stroke-width="3.4"/>
+    <path d="M22 22 l-14 3 M22 22 l-5 -13" stroke-width="3.4"/>
+  </g>
+</svg>
