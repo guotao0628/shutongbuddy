@@ -46,7 +46,7 @@ jobs:
 
       - name: Upload Playwright report on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-report-pr${{ github.event.pull_request.number }}
           path: playwright-report/
@@ -56,7 +56,7 @@ jobs:
       # 这里把构建产物作为 artifact 上传，审阅者可下载 dist.zip 本地打开；
       # 需要真正的托管预览请接入 Netlify / Cloudflare Pages（附带各自的 Token）。
       - name: Upload preview bundle
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: preview-pr${{ github.event.pull_request.number }}
           path: ./dist
