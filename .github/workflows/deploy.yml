@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           # Starlight 的「最后更新」取自 git 历史，浅克隆会导致日期不准
           fetch-depth: 0
